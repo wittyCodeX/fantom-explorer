@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom'
 import { useQuery, gql } from '@apollo/client'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import components from 'components'
-import { formatHexToInt, timestampToDate, formatHash } from 'utils'
+import { formatHexToInt, formatHash } from 'utils'
 import moment from 'moment'
-import { ethers } from 'ethers'
 
 const GET_CONTRACTS = gql`
   query ContractList($cursor: Cursor, $count: Int!) {
