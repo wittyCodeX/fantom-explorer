@@ -1,21 +1,37 @@
-import './assets/css/App.css';
+import React from 'react'
+import './assets/css/App.css'
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route
-} from "react-router-dom";
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from 'react-router-dom'
+import views from 'pages'
+import services from 'services'
 
-import {routes} from "./routes";
+import { routes } from './routes'
 
-
+function Inner() {
+  const location = useLocation()
+  React.useEffect(() => {
+    services.linking.routeChanged()
+  }, [location])
+  return (
+    <views.Wrapper>
+      <Routes>
+        {routes.map((route, i) => (
+          <Route {...route} key={i} />
+        ))}
+      </Routes>
+    </views.Wrapper>
+  )
+}
 function App() {
-    return (
-        <Router>
-            <Routes>
-                {routes.map(route => <Route {...route} />)}
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Inner />
+    </Router>
+  )
 }
 
-export default App;
+export default App
