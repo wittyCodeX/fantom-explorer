@@ -13,6 +13,14 @@ export function formatHexToInt(_value) {
   // return web3utils.toBN(_value);
   return parseInt(_value, 16)
 }
+
+export function formatIntToHex(number) {
+  if (number < 0) {
+    number = 0xffffffff + number + 1
+  }
+
+  return '0x' + Number(number).toString(16).toUpperCase()
+}
 /**
  * @param {*} _obj
  * @return {boolean}

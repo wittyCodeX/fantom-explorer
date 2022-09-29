@@ -7,7 +7,6 @@ export const routes = [
   { path: '/transactions', element: <views.Transactions /> },
   { path: '/transactions/:id', element: <views.TransactionDetail /> },
   { path: '/address/:id', element: <views.Address /> },
-  { path: '/contracts/:id', element: <views.ContractDetail /> },
   { path: '/contracts', element: <views.Contracts /> },
   { path: '*', element: <views.NotFound /> },
 ]

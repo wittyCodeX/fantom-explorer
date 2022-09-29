@@ -131,7 +131,7 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           className="text-blue-500"
-          to={`/contracts/${item.contract.address}`}
+          to={`/address/${item.contract.address}`}
         >
           {formatHash(item.contract.address)}
         </Link>
