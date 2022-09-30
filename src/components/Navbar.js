@@ -3,16 +3,23 @@ import { Link } from 'react-router-dom'
 import { ArrowRightIcon } from '@heroicons/react/solid'
 import services from 'services'
 import components from 'components'
+import { numToFixed } from 'utils'
 
 export default function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false) // initiate isNavOpen state with false
+  const [price, setPrice] = useState(0)
+  useEffect(() => {
+    const getFTMPrice = async () => {
+      const api = services.provider.buildAPI()
+      const rate = await api.getFTMConversionRateFromChainlink(
+        '0xf4766552D15AE4d256Ad41B6cf2933482B0680dc',
+      )
+      const ftmPrice = rate / Math.pow(10, 8)
+      setPrice(ftmPrice)
+    }
+    getFTMPrice()
+  }, [])
 
-  useEffect(() => {}, [])
-  const getFTMPrice = async () => {
-    const api = services.provider.buildAPI()
-    const price = await api.getFTMConversionRate()
-    console.log('FTM price: ', price)
-  }
   return (
     <header className="sticky top-0 z-30 w-full px-2 py-4 bg-white sm:px-4 shadow-xl">
       <div className="flex items-center justify-between mx-auto max-w-7xl">
@@ -49,7 +56,9 @@ export default function Navbar() {
         </div>
       </div>
       <div className="flex items-center justify-between mx-auto max-w-7xl mt-2">
-        <div className="bg-gray-200 py-1 px-2 text-sm">FTM</div>
+        <div className="bg-gray-200 py-1 px-2 text-sm">
+          FTM: {numToFixed(price, 4)} $
+        </div>
         <div className="flex justify-end items-center space-x-1">
           <ul className="hidden space-x-2 md:inline-flex">
             <li>
