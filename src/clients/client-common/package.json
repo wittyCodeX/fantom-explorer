@@ -1,0 +1,27 @@
+{
+  "name": "client-common",
+  "version": "1.0.0",
+  "description": "This project contains static files required by FNS clients.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npx mocha test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fnsdomains/client-common.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fnsdomains/client-common/issues"
+  },
+  "homepage": "https://github.com/fnsdomains/client-common#readme",
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0"
+  }
+}

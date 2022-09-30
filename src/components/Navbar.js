@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon } from '@heroicons/react/solid'
 import services from 'services'
+import components from 'components'
+
 export default function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false) // initiate isNavOpen state with false
 
+  useEffect(() => {}, [])
+  const getFTMPrice = async () => {
+    const api = services.provider.buildAPI()
+    const price = await api.getFTMConversionRate()
+    console.log('FTM price: ', price)
+  }
   return (
     <header className="sticky top-0 z-30 w-full px-2 py-4 bg-white sm:px-4 shadow-xl">
       <div className="flex items-center justify-between mx-auto max-w-7xl">
@@ -15,7 +23,34 @@ export default function Navbar() {
             alt="FNS Domains"
           />{' '}
         </Link>
-        <div className="flex items-center space-x-1">
+        <div className="relative w-96">
+          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg
+              aria-hidden="true"
+              className="w-5 h-5 text-gray-500 dark:text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <components.Input
+            type="text"
+            id="voice-search"
+            className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 block pl-10 p-2.5"
+            placeholder="Search by Address / Tx Hash / Block / Name"
+            required={false}
+          />
+        </div>
+      </div>
+      <div className="flex items-center justify-between mx-auto max-w-7xl mt-2">
+        <div className="bg-gray-200 py-1 px-2 text-sm">FTM</div>
+        <div className="flex justify-end items-center space-x-1">
           <ul className="hidden space-x-2 md:inline-flex">
             <li>
               <Link

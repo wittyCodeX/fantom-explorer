@@ -1,0 +1,15 @@
+{
+    "env": {
+        "es2020": true, // <- activate “es2020” globals
+        "browser": true,
+        "node": true,
+        "mocha": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    }
+}

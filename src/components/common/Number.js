@@ -11,7 +11,7 @@ export default function Number(props) {
 
   return (
     <div
-      className={`text-4xl md:text-4xl sm:text-3xl text-black text-center  ${
+      className={`text-xl lg:text-4xl md:text-4xl sm:text-xl text-black text-center  ${
         props.classes ? props.classes : ''
       }`}
     >

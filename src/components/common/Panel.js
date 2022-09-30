@@ -10,7 +10,7 @@ const Panel = (props) => {
         {props.title}
       </div>
       <div
-        className={`p-3  overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200  overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full ${
+        className={`p-3  overflow-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200  overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full ${
           props.classes ? props.classes : ''
         }`}
       >

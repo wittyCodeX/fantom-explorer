@@ -67,9 +67,9 @@ export default function LatestBlocks() {
 
 const DynamicTableRow = ({ item }) => {
   return (
-    <tr>
-      <td className="px-2 text-sm truncate w-28 lg:w-44 md:w-44  py-3">
-        <div className="flex justify-between">
+    <tr className="">
+      <td className="md:px-2 text-sm truncate py-3 w-screen">
+        <div className="flex flex-row justify-between">
           <div className="col-sm-4">
             <div className="flex flex-row align-items-sm-center mr-4 mb-1 mb-sm-0">
               <div className="sm:flex mr-2">
@@ -92,7 +92,7 @@ const DynamicTableRow = ({ item }) => {
               </div>
             </div>
           </div>
-          <div className="col-sm-8">
+          <div className="col-sm-8  hidden sm:hidden md:block">
             <div className="flex justify-between gap-4">
               <div className="flex flex-col">
                 <span className="d-block mb-1 mb-sm-0">

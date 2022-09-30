@@ -1,0 +1,7 @@
+contracts/31337.json
+contracts/1337.json
+contracts/43113.json
+env.sh
+node_modules
+*.swp
+*.swo
