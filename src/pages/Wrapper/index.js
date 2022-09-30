@@ -6,7 +6,7 @@ const Wrapper = (props) => {
     <>
       <components.Navbar />
       <div
-        className="min-h-screen text-white  bg-gray-400 w-full flex justify-center"
+        className="min-h-screen text-white  bg-gray-300 w-full flex justify-center"
         style={{
           backgroundImage: `url(${services.linking.static(
             'images/abstract-shapes-20.svg',

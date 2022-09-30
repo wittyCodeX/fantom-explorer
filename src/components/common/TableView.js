@@ -5,7 +5,9 @@ const TableView = (props) => {
   return (
     <div>
       <div className="flex flex-row justify-between items-baseline bg-gray-100 text-xl px-2 py-3 border-solid border-grey-light border-b mt-5">
-        <div className="text-black text-2xl">{props.title}</div>
+        <div className="text-black md:text-2xl sm:text-xl text-sm  px-2 font-medium">
+          {props.title}
+        </div>
         {!props.dontNeedSubtitle && (
           <div className="text-black text-sm">
             Home {'>'} {props.title}
@@ -16,7 +18,9 @@ const TableView = (props) => {
         className={`relative mb-2 bg-white text-black border-solid border-grey-light border shadow-sm `}
       >
         <div
-          className={`p-3  overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200  overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full w-screen  max-w-5xl`}
+          className={`p-3  overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200  overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full ${
+            props.classes ? props.classes : ''
+          }`}
         >
           {props.children}
         </div>
