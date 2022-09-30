@@ -6,7 +6,7 @@ import LatestTransactions from './LatestTransactions'
 export default function Landing() {
   return (
     <div className=" flex flex-col md:w-9/12 sm:w-9/12 w-11/12">
-      <h2 className="text-5xl md:text-4xl mt-[70px] text-center">
+      <h2 className="text-5xl md:text-4xl mt-[70px] text-black font-extrabold text-center">
         Fantom Domain Explorer
       </h2>
       <BlockInfo />
