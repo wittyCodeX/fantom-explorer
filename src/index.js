@@ -4,6 +4,8 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+import { ThemeProvider } from '@material-tailwind/react'
+
 import services from 'services'
 const client = new ApolloClient({
   uri: services.environment.APOLLO_PROVIDER,
@@ -12,7 +14,9 @@ const client = new ApolloClient({
 ReactDOM.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </React.StrictMode>
   </ApolloProvider>,
   document.getElementById('root'),

@@ -74,7 +74,7 @@ export default function BlockDetail() {
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Block Height:
                   </div>
-                  <div class="col-span-2">
+                  <div className="col-span-2">
                     {formatHexToInt(block.number)}
                     <Link
                       className="bg-gray-200 text-blue-500 text-sm px-1 mx-1 font-extrabold"
@@ -96,7 +96,7 @@ export default function BlockDetail() {
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Timestamp:
                   </div>
-                  <div class="col-span-2">
+                  <div className="col-span-2">
                     {moment.unix(block.timestamp).fromNow()}{' '}
                     {`(${timestampToDate(block.timestamp)})`}
                   </div>
@@ -107,7 +107,7 @@ export default function BlockDetail() {
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Transactions:
                   </div>
-                  <div class="col-span-2">
+                  <div className="col-span-2">
                     {formatHexToInt(block.transactionCount)} transactions
                   </div>
                 </td>
@@ -117,7 +117,7 @@ export default function BlockDetail() {
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Block Hash:
                   </div>
-                  <div class="col-span-2">{block.hash}</div>
+                  <div className="col-span-2  break-words">{block.hash}</div>
                 </td>
               </tr>
               <tr>
@@ -125,7 +125,9 @@ export default function BlockDetail() {
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Parent Hash:
                   </div>
-                  <div class="col-span-2">{block.parent?.hash}</div>
+                  <div className="col-span-2  break-words">
+                    {block.parent?.hash}
+                  </div>
                 </td>
               </tr>
             </>

@@ -1,4 +1,6 @@
-module.exports = {
+const withMT = require('@material-tailwind/react/utils/withMT')
+
+module.exports = withMT({
   mode: 'jit',
   darkMode: 'class',
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -9,4 +11,4 @@ module.exports = {
   variants: {
     scrollbar: ['rounded'],
   },
-}
+})

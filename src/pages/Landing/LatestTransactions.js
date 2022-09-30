@@ -103,14 +103,20 @@ const DynamicTableRow = (props) => {
               <div className="flex flex-col">
                 <span className="d-block mb-1 mb-sm-0">
                   From:
-                  <Link className="text-blue-500" to="">
+                  <Link
+                    className="text-blue-500"
+                    to={`/address/${item.transaction.from}`}
+                  >
                     {' '}
                     {formatHash(item.transaction.from)}
                   </Link>
                 </span>
                 <div>
                   To:
-                  <Link className="text-blue-500" to="">
+                  <Link
+                    className="text-blue-500"
+                    to={`/address/${item.transaction.to}`}
+                  >
                     {' '}
                     {formatHash(item.transaction.to)}
                   </Link>
