@@ -109,6 +109,12 @@ export default function ERC721TransactionList({ address, setTotal }) {
       hasMore={true}
       loader={<div className="text-center">Loading More...</div>}
     >
+      <div className="flex flex-col justify-between px-2 py-5">
+        <div></div>
+        <div className="text-sm text-gray-500">
+          Showing last {block.erc721TxList?.edges.length} transactions
+        </div>
+      </div>
       <components.DynamicTable columns={columns}>
         {loading ? (
           <tr>
