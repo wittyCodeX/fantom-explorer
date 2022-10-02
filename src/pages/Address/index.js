@@ -106,6 +106,7 @@ export default function Address() {
   const params = useParams()
 
   const [block, setBlock] = useState([])
+  const [address, setAddress] = useState('')
   const [delegated, setDelegated] = useState([])
   const [pendingReward, setPendingReward] = useState([])
   const [claimedReward, setClaimedReward] = useState([])
@@ -194,6 +195,7 @@ export default function Address() {
       } catch {
         address = account.address
       }
+      setAddress(address)
 
       for (let i = 0; i < account.txList.edges.length; i++) {
         let edgeNew
@@ -226,8 +228,8 @@ export default function Address() {
             value: account.txList.edges[i].transaction.value,
             gasUsed: account.txList.edges[i].transaction.gasUsed,
             block: {
-              number: account.txList.edges[i].transaction.number,
-              timestamp: account.txList.edges[i].transaction.timestamp,
+              number: account.txList.edges[i].transaction.block.number,
+              timestamp: account.txList.edges[i].transaction.block.timestamp,
             },
           },
         }
@@ -311,8 +313,8 @@ export default function Address() {
           value: account.txList.edges[i].transaction.value,
           gasUsed: account.txList.edges[i].transaction.gasUsed,
           block: {
-            number: account.txList.edges[i].transaction.number,
-            timestamp: account.txList.edges[i].transaction.timestamp,
+            number: account.txList.edges[i].transaction.block?.number,
+            timestamp: account.txList.edges[i].transaction.block?.timestamp,
           },
         },
       }
@@ -341,7 +343,7 @@ export default function Address() {
     <div className="w-screen max-w-7xl">
       <div className="flex items-center text-black md:text-xl sm:text-xl text-sm  px-2 font-normal border-b p-3  mt-[30px] bg-gray-200">
         <QRCode value={params.id} size={20} />{' '}
-        <span className="mx-3"> Address {block.address} </span>
+        <span className="mx-3"> Address {address} </span>
         <Tooltip content="Copy Address to clipboard">
           <button
             onClick={() => {
