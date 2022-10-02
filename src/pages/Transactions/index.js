@@ -136,6 +136,12 @@ export default function Transactions() {
   }
   useEffect(async () => {
     if (data) {
+      const edges = data.transactions.edges
+      setRows(edges)
+    }
+  }, [data])
+  useEffect(async () => {
+    if (data) {
       setTotalCount(formatHexToInt(data.transactions.totalCount))
       let transactions = []
       const api = services.provider.buildAPI()
@@ -179,7 +185,7 @@ export default function Transactions() {
 
         transactions.push(edgeNew)
       }
-      setRows(data.transactions.edges)
+      setRows(transactions)
     }
   }, [data])
 

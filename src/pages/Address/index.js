@@ -181,6 +181,7 @@ export default function Address() {
       setDelegated(delegated)
       setPendingReward(pending_rewards)
       setClaimedReward(claimed_rewards)
+      setBlock(account)
 
       let newAddressData
       let transactions = []

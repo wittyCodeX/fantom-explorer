@@ -149,6 +149,8 @@ export default function ERC721TransactionList({ address, setTotal }) {
     if (data) {
       setTotal(data.account.erc1155TxList.totalCount)
       const account = data.account
+      setBlock(account)
+
       let newTransactionData
       let transactions = []
       const api = services.provider.buildAPI()

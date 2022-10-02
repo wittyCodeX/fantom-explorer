@@ -139,6 +139,8 @@ export default function ERC20TransactionList({ address, setTotal }) {
     if (data) {
       setTotal(data.account.erc20TxList.totalCount)
       const account = data.account
+      setBlock(account)
+
       let newTransactionData
       let transactions = []
       const api = services.provider.buildAPI()

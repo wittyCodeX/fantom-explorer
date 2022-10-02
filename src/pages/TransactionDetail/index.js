@@ -63,6 +63,14 @@ export default function TransactionDetail() {
   useEffect(async () => {
     if (data) {
       const edges = data
+      setTransaction(edges)
+    }
+  }, [data])
+  useEffect(async () => {
+    if (data) {
+      const edges = data
+      setTransaction(edges)
+
       const api = services.provider.buildAPI()
       let edgeNew
 
@@ -97,6 +105,10 @@ export default function TransactionDetail() {
         gasPrice: edges.transaction.gasPrice,
         inputData: edges.transaction.inputData,
         status: edges.transaction.status,
+        block: {
+          number: edges.transaction.block.number,
+          timestamp: edges.transaction.block.timestamp,
+        },
       }
       setTransaction(edgeNew)
     }

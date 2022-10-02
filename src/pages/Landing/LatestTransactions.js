@@ -44,9 +44,12 @@ export default function LatestTransactions() {
     },
     pollInterval: 3000,
   })
+
   useEffect(async () => {
     if (data) {
       const edges = data.transactions.edges
+      setTransactions(edges)
+
       let transactions = []
       const api = services.provider.buildAPI()
 
