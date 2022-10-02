@@ -97,11 +97,6 @@ export default function TransactionDetail() {
         gasPrice: edges.transaction.gasPrice,
         inputData: edges.transaction.inputData,
         status: edges.transaction.status,
-        block: {
-          hash: edges.transaction.block.hash,
-          number: edges.transaction.block.number,
-          timestamp: edges.transaction.block.timestamp,
-        },
       }
       setTransaction(edgeNew)
     }
