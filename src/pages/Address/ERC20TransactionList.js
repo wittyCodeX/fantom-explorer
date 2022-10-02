@@ -3,8 +3,9 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import DynamicTableRow from './DynamicTableRow'
 
 import { useQuery, gql } from '@apollo/client'
-import { formatHexToInt } from 'utils'
+import { formatHexToInt, isObjectEmpty } from 'utils'
 import components from 'components'
+import services from 'services'
 
 const GET_ERC20TRANSACTIONS = gql`
   query GetERC20Transactions(
@@ -64,15 +65,64 @@ export default function ERC20TransactionList({ address, setTotal }) {
       ? data.edges[data.edges.length - 1].cursor
       : null
 
-  const updateQuery = (previousResult, { fetchMoreResult }) => {
+  const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
       return previousResult
     }
+    let transactions = []
+    const api = services.provider.buildAPI()
 
+    const account = fetchMoreResult.account
+
+    for (let i = 0; i < account.erc20TxList.edges.length; i++) {
+      let edgeNew
+
+      let senderFrom
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.erc20TxList.edges[i].trx.sender,
+        )
+        senderFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        senderFrom = account.erc20TxList.edges[i].trx.sender
+      }
+      let recipient
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.erc20TxList.edges[i].trx.recipient,
+        )
+        recipient = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        recipient = account.erc20TxList.edges[i].trx.recipient
+      }
+
+      edgeNew = {
+        cursor: account.erc20TxList.edges[i].cursor,
+        trx: {
+          senderAddress: account.erc20TxList.edges[i].trx.from,
+          sender: senderFrom,
+          recipientAddress: account.erc20TxList.edges[i].trx.to,
+          recipient: recipient,
+          trxHash: account.erc20TxList.edges[i].trx.trxHash,
+          amount: account.erc20TxList.edges[i].trx.amount,
+          timeStamp: account.erc20TxList.edges[i].trx.timeStamp,
+          trxType: account.erc20TxList.edges[i].trx.trxType,
+          token: {
+            address: account.erc20TxList.edges[i].trx.token.address,
+            name: account.erc20TxList.edges[i].trx.token.name,
+            symbol: account.erc20TxList.edges[i].trx.token.symbol,
+            decimals: account.erc20TxList.edges[i].trx.token.decimals,
+            logoURL: account.erc20TxList.edges[i].trx.token.logoURL,
+          },
+        },
+      }
+      transactions.push(edgeNew)
+    }
     fetchMoreResult.account.erc20TxList.edges = [
       ...previousResult.account.erc20TxList.edges,
-      ...fetchMoreResult.account.erc20TxList.edges,
+      ...transactions,
     ]
+
     setBlock(fetchMoreResult.account)
     return { ...fetchMoreResult }
   }
@@ -87,11 +137,66 @@ export default function ERC20TransactionList({ address, setTotal }) {
     }
   }
 
-  useEffect(() => {
+  useEffect(async () => {
     if (data) {
       setTotal(data.account.erc20TxList.totalCount)
       const account = data.account
-      setBlock(account)
+      let newTransactionData
+      let transactions = []
+      const api = services.provider.buildAPI()
+
+      for (let i = 0; i < account.erc20TxList.edges.length; i++) {
+        let edgeNew
+
+        let senderFrom
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            account.erc20TxList.edges[i].trx.sender,
+          )
+          senderFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          senderFrom = account.erc20TxList.edges[i].trx.sender
+        }
+        let recipient
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            account.erc20TxList.edges[i].trx.recipient,
+          )
+          recipient = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          recipient = account.erc20TxList.edges[i].trx.recipient
+        }
+
+        edgeNew = {
+          cursor: account.erc20TxList.edges[i].cursor,
+          trx: {
+            senderAddress: account.erc20TxList.edges[i].trx.from,
+            sender: senderFrom,
+            recipientAddress: account.erc20TxList.edges[i].trx.to,
+            recipient: recipient,
+            trxHash: account.erc20TxList.edges[i].trx.trxHash,
+            amount: account.erc20TxList.edges[i].trx.amount,
+            timeStamp: account.erc20TxList.edges[i].trx.timeStamp,
+            trxType: account.erc20TxList.edges[i].trx.trxType,
+            token: {
+              address: account.erc20TxList.edges[i].trx.token.address,
+              name: account.erc20TxList.edges[i].trx.token.name,
+              symbol: account.erc20TxList.edges[i].trx.token.symbol,
+              decimals: account.erc20TxList.edges[i].trx.token.decimals,
+              logoURL: account.erc20TxList.edges[i].trx.token.logoURL,
+            },
+          },
+        }
+        transactions.push(edgeNew)
+      }
+      newTransactionData = {
+        address: account.address,
+        erc20TxList: {
+          totalCount: account.erc20TxList.totalCount,
+          edges: [...transactions],
+        },
+      }
+      setBlock(newTransactionData)
     }
   }, [data])
   return (
@@ -108,7 +213,7 @@ export default function ERC20TransactionList({ address, setTotal }) {
         </div>
       </div>
       <components.DynamicTable columns={columns}>
-        {loading ? (
+        {isObjectEmpty(block) ? (
           <tr>
             <td colSpan={columns?.length}>
               <components.Loading />

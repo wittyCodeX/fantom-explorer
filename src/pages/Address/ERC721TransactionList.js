@@ -4,8 +4,15 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useQuery, gql } from '@apollo/client'
 import components from 'components'
 import { Link } from 'react-router-dom'
-import { formatHash, formatHexToInt, numToFixed, WEIToFTM } from 'utils'
+import {
+  formatHash,
+  formatHexToInt,
+  numToFixed,
+  WEIToFTM,
+  isObjectEmpty,
+} from 'utils'
 import moment from 'moment'
+import services from 'services'
 
 const GET_ERC20TRANSACTIONS = gql`
   query GetERC721Transactions(
@@ -72,15 +79,64 @@ export default function ERC721TransactionList({ address, setTotal }) {
       ? data.edges[data.edges.length - 1].cursor
       : null
 
-  const updateQuery = (previousResult, { fetchMoreResult }) => {
+  const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
       return previousResult
     }
+    let transactions = []
+    const api = services.provider.buildAPI()
 
+    const account = fetchMoreResult.account
+
+    for (let i = 0; i < account.erc721TxList.edges.length; i++) {
+      let edgeNew
+
+      let senderFrom
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.erc721TxList.edges[i].trx.sender,
+        )
+        senderFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        senderFrom = account.erc721TxList.edges[i].trx.sender
+      }
+      let recipient
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.erc721TxList.edges[i].trx.recipient,
+        )
+        recipient = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        recipient = account.erc721TxList.edges[i].trx.recipient
+      }
+
+      edgeNew = {
+        cursor: account.erc721TxList.edges[i].cursor,
+        trx: {
+          senderAddress: account.erc721TxList.edges[i].trx.from,
+          sender: senderFrom,
+          recipientAddress: account.erc721TxList.edges[i].trx.to,
+          recipient: recipient,
+          trxHash: account.erc721TxList.edges[i].trx.trxHash,
+          amount: account.erc721TxList.edges[i].trx.amount,
+          timeStamp: account.erc721TxList.edges[i].trx.timeStamp,
+          trxType: account.erc721TxList.edges[i].trx.trxType,
+          token: {
+            address: account.erc721TxList.edges[i].trx.token.address,
+            name: account.erc721TxList.edges[i].trx.token.name,
+            symbol: account.erc721TxList.edges[i].trx.token.symbol,
+            decimals: account.erc721TxList.edges[i].trx.token.decimals,
+            logoURL: account.erc721TxList.edges[i].trx.token.logoURL,
+          },
+        },
+      }
+      transactions.push(edgeNew)
+    }
     fetchMoreResult.account.erc721TxList.edges = [
       ...previousResult.account.erc721TxList.edges,
-      ...fetchMoreResult.account.erc721TxList.edges,
+      ...transactions,
     ]
+
     setBlock(fetchMoreResult.account)
     return { ...fetchMoreResult }
   }
@@ -95,11 +151,66 @@ export default function ERC721TransactionList({ address, setTotal }) {
     }
   }
 
-  useEffect(() => {
+  useEffect(async () => {
     if (data) {
       setTotal(data.account.erc721TxList.totalCount)
       const account = data.account
-      setBlock(account)
+      let newTransactionData
+      let transactions = []
+      const api = services.provider.buildAPI()
+
+      for (let i = 0; i < account.erc721TxList.edges.length; i++) {
+        let edgeNew
+
+        let senderFrom
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            account.erc721TxList.edges[i].trx.sender,
+          )
+          senderFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          senderFrom = account.erc721TxList.edges[i].trx.sender
+        }
+        let recipient
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            account.erc721TxList.edges[i].trx.recipient,
+          )
+          recipient = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          recipient = account.erc721TxList.edges[i].trx.recipient
+        }
+
+        edgeNew = {
+          cursor: account.erc721TxList.edges[i].cursor,
+          trx: {
+            senderAddress: account.erc721TxList.edges[i].trx.from,
+            sender: senderFrom,
+            recipientAddress: account.erc721TxList.edges[i].trx.to,
+            recipient: recipient,
+            trxHash: account.erc721TxList.edges[i].trx.trxHash,
+            amount: account.erc721TxList.edges[i].trx.amount,
+            timeStamp: account.erc721TxList.edges[i].trx.timeStamp,
+            trxType: account.erc721TxList.edges[i].trx.trxType,
+            token: {
+              address: account.erc721TxList.edges[i].trx.token.address,
+              name: account.erc721TxList.edges[i].trx.token.name,
+              symbol: account.erc721TxList.edges[i].trx.token.symbol,
+              decimals: account.erc721TxList.edges[i].trx.token.decimals,
+              logoURL: account.erc721TxList.edges[i].trx.token.logoURL,
+            },
+          },
+        }
+        transactions.push(edgeNew)
+      }
+      newTransactionData = {
+        address: account.address,
+        erc721TxList: {
+          totalCount: account.erc721TxList.totalCount,
+          edges: [...transactions],
+        },
+      }
+      setBlock(newTransactionData)
     }
   }, [data])
   return (
@@ -116,7 +227,7 @@ export default function ERC721TransactionList({ address, setTotal }) {
         </div>
       </div>
       <components.DynamicTable columns={columns}>
-        {loading ? (
+        {isObjectEmpty(block) ? (
           <tr>
             <td colSpan={columns?.length}>
               <components.Loading />

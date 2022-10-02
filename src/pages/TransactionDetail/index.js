@@ -5,7 +5,13 @@ import { Tooltip } from '@material-tailwind/react'
 
 import services from 'services'
 import components from 'components'
-import { WEIToFTM, formatHexToInt, timestampToDate, numToFixed } from 'utils'
+import {
+  WEIToFTM,
+  formatHexToInt,
+  timestampToDate,
+  numToFixed,
+  isObjectEmpty,
+} from 'utils'
 import moment from 'moment'
 
 const GET_BLOCK = gql`
@@ -54,12 +60,55 @@ export default function TransactionDetail() {
     },
   })
 
-  useEffect(() => {
+  useEffect(async () => {
     if (data) {
-      const edges = data.transaction
-      setTransaction(edges)
+      const edges = data
+      const api = services.provider.buildAPI()
+      let edgeNew
+
+      let addressFrom
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          edges.transaction.from,
+        )
+        addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        addressFrom = edges.transaction.from
+      }
+      let addressTo
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          edges.transaction.to,
+        )
+        addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        addressTo = edges.transaction.to
+      }
+
+      edgeNew = {
+        from: addressFrom,
+        fromAddress: edges.transaction.from,
+        to: addressTo,
+        toAddress: edges.transaction.to,
+        hash: edges.transaction.hash,
+        value: edges.transaction.value,
+        gasUsed: edges.transaction.gasUsed,
+        index: edges.transaction.index,
+        nonce: edges.transaction.nonce,
+        gas: edges.transaction.gas,
+        gasPrice: edges.transaction.gasPrice,
+        inputData: edges.transaction.inputData,
+        status: edges.transaction.status,
+        block: {
+          timestamp: edges.transaction.block.timestamp,
+          number: edges.transaction.block.number,
+          timestamp: edges.transaction.block.timestamp,
+        },
+      }
+      setTransaction(edgeNew)
     }
   }, [data])
+  console.log(isObjectEmpty(transaction))
 
   useEffect(() => {
     if (copied) {
@@ -77,7 +126,7 @@ export default function TransactionDetail() {
         dontNeedSubtitle={true}
       >
         <components.DynamicTable>
-          {loading ? (
+          {isObjectEmpty(transaction) ? (
             <tr>
               <td>
                 <components.Loading />
@@ -163,7 +212,7 @@ export default function TransactionDetail() {
                   <div className="col-span-2  break-words">
                     <Link
                       className="text-blue-500"
-                      to={`/address/${transaction.from}`}
+                      to={`/address/${transaction.fromAddress}`}
                     >
                       {transaction.from}
                     </Link>
@@ -172,7 +221,7 @@ export default function TransactionDetail() {
                         onClick={() => {
                           setCopied(true)
                           setType('from')
-                          navigator.clipboard.writeText(transaction.from)
+                          navigator.clipboard.writeText(transaction.fromAddress)
                         }}
                       >
                         <img
@@ -201,7 +250,7 @@ export default function TransactionDetail() {
                   <div className="col-span-2  break-words">
                     <Link
                       className="text-blue-500"
-                      to={`/address/${transaction.to}`}
+                      to={`/address/${transaction.toAddress}`}
                     >
                       {transaction.to}
                     </Link>
@@ -210,7 +259,7 @@ export default function TransactionDetail() {
                         onClick={() => {
                           setCopied(true)
                           setType('to')
-                          navigator.clipboard.writeText(transaction.to)
+                          navigator.clipboard.writeText(transaction.toAddress)
                         }}
                       >
                         <img

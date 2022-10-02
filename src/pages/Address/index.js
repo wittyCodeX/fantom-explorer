@@ -7,7 +7,13 @@ import { Tooltip } from '@material-tailwind/react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import components from 'components'
-import { formatHash, formatHexToInt, numToFixed, WEIToFTM } from 'utils'
+import {
+  formatHash,
+  formatHexToInt,
+  numToFixed,
+  WEIToFTM,
+  isObjectEmpty,
+} from 'utils'
 import moment from 'moment'
 import services from 'services'
 
@@ -98,6 +104,7 @@ const GET_BLOCK = gql`
 `
 export default function Address() {
   const params = useParams()
+
   const [block, setBlock] = useState([])
   const [delegated, setDelegated] = useState([])
   const [pendingReward, setPendingReward] = useState([])
@@ -113,6 +120,14 @@ export default function Address() {
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
   const count = 20
+
+  //   const type = getTypeByStr(params.id)
+  //   let address = params.id
+  //   if (type == 'address') {
+  //     address = params.id
+  //   } else {
+  //     address = await domainToAddress(params.id)
+  //   }
   const { loading, error, data, fetchMore } = useQuery(GET_BLOCK, {
     variables: {
       address: params.id,
@@ -144,7 +159,7 @@ export default function Address() {
     }
   }, [copied])
 
-  useEffect(() => {
+  useEffect(async () => {
     if (data) {
       const account = data.account
       let delegated = 0
@@ -166,7 +181,77 @@ export default function Address() {
       setPendingReward(pending_rewards)
       setClaimedReward(claimed_rewards)
 
-      setBlock(account)
+      let newAddressData
+      let transactions = []
+      const api = services.provider.buildAPI()
+
+      let address
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.address,
+        )
+        address = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        address = account.address
+      }
+
+      for (let i = 0; i < account.txList.edges.length; i++) {
+        let edgeNew
+
+        let addressFrom
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            account.txList.edges[i].transaction.from,
+          )
+          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          addressFrom = account.txList.edges[i].transaction.from
+        }
+        let addressTo
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            account.txList.edges[i].transaction.to,
+          )
+          addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          addressFrom = account.txList.edges[i].transaction.to
+        }
+
+        edgeNew = {
+          cursor: account.txList.edges[i].cursor,
+          transaction: {
+            fromAddress: account.txList.edges[i].transaction.from,
+            from: addressFrom,
+            toAddress: account.txList.edges[i].transaction.to,
+            to: addressTo,
+            hash: account.txList.edges[i].transaction.hash,
+            value: account.txList.edges[i].transaction.value,
+            gasUsed: account.txList.edges[i].transaction.gasUsed,
+            block: {
+              number: account.txList.edges[i].transaction.number,
+              timestamp: account.txList.edges[i].transaction.timestamp,
+            },
+          },
+        }
+        transactions.push(edgeNew)
+      }
+      newAddressData = {
+        address: address,
+        balance: account.balance,
+        totalValue: account.totalValue,
+        txCount: account.txCount,
+        txList: {
+          pageInfo: {
+            first: account.txList.pageInfo.first,
+            last: account.txList.pageInfo.last,
+            hasNext: account.txList.pageInfo.hasNext,
+            hasPrevious: account.txList.pageInfo.hasPrevious,
+          },
+          totalCount: account.txList.totalCount,
+          edges: [...transactions],
+        },
+      }
+      setBlock(newAddressData)
     }
   }, [data])
 
@@ -177,14 +262,70 @@ export default function Address() {
       ? data.txList.edges[data.txList.edges.length - 1].cursor
       : null
 
-  const updateQuery = (previousResult, { fetchMoreResult }) => {
+  const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
       return previousResult
     }
 
+    const account = fetchMoreResult.account
+    let newAddressData
+    let transactions = []
+    const api = services.provider.buildAPI()
+
+    let address
+    try {
+      const nameHash = await api.contracts.EVMReverseResolverV1.get(
+        account.address,
+      )
+      address = clients.utils.decodeNameHashInputSignals(nameHash)
+    } catch {
+      address = account.address
+    }
+
+    for (let i = 0; i < account.txList.edges.length; i++) {
+      let edgeNew
+
+      let addressFrom
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.txList.edges[i].transaction.from,
+        )
+        addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        addressFrom = account.txList.edges[i].transaction.from
+      }
+      let addressTo
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          account.txList.edges[i].transaction.to,
+        )
+        addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        addressFrom = account.txList.edges[i].transaction.to
+      }
+
+      edgeNew = {
+        cursor: account.txList.edges[i].cursor,
+        transaction: {
+          fromAddress: account.txList.edges[i].transaction.from,
+          from: addressFrom,
+          toAddress: account.txList.edges[i].transaction.to,
+          to: addressTo,
+          hash: account.txList.edges[i].transaction.hash,
+          value: account.txList.edges[i].transaction.value,
+          gasUsed: account.txList.edges[i].transaction.gasUsed,
+          block: {
+            number: account.txList.edges[i].transaction.number,
+            timestamp: account.txList.edges[i].transaction.timestamp,
+          },
+        },
+      }
+      transactions.push(edgeNew)
+    }
+
     fetchMoreResult.account.txList.edges = [
       ...previousResult.account.txList.edges,
-      ...fetchMoreResult.account.txList.edges,
+      ...transactions,
     ]
     setBlock(fetchMoreResult.account)
     return { ...fetchMoreResult }
@@ -204,7 +345,7 @@ export default function Address() {
     <div className="w-screen max-w-7xl">
       <div className="flex items-center text-black md:text-xl sm:text-xl text-sm  px-2 font-normal border-b p-3  mt-[30px] bg-gray-200">
         <QRCode value={params.id} size={20} />{' '}
-        <span className="mx-3"> Address {params.id} </span>
+        <span className="mx-3"> Address {block.address} </span>
         <Tooltip content="Copy Address to clipboard">
           <button
             onClick={() => {
@@ -332,7 +473,7 @@ export default function Address() {
             // Change the active tab on click.
             onClick={() => setActiveTabIndex(0)}
           >
-            Transactions {`(${formatHexToInt(data?.account.txCount)})`}
+            Transactions {`(${formatHexToInt(data?.account?.txCount)})`}
           </button>
           <button
             className={`p-2 border-b-4 transition-colors duration-300 ${
@@ -372,7 +513,7 @@ export default function Address() {
         <div className="py-4">
           {data && activeTabIndex === 0 ? (
             <InfiniteScroll
-              dataLength={formatHexToInt(data.account.txCount)}
+              dataLength={formatHexToInt(data?.account?.txCount)}
               next={fetchMoreData}
               hasMore={true}
               loader={<div className="text-center">Loading More...</div>}
@@ -384,7 +525,7 @@ export default function Address() {
                 </div>
               </div>
               <components.DynamicTable columns={columns}>
-                {loading ? (
+                {isObjectEmpty(block) ? (
                   <tr>
                     <td colSpan={columns?.length}>
                       <components.Loading />

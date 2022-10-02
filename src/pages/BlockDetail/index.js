@@ -8,9 +8,11 @@ import {
   formatIntToHex,
   timestampToDate,
   numToFixed,
+  isObjectEmpty,
 } from 'utils'
 import moment from 'moment'
 import { ethers } from 'ethers'
+import services from 'services'
 
 const GET_BLOCK = gql`
   query BlockByNumber($number: Long) {
@@ -47,10 +49,60 @@ export default function BlockDetail() {
 
   const columns = ['Tx Hash', 'Block', 'Time', 'From', 'To', 'Value', 'Txn Fee']
 
-  useEffect(() => {
+  useEffect(async () => {
     if (data) {
       const edges = data.block
-      setBlock(edges)
+      let newBlockData
+      let transactions = []
+      const api = services.provider.buildAPI()
+
+      for (let i = 0; i < edges.txList.length; i++) {
+        let edgeNew
+
+        let addressFrom
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            edges.txList[i].from,
+          )
+          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          addressFrom = edges.txList[i].from
+        }
+        let addressTo
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            edges.txList[i].to,
+          )
+          addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          addressTo = edges.txList[i].to
+        }
+
+        edgeNew = {
+          fromAddress: edges.txList[i].from,
+          from: addressFrom,
+          toAddress: edges.txList[i].to,
+          to: addressTo,
+          hash: edges.txList[i].hash,
+          value: edges.txList[i].value,
+          gasUsed: edges.txList[i].gasUsed,
+          block: {
+            number: edges.txList[i].number,
+            timestamp: edges.txList[i].timestamp,
+          },
+        }
+        transactions.push(edgeNew)
+      }
+      newBlockData = {
+        number: edges.number,
+        transactionCount: edges.transactionCount,
+        hash: edges.hash,
+        parent: {
+          hash: edges.parent.hash,
+        },
+        txList: [...transactions],
+      }
+      setBlock(newBlockData)
     }
   }, [data])
   return (
@@ -61,7 +113,7 @@ export default function BlockDetail() {
         dontNeedSubtitle={true}
       >
         <components.DynamicTable>
-          {loading ? (
+          {isObjectEmpty(block) ? (
             <tr>
               <td>
                 <components.Loading />
@@ -181,13 +233,13 @@ const DynamicTableRow = ({ item }) => {
         </div>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.from}`}>
+        <Link className="text-blue-500" to={`/address/${item.fromAddress}`}>
           {' '}
           {formatHash(item.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.to}`}>
+        <Link className="text-blue-500" to={`/address/${item.toAddress}`}>
           {' '}
           {formatHash(item.to)}
         </Link>

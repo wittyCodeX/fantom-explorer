@@ -7,7 +7,7 @@ import Blocks from './Blocks'
 import Contracts from './Contracts'
 import TransactionDetail from './TransactionDetail'
 import Transactions from './Transactions'
-
+import Domain from './Domain'
 const views = {
   Landing,
   Wrapper,
@@ -18,6 +18,7 @@ const views = {
   Contracts,
   TransactionDetail,
   Transactions,
+  Domain,
 }
 
 export default views

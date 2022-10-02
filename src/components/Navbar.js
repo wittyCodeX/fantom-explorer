@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRightIcon } from '@heroicons/react/solid'
 import services from 'services'
 import components from 'components'
-import { numToFixed } from 'utils'
+import { numToFixed, getTypeByStr } from 'utils'
 
 export default function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false) // initiate isNavOpen state with false
@@ -20,6 +20,26 @@ export default function Navbar() {
     getFTMPrice()
   }, [])
 
+  const handleChange = (keyword) => {
+    const type = getTypeByStr(keyword)
+    console.log(type)
+    switch (type) {
+      case 'transaction_hash':
+        location.href = '/transactions/' + keyword
+        break
+      case 'address':
+        location.href = '/address/' + keyword
+        break
+      case 'block':
+        location.href = '/blocks/' + keyword
+        break
+      case 'domain':
+        location.href = '/domain/' + keyword
+        break
+      default:
+        break
+    }
+  }
   return (
     <header className="sticky top-0 z-30 w-full px-2 py-4 bg-white sm:px-4 shadow-xl">
       <div className="flex items-center justify-between mx-auto max-w-7xl">
@@ -51,6 +71,7 @@ export default function Navbar() {
             id="voice-search"
             className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 block pl-10 p-2.5"
             placeholder="Search by Address / Tx Hash / Block / Name"
+            handleChange={handleChange}
             required={false}
           />
         </div>

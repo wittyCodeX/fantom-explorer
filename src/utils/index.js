@@ -1,4 +1,6 @@
 import web3utils from 'web3-utils'
+import services from 'services'
+import clients from 'clients'
 const downtimeThreshold = 10
 export const BASE_URL = 'https://example.com/api/'
 /**
@@ -127,7 +129,7 @@ export function cloneObject(_obj, _except) {
  * @return {boolean}
  */
 export function isObjectEmpty(_obj) {
-  return Object.keys(_obj).length === 0 && _obj.constructor === Object
+  return Object.keys(_obj).length === 0
 }
 /**
  * @param {number} _number
@@ -326,6 +328,8 @@ export function getTypeByStr(_str) {
       num = parseInt(_str)
       if (!isNaN(num)) {
         type = 'block'
+      } else {
+        type = 'domain'
       }
     }
   }
@@ -347,4 +351,29 @@ export function WEIToFTM(_value) {
  */
 export function FTMToWEI(_value) {
   return _value * WEI_IN_FTM
+}
+
+/**
+ * @return {string}
+ */
+export async function addressToDomain(address) {
+  const api = services.provider.buildAPI()
+  try {
+    const nameHash = await api.contracts.EVMReverseResolverV1.get(address)
+    return clients.utils.decodeNameHashInputSignals(nameHash)
+  } catch {
+    return address
+  }
+}
+/**
+ * @return {string}
+ */
+export async function domainToAddress(domain) {
+  try {
+    const api = services.provider.buildAPI()
+    const address = await api.getReverseRecords(domain)
+    return address
+  } catch {
+    return null
+  }
 }

@@ -33,9 +33,9 @@ export default function LatestBlocks() {
   const { loading, error, data } = useQuery(GET_BLOCKS, {
     variables: {
       cursor: null,
-      count: 10,
+      count: 7,
     },
-    pollInterval: 1000,
+    pollInterval: 3000,
   })
   useEffect(() => {
     if (data) {

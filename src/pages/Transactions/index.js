@@ -6,6 +6,7 @@ import components from 'components'
 import { formatHexToInt, formatHash, numToFixed } from 'utils'
 import moment from 'moment'
 import { ethers } from 'ethers'
+import services from 'services'
 
 const GET_TRANSACTIONS = gql`
   query TransactionList($cursor: Cursor, $count: Int!) {
@@ -51,7 +52,7 @@ const GET_TRANSACTIONS = gql`
 export default function Transactions() {
   const [rows, setRows] = useState([])
   const [totalCount, setTotalCount] = useState(0)
-  const count = 40
+  const count = 20
   const { loading, error, data, fetchMore } = useQuery(GET_TRANSACTIONS, {
     variables: {
       cursor: null,
@@ -66,7 +67,7 @@ export default function Transactions() {
       ? data.edges[data.edges.length - 1].cursor
       : null
 
-  const updateQuery = (previousResult, { fetchMoreResult }) => {
+  const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
       return previousResult
     }
@@ -75,7 +76,54 @@ export default function Transactions() {
       ...previousResult.transactions.edges,
       ...fetchMoreResult.transactions.edges,
     ]
-    setRows(rows.concat(fetchMoreResult.transactions.edges))
+    let transactions = []
+    const api = services.provider.buildAPI()
+
+    for (let i = 0; i < fetchMoreResult.transactions.edges.length; i++) {
+      let edgeNew
+
+      let addressFrom
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          fetchMoreResult.transactions.edges[i].transaction.from,
+        )
+        addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        addressFrom = fetchMoreResult.transactions.edges[i].transaction.from
+      }
+      let addressTo
+      try {
+        const nameHash = await api.contracts.EVMReverseResolverV1.get(
+          fetchMoreResult.transactions.edges[i].transaction.to,
+        )
+        addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+      } catch {
+        addressTo = fetchMoreResult.transactions.edges[i].transaction.to
+      }
+
+      edgeNew = {
+        cursor: fetchMoreResult.transactions.edges[i].cursor,
+        transaction: {
+          fromAddress: fetchMoreResult.transactions.edges[i].transaction.from,
+          from: addressFrom,
+          toAddress: fetchMoreResult.transactions.edges[i].transaction.to,
+          to: addressTo,
+          hash: fetchMoreResult.transactions.edges[i].transaction.hash,
+          value: fetchMoreResult.transactions.edges[i].transaction.value,
+          gasUsed: fetchMoreResult.transactions.edges[i].transaction.gasUsed,
+          block: {
+            number:
+              fetchMoreResult.transactions.edges[i].transaction.block.number,
+            timestamp:
+              fetchMoreResult.transactions.edges[i].transaction.block.timestamp,
+          },
+        },
+      }
+
+      transactions.push(edgeNew)
+    }
+    setRows(rows.concat(transactions))
+
     return { ...fetchMoreResult }
   }
 
@@ -88,9 +136,53 @@ export default function Transactions() {
       }
     }
   }
-  useEffect(() => {
+  useEffect(async () => {
     if (data) {
       setTotalCount(formatHexToInt(data.transactions.totalCount))
+      let transactions = []
+      const api = services.provider.buildAPI()
+
+      for (let i = 0; i < data.transactions.edges.length; i++) {
+        let edgeNew
+
+        let addressFrom
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            data.transactions.edges[i].transaction.from,
+          )
+          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          addressFrom = data.transactions.edges[i].transaction.from
+        }
+        let addressTo
+        try {
+          const nameHash = await api.contracts.EVMReverseResolverV1.get(
+            data.transactions.edges[i].transaction.to,
+          )
+          addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+        } catch {
+          addressTo = data.transactions.edges[i].transaction.to
+        }
+
+        edgeNew = {
+          cursor: data.transactions.edges[i].cursor,
+          transaction: {
+            fromAddress: data.transactions.edges[i].transaction.from,
+            from: addressFrom,
+            toAddress: data.transactions.edges[i].transaction.to,
+            to: addressTo,
+            hash: data.transactions.edges[i].transaction.hash,
+            value: data.transactions.edges[i].transaction.value,
+            gasUsed: data.transactions.edges[i].transaction.gasUsed,
+            block: {
+              number: data.transactions.edges[i].transaction.block.number,
+              timestamp: data.transactions.edges[i].transaction.block.timestamp,
+            },
+          },
+        }
+
+        transactions.push(edgeNew)
+      }
       setRows(data.transactions.edges)
     }
   }, [data])
@@ -111,20 +203,20 @@ export default function Transactions() {
         dataLength={totalCount}
         next={fetchMoreData}
         hasMore={true}
-        loader={<div className="text-center">Loading More...</div>}
+        loader={<div className="text-center">Loading Data...</div>}
       >
         <components.DynamicTable columns={columns}>
-          {loading ? (
+          {rows.length > 0 ? (
+            rows &&
+            rows.map((item, index) => (
+              <DynamicTableRow item={item} key={index} />
+            ))
+          ) : (
             <tr>
               <td colSpan={columns?.length}>
                 <components.Loading />
               </td>
             </tr>
-          ) : (
-            rows &&
-            rows.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))
           )}
         </components.DynamicTable>
       </InfiniteScroll>
@@ -159,14 +251,17 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           className="text-blue-500"
-          to={`/address/${item.transaction.from}`}
+          to={`/address/${item.transaction.fromAddress}`}
         >
           {' '}
           {formatHash(item.transaction.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.transaction.to}`}>
+        <Link
+          className="text-blue-500"
+          to={`/address/${item.transaction.toAddress}`}
+        >
           {' '}
           {formatHash(item.transaction.to)}
         </Link>

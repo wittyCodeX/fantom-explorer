@@ -1,5 +1,4 @@
-import React from 'react'
-import { __ } from '../../lang/setup'
+import React, { useState } from 'react'
 
 const Input = ({
   name,
@@ -12,13 +11,21 @@ const Input = ({
   className = '',
   disabled = false,
 }) => {
+  const [keyword, setKeyword] = useState(value)
   const onInputChange = (e) => {
-    handleChange(e)
+    // handleChange(e)
+    setKeyword(e.target.value)
+  }
+
+  const onKeyPress = (e) => {
+    if (e.charCode == 13) {
+      handleChange(keyword)
+    }
   }
   return (
     <>
       <label className="block  mb-0.5 text-gray-700 capitalize" htmlFor={name}>
-        <span>{__(title)} </span>
+        <span>{title} </span>
         {required ? (
           <small className={`text-red-600 font-300 capitalize text-sm`}>
             <code>*</code>
@@ -32,6 +39,7 @@ const Input = ({
         value={value}
         autoComplete={title}
         onChange={onInputChange}
+        onKeyPress={onKeyPress}
         className={`${className} text-black`}
         name={name ? name : title}
         id={title}
