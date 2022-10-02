@@ -79,9 +79,9 @@ export default function BlockDetail() {
         }
 
         edgeNew = {
-          fromAddress: edges.txList[i].from,
+          from: edges.txList[i].from,
           from: addressFrom,
-          toAddress: edges.txList[i].to,
+          to: edges.txList[i].to,
           to: addressTo,
           hash: edges.txList[i].hash,
           value: edges.txList[i].value,
@@ -233,13 +233,13 @@ const DynamicTableRow = ({ item }) => {
         </div>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.fromAddress}`}>
+        <Link className="text-blue-500" to={`/address/${item.from}`}>
           {' '}
           {formatHash(item.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.toAddress}`}>
+        <Link className="text-blue-500" to={`/address/${item.to}`}>
           {' '}
           {formatHash(item.to)}
         </Link>

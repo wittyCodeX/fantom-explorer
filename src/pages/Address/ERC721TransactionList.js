@@ -113,9 +113,7 @@ export default function ERC721TransactionList({ address, setTotal }) {
       edgeNew = {
         cursor: account.erc721TxList.edges[i].cursor,
         trx: {
-          senderAddress: account.erc721TxList.edges[i].trx.from,
           sender: senderFrom,
-          recipientAddress: account.erc721TxList.edges[i].trx.to,
           recipient: recipient,
           trxHash: account.erc721TxList.edges[i].trx.trxHash,
           amount: account.erc721TxList.edges[i].trx.amount,
@@ -184,9 +182,7 @@ export default function ERC721TransactionList({ address, setTotal }) {
         edgeNew = {
           cursor: account.erc721TxList.edges[i].cursor,
           trx: {
-            senderAddress: account.erc721TxList.edges[i].trx.from,
             sender: senderFrom,
-            recipientAddress: account.erc721TxList.edges[i].trx.to,
             recipient: recipient,
             trxHash: account.erc721TxList.edges[i].trx.trxHash,
             amount: account.erc721TxList.edges[i].trx.amount,

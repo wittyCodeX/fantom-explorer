@@ -99,9 +99,7 @@ export default function ERC20TransactionList({ address, setTotal }) {
       edgeNew = {
         cursor: account.erc20TxList.edges[i].cursor,
         trx: {
-          senderAddress: account.erc20TxList.edges[i].trx.from,
           sender: senderFrom,
-          recipientAddress: account.erc20TxList.edges[i].trx.to,
           recipient: recipient,
           trxHash: account.erc20TxList.edges[i].trx.trxHash,
           amount: account.erc20TxList.edges[i].trx.amount,
@@ -170,9 +168,7 @@ export default function ERC20TransactionList({ address, setTotal }) {
         edgeNew = {
           cursor: account.erc20TxList.edges[i].cursor,
           trx: {
-            senderAddress: account.erc20TxList.edges[i].trx.from,
             sender: senderFrom,
-            recipientAddress: account.erc20TxList.edges[i].trx.to,
             recipient: recipient,
             trxHash: account.erc20TxList.edges[i].trx.trxHash,
             amount: account.erc20TxList.edges[i].trx.amount,

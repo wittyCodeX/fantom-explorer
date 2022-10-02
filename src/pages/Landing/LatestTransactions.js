@@ -75,9 +75,7 @@ export default function LatestTransactions() {
         edgeNew = {
           cursor: edges[i].cursor,
           transaction: {
-            fromAddress: edges[i].transaction.from,
             from: addressFrom,
-            toAddress: edges[i].transaction.to,
             to: addressTo,
             hash: edges[i].transaction.hash,
             value: edges[i].transaction.value,
@@ -153,7 +151,7 @@ const DynamicTableRow = (props) => {
                   From:
                   <Link
                     className="text-blue-500"
-                    to={`/address/${item.transaction.fromAddress}`}
+                    to={`/address/${item.transaction.from}`}
                   >
                     {' '}
                     {formatHash(item.transaction.from)}
@@ -163,7 +161,7 @@ const DynamicTableRow = (props) => {
                   To:
                   <Link
                     className="text-blue-500"
-                    to={`/address/${item.transaction.toAddress}`}
+                    to={`/address/${item.transaction.to}`}
                   >
                     {' '}
                     {formatHash(item.transaction.to)}

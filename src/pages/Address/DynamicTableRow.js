@@ -21,19 +21,13 @@ export default function DynamicTableRow({ item }) {
         </div>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500"
-          to={`/address/${item.trx.senderAddress}`}
-        >
+        <Link className="text-blue-500" to={`/address/${item.trx.sender}`}>
           {' '}
           {formatHash(item.trx.sender)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500"
-          to={`/address/${item.trx.recipientAddress}`}
-        >
+        <Link className="text-blue-500" to={`/address/${item.trx.recipient}`}>
           {' '}
           {formatHash(item.trx.recipient)}
         </Link>

@@ -220,9 +220,7 @@ export default function Address() {
         edgeNew = {
           cursor: account.txList.edges[i].cursor,
           transaction: {
-            fromAddress: account.txList.edges[i].transaction.from,
             from: addressFrom,
-            toAddress: account.txList.edges[i].transaction.to,
             to: addressTo,
             hash: account.txList.edges[i].transaction.hash,
             value: account.txList.edges[i].transaction.value,
@@ -307,9 +305,7 @@ export default function Address() {
       edgeNew = {
         cursor: account.txList.edges[i].cursor,
         transaction: {
-          fromAddress: account.txList.edges[i].transaction.from,
           from: addressFrom,
-          toAddress: account.txList.edges[i].transaction.to,
           to: addressTo,
           hash: account.txList.edges[i].transaction.hash,
           value: account.txList.edges[i].transaction.value,

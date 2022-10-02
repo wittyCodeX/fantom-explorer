@@ -104,9 +104,7 @@ export default function Transactions() {
       edgeNew = {
         cursor: fetchMoreResult.transactions.edges[i].cursor,
         transaction: {
-          fromAddress: fetchMoreResult.transactions.edges[i].transaction.from,
           from: addressFrom,
-          toAddress: fetchMoreResult.transactions.edges[i].transaction.to,
           to: addressTo,
           hash: fetchMoreResult.transactions.edges[i].transaction.hash,
           value: fetchMoreResult.transactions.edges[i].transaction.value,
@@ -167,9 +165,7 @@ export default function Transactions() {
         edgeNew = {
           cursor: data.transactions.edges[i].cursor,
           transaction: {
-            fromAddress: data.transactions.edges[i].transaction.from,
             from: addressFrom,
-            toAddress: data.transactions.edges[i].transaction.to,
             to: addressTo,
             hash: data.transactions.edges[i].transaction.hash,
             value: data.transactions.edges[i].transaction.value,
@@ -251,17 +247,14 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           className="text-blue-500"
-          to={`/address/${item.transaction.fromAddress}`}
+          to={`/address/${item.transaction.from}`}
         >
           {' '}
           {formatHash(item.transaction.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500"
-          to={`/address/${item.transaction.toAddress}`}
-        >
+        <Link className="text-blue-500" to={`/address/${item.transaction.to}`}>
           {' '}
           {formatHash(item.transaction.to)}
         </Link>

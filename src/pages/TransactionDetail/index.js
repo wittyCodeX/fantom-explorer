@@ -87,9 +87,7 @@ export default function TransactionDetail() {
 
       edgeNew = {
         from: addressFrom,
-        fromAddress: edges.transaction.from,
         to: addressTo,
-        toAddress: edges.transaction.to,
         hash: edges.transaction.hash,
         value: edges.transaction.value,
         gasUsed: edges.transaction.gasUsed,
@@ -212,7 +210,7 @@ export default function TransactionDetail() {
                   <div className="col-span-2  break-words">
                     <Link
                       className="text-blue-500"
-                      to={`/address/${transaction.fromAddress}`}
+                      to={`/address/${transaction.from}`}
                     >
                       {transaction.from}
                     </Link>
@@ -221,7 +219,7 @@ export default function TransactionDetail() {
                         onClick={() => {
                           setCopied(true)
                           setType('from')
-                          navigator.clipboard.writeText(transaction.fromAddress)
+                          navigator.clipboard.writeText(transaction.from)
                         }}
                       >
                         <img
@@ -250,7 +248,7 @@ export default function TransactionDetail() {
                   <div className="col-span-2  break-words">
                     <Link
                       className="text-blue-500"
-                      to={`/address/${transaction.toAddress}`}
+                      to={`/address/${transaction.to}`}
                     >
                       {transaction.to}
                     </Link>
@@ -259,7 +257,7 @@ export default function TransactionDetail() {
                         onClick={() => {
                           setCopied(true)
                           setType('to')
-                          navigator.clipboard.writeText(transaction.toAddress)
+                          navigator.clipboard.writeText(transaction.to)
                         }}
                       >
                         <img
