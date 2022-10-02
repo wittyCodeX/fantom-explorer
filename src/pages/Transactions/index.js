@@ -52,7 +52,7 @@ const GET_TRANSACTIONS = gql`
 export default function Transactions() {
   const [rows, setRows] = useState([])
   const [totalCount, setTotalCount] = useState(0)
-  const count = 20
+  const count = 10
   const { loading, error, data, fetchMore } = useQuery(GET_TRANSACTIONS, {
     variables: {
       cursor: null,

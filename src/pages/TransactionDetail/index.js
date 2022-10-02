@@ -100,7 +100,7 @@ export default function TransactionDetail() {
         inputData: edges.transaction.inputData,
         status: edges.transaction.status,
         block: {
-          timestamp: edges.transaction.block.timestamp,
+          hash: edges.transaction.block.hash,
           number: edges.transaction.block.number,
           timestamp: edges.transaction.block.timestamp,
         },

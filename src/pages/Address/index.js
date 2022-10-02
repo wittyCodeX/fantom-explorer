@@ -119,7 +119,7 @@ export default function Address() {
   const [copied, setCopied] = useState(false)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
-  const count = 20
+  const count = 10
 
   //   const type = getTypeByStr(params.id)
   //   let address = params.id
