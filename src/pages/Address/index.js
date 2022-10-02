@@ -216,7 +216,7 @@ export default function Address() {
           )
           addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
         } catch {
-          addressFrom = account.txList.edges[i].transaction.to
+          addressTo = account.txList.edges[i].transaction.to
         }
 
         edgeNew = {
@@ -301,7 +301,7 @@ export default function Address() {
         )
         addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
       } catch {
-        addressFrom = account.txList.edges[i].transaction.to
+        addressTo = account.txList.edges[i].transaction.to
       }
 
       edgeNew = {
