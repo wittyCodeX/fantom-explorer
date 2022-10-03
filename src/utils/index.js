@@ -499,3 +499,12 @@ function getTokenPrice(_token) {
     ? fromTokenValue(_token.price, _token, true)
     : 0;
 }
+
+export const setDOMDarkmode = (value) => {
+  const rootElem = document.documentElement;
+  if (value) {
+    rootElem.classList.add("dark");
+  } else {
+    rootElem.classList.remove("dark");
+  }
+};

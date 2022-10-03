@@ -24,7 +24,7 @@ const Input = ({
   }
   return (
     <>
-      <label className="block  mb-0.5 text-gray-700 capitalize" htmlFor={name}>
+      <label className="block mb-0.5 text-gray-700 capitalize" htmlFor={name}>
         <span>{title} </span>
         {required ? (
           <small className={`text-red-600 font-300 capitalize text-sm`}>
@@ -40,7 +40,7 @@ const Input = ({
         autoComplete={title}
         onChange={onInputChange}
         onKeyPress={onKeyPress}
-        className={`${className} text-black`}
+        className={`${className} text-black dark:text-white bg-blue-800 dark:bg-blue-800`}
         name={name ? name : title}
         id={title}
         type={nativeType}

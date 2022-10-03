@@ -230,7 +230,7 @@ const DynamicTableRow = ({ item }) => {
     <tr>
       <td className="px-2 text-sm truncate   py-3">
         <Link
-          className="text-blue-500"
+          className="text-blue-500 dark:text-gray-300"
           to={`/transactions/${item.transaction.hash}`}
         >
           {' '}
@@ -240,7 +240,7 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           to={`/blocks/${formatHexToInt(item.transaction.block.number)}`}
-          className="text-blue-500"
+          className="text-blue-500 dark:text-gray-300"
         >
           #{formatHexToInt(item.transaction.block.number)}
         </Link>
@@ -252,7 +252,7 @@ const DynamicTableRow = ({ item }) => {
       </td>
       <td className="px-2 text-sm truncate   py-3">
         <Link
-          className="text-blue-500"
+          className="text-blue-500 dark:text-gray-300"
           to={`/address/${item.transaction.from}`}
         >
           {' '}
@@ -260,7 +260,7 @@ const DynamicTableRow = ({ item }) => {
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.transaction.to}`}>
+        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.transaction.to}`}>
           {' '}
           {formatHash(item.transaction.to)}
         </Link>

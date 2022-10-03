@@ -243,7 +243,7 @@ const DynamicTableRow = ({ item }) => {
     <tr>
       <td className="px-2 text-sm truncate   py-3">
         <Link
-          className="text-blue-500"
+          className="text-blue-500 dark:text-gray-300"
           to={`/transactions/${item.trx.trxHash}`}
         >
           {' '}
@@ -257,13 +257,13 @@ const DynamicTableRow = ({ item }) => {
         </div>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.trx.sender}`}>
+        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.trx.sender}`}>
           {' '}
           {formatHash(item.trx.sender)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.trx.recipient}`}>
+        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.trx.recipient}`}>
           {' '}
           {formatHash(item.trx.recipient)}
         </Link>

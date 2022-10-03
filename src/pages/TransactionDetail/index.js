@@ -219,7 +219,7 @@ export default function TransactionDetail() {
                   </div>
                   <div className="col-span-2  break-words">
                     <Link
-                      className="text-blue-500"
+                      className="text-blue-500 dark:text-gray-300"
                       to={`/address/${transaction.from}`}
                     >
                       {transaction.from}
@@ -257,7 +257,7 @@ export default function TransactionDetail() {
                   </div>
                   <div className="col-span-2  break-words">
                     <Link
-                      className="text-blue-500"
+                      className="text-blue-500 dark:text-gray-300"
                       to={`/address/${transaction.to}`}
                     >
                       {transaction.to}

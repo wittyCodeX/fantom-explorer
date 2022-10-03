@@ -1791,6 +1791,11 @@
     "schema-utils" "^3.0.0"
     "source-map" "^0.7.3"
 
+"@rehooks/local-storage@^2.4.4":
+  "integrity" "sha512-zE+kfOkG59n/1UTxdmbwktIosclr67Nlbf2MzUJ9mNtCSypVscNHeD1qT6JCSo5Pjj8DO893IKWNLJqKKzDL/Q=="
+  "resolved" "https://registry.npmjs.org/@rehooks/local-storage/-/local-storage-2.4.4.tgz"
+  "version" "2.4.4"
+
 "@remix-run/router@1.0.1":
   "integrity" "sha512-eBV5rvW4dRFOU1eajN7FmYxjAIVz/mRHgUE9En9mBn6m3mulK3WTR5C3iQhL9MZ14rWAq+xOlEaCkDiW0/heOg=="
   "resolved" "https://registry.npmjs.org/@remix-run/router/-/router-1.0.1.tgz"

@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import CountUp from 'react-countup'
-import { usePrevious } from 'react-hanger'
+import React, { useEffect, useState } from "react";
+import CountUp from "react-countup";
+import { usePrevious } from "react-hanger";
 export default function Number(props) {
-  const [start, setStart] = useState(0)
-  const prevCount = usePrevious(start)
+  const [start, setStart] = useState(0);
+  const prevCount = usePrevious(start);
 
-  useEffect(() => {
-    if (start !== props.value) setStart(props.value)
-  }, [props.value, start])
+  useEffect(
+    () => {
+      if (start !== props.value) setStart(props.value);
+    },
+    [props.value, start]
+  );
 
   return (
     <div
-      className={`text-xl lg:text-4xl md:text-4xl sm:text-xl text-black text-center  ${
-        props.classes ? props.classes : ''
-      }`}
+      className={`text-xl lg:text-4xl md:text-4xl sm:text-xl text-black dark:text-gray-300 text-center  ${props.classes
+        ? props.classes
+        : ""}`}
     >
       <CountUp start={prevCount} end={props.value} duration={2} separator="," />
     </div>
-  )
+  );
 }

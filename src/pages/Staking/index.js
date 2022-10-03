@@ -206,7 +206,7 @@ const DynamicTableRow = ({ item }) => {
         <span>{"  "}</span>
         {item.stakerInfo.name !== "Unknown" && (
           <a
-            className="text-blue-500"
+            className="text-blue-500 dark:text-gray-300"
             href={item.stakerInfo.website}
             target="_blank"
           >
@@ -227,7 +227,7 @@ const DynamicTableRow = ({ item }) => {
         {formatHexToInt(item.id)}
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500" to={`/address/${item.stakerAddress}`}>
+        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.stakerAddress}`}>
           {" "}
           {formatHash(item.stakerAddress)}
         </Link>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
-import { formatHexToInt, formatHash } from 'utils'
-import { Link } from 'react-router-dom'
-import moment from 'moment'
-import components from 'components'
+import React, { useEffect, useState } from "react";
+import { useQuery, gql } from "@apollo/client";
+import { formatHexToInt, formatHash } from "utils";
+import { Link } from "react-router-dom";
+import moment from "moment";
+import components from "components";
 
 const GET_BLOCKS = gql`
   query BlockList($cursor: Cursor, $count: Int!) {
@@ -27,22 +27,25 @@ const GET_BLOCKS = gql`
       }
     }
   }
-`
+`;
 export default function LatestBlocks() {
-  const [blocks, setBlocks] = useState([])
+  const [blocks, setBlocks] = useState([]);
   const { loading, error, data } = useQuery(GET_BLOCKS, {
     variables: {
       cursor: null,
-      count: 7,
+      count: 7
     },
-    pollInterval: 3000,
-  })
-  useEffect(() => {
-    if (data) {
-      const edges = data.blocks.edges
-      setBlocks(edges)
-    }
-  }, [data])
+    pollInterval: 3000
+  });
+  useEffect(
+    () => {
+      if (data) {
+        const edges = data.blocks.edges;
+        setBlocks(edges);
+      }
+    },
+    [data]
+  );
 
   return (
     <components.Panel
@@ -51,18 +54,16 @@ export default function LatestBlocks() {
       btnLabel="View all blocks"
       to="/blocks"
     >
-      {loading ? (
-        <components.Loading />
-      ) : (
-        <components.DynamicTable>
-          {blocks &&
-            blocks.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))}
-        </components.DynamicTable>
-      )}
+      {loading
+        ? <components.Loading />
+        : <components.DynamicTable>
+            {blocks &&
+              blocks.map((item, index) =>
+                <DynamicTableRow item={item} key={index} />
+              )}
+          </components.DynamicTable>}
     </components.Panel>
-  )
+  );
 }
 
 const DynamicTableRow = ({ item }) => {
@@ -82,7 +83,7 @@ const DynamicTableRow = ({ item }) => {
               <div className="flex flex-col">
                 <Link
                   to={`/blocks/${formatHexToInt(item.block.number)}`}
-                  className="text-blue-500"
+                  className="text-blue-500 dark:text-gray-300"
                 >
                   #{formatHexToInt(item.block.number)}
                 </Link>
@@ -98,19 +99,20 @@ const DynamicTableRow = ({ item }) => {
                 <span className="d-block mb-1 mb-sm-0">
                   TxHash:
                   <Link
-                    className="text-blue-500"
+                    className="text-blue-500 dark:text-gray-300"
                     to={`/transactions/${item.block.hash}`}
                   >
-                    {' '}
-                    {formatHash(item.block.hash)}
+                    {" "}{formatHash(item.block.hash)}
                   </Link>
                 </span>
                 <div>
-                  <span>{item.block.transactionCount} txns </span>
+                  <span>
+                    {item.block.transactionCount} txns{" "}
+                  </span>
                   <span className="small text-secondary">
                     {moment
                       .unix(item.block.timestamp)
-                      .format('MM.DD.YYYY, hh:mm:ss')}
+                      .format("MM.DD.YYYY, hh:mm:ss")}
                   </span>
                 </div>
               </div>
@@ -124,5 +126,5 @@ const DynamicTableRow = ({ item }) => {
         </div>
       </td>
     </tr>
-  )
-}
+  );
+};

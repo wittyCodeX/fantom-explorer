@@ -72,7 +72,7 @@ export default function Domain() {
                   <div className="col-span-2">
                     <Link
                       to={`/address/${domain.owner}`}
-                      className="text-blue-500"
+                      className="text-blue-500 dark:text-gray-300"
                     >
                       {domain.owner}
                     </Link>

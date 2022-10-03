@@ -83,12 +83,12 @@ export default function Epochs() {
 
   const columns = ['Epoch', 'End Time', 'Total Fee (FTM)']
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="epochs">
+    <components.TableView classes="w-screen max-w-5xl" title="Epochs">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
           More than {'>'} {formatHexToInt(data?.epochs.totalCount)} epochs found
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-300">
           Showing last {rows?.length} epochs
         </div>
       </div>
@@ -121,7 +121,7 @@ const DynamicTableRow = ({ item }) => {
     <tr>
       <td className="px-2 text-sm truncate   py-3">
         <Link
-          className="text-blue-500"
+          className="text-blue-500 dark:text-gray-300"
           to={`/epochs/${formatHexToInt(item.epoch.id)}`}
         >
           {' '}
