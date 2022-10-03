@@ -12,7 +12,7 @@ const Wrapper = (props) => {
     setDOMDarkmode(flag);
     setDarkMode(flag);
   };
-  console.log('darkMode', darkMode)
+  console.log("darkMode", darkMode);
   useEffect(() => {
     setDOMDarkmode(darkMode);
     setDarkMode(darkMode);
@@ -29,7 +29,7 @@ const Wrapper = (props) => {
           backgroundImage: `url(${
             isDarkmode
               ? services.linking.static("images/abstract-shapes-20.svg")
-              : services.linking.static("images/bg.svg")
+              : ""
           })`,
         }}
       >
