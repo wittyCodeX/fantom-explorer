@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import { ethers } from 'ethers'
-import QRCode from 'react-qr-code'
-import { Tooltip } from '@material-tailwind/react'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import { ethers } from "ethers";
+import QRCode from "react-qr-code";
+import { Tooltip } from "@material-tailwind/react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-import components from 'components'
+import components from "components";
 import {
   formatHash,
   formatHexToInt,
   numToFixed,
   WEIToFTM,
   isObjectEmpty,
-} from 'utils'
-import moment from 'moment'
-import services from 'services'
+} from "utils";
+import moment from "moment";
+import services from "services";
+import clients from "clients";
 
-import ERC1155TransactionList from './ERC1155TransactionList'
-import ERC20TransactionList from './ERC20TransactionList'
-import ERC721TransactionList from './ERC721TransactionList'
+import ERC1155TransactionList from "./ERC1155TransactionList";
+import ERC20TransactionList from "./ERC20TransactionList";
+import ERC721TransactionList from "./ERC721TransactionList";
 
 const GET_BLOCK = gql`
   query AccountByAddress($address: Address!, $cursor: Cursor, $count: Int!) {
@@ -101,26 +102,26 @@ const GET_BLOCK = gql`
       }
     }
   }
-`
+`;
 export default function Address() {
-  const params = useParams()
+  const params = useParams();
 
-  const [block, setBlock] = useState([])
-  const [address, setAddress] = useState('')
-  const [delegated, setDelegated] = useState([])
-  const [pendingReward, setPendingReward] = useState([])
-  const [claimedReward, setClaimedReward] = useState([])
+  const [block, setBlock] = useState([]);
+  const [address, setAddress] = useState("");
+  const [delegated, setDelegated] = useState([]);
+  const [pendingReward, setPendingReward] = useState([]);
+  const [claimedReward, setClaimedReward] = useState([]);
 
-  const [erc20Count, setERC20Count] = useState('')
-  const [erc721Count, setERC721Count] = useState('')
-  const [erc1155Count, setERC1155Count] = useState('')
+  const [erc20Count, setERC20Count] = useState("");
+  const [erc721Count, setERC721Count] = useState("");
+  const [erc1155Count, setERC1155Count] = useState("");
 
-  const [ftmPrice, setFtmPrice] = useState('')
+  const [ftmPrice, setFtmPrice] = useState("");
 
-  const [copied, setCopied] = useState(false)
-  const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const [copied, setCopied] = useState(false);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
 
-  const count = 10
+  const count = 10;
 
   //   const type = getTypeByStr(params.id)
   //   let address = params.id
@@ -135,89 +136,109 @@ export default function Address() {
       cursor: null,
       count: count,
     },
-  })
+  });
 
-  const columns = ['Tx Hash', 'Block', 'Time', 'From', 'To', 'Value', 'Txn Fee']
+  const columns = [
+    "Tx Hash",
+    "Block",
+    "Time",
+    "From",
+    "To",
+    "Value",
+    "Txn Fee",
+  ];
 
   useEffect(() => {
     const calculateFtmValue = async (_ftmBalance) => {
-      const api = services.provider.buildAPI()
+      const api = services.provider.buildAPI();
       const rate = await api.getFTMConversionRateFromChainlink(
-        '0xf4766552D15AE4d256Ad41B6cf2933482B0680dc',
-      )
+        "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc"
+      );
       const price =
-        (rate / Math.pow(10, 8)) * WEIToFTM(formatHexToInt(block.balance))
-      setFtmPrice(price)
-    }
-    calculateFtmValue(WEIToFTM(formatHexToInt(block.balance)))
-  }, [block.balance])
+        (rate / Math.pow(10, 8)) * WEIToFTM(formatHexToInt(block.balance));
+      setFtmPrice(price);
+    };
+    calculateFtmValue(WEIToFTM(formatHexToInt(block.balance)));
+  }, [block.balance]);
 
   useEffect(() => {
     if (copied) {
       setTimeout(() => {
-        setCopied(false)
-      }, 1000)
+        setCopied(false);
+      }, 1000);
     }
-  }, [copied])
+  }, [copied]);
 
   useEffect(async () => {
     if (data) {
-      const account = data.account
-      let delegated = 0
-      let pending_rewards = 0
-      let claimed_rewards = 0
+      const account = data.account;
+      let delegated = 0;
+      let pending_rewards = 0;
+      let claimed_rewards = 0;
       if (account.delegations && account.delegations.edges) {
         account.delegations.edges.forEach((_edge) => {
-          const { delegation } = _edge
-          delegated += delegation ? WEIToFTM(delegation.amount) : 0
+          const { delegation } = _edge;
+          delegated += delegation ? WEIToFTM(delegation.amount) : 0;
           pending_rewards +=
             delegation && delegation.pendingRewards
               ? WEIToFTM(delegation.pendingRewards.amount)
-              : 0
-          claimed_rewards += delegation ? WEIToFTM(delegation.claimedReward) : 0
-        })
+              : 0;
+          claimed_rewards += delegation
+            ? WEIToFTM(delegation.claimedReward)
+            : 0;
+        });
       }
 
-      setDelegated(delegated)
-      setPendingReward(pending_rewards)
-      setClaimedReward(claimed_rewards)
-      setBlock(account)
+      setDelegated(delegated);
+      setPendingReward(pending_rewards);
+      setClaimedReward(claimed_rewards);
+      setBlock(account);
 
-      let newAddressData
-      let transactions = []
-      const api = services.provider.buildAPI()
+      let newAddressData;
+      let transactions = [];
+      const api = services.provider.buildAPI();
 
-      let address
+      let address;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.address,
-        )
-        address = clients.utils.decodeNameHashInputSignals(nameHash)
+          account.address
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        address = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        address = account.address
+        address = account.address;
       }
-      setAddress(address)
+
+      setAddress(address);
 
       for (let i = 0; i < account.txList.edges.length; i++) {
-        let edgeNew
+        let edgeNew;
 
-        let addressFrom
+        let addressFrom;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            account.txList.edges[i].transaction.from,
-          )
-          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+            account.txList.edges[i].transaction.from
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressFrom = await clients.utils.decodeNameHashInputSignals(nameSignal);
         } catch {
-          addressFrom = account.txList.edges[i].transaction.from
+          addressFrom = account.txList.edges[i].transaction.from;
         }
-        let addressTo
+        let addressTo;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            account.txList.edges[i].transaction.to,
-          )
-          addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+            account.txList.edges[i].transaction.to
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressTo = await clients.utils.decodeNameHashInputSignals(nameSignal);
         } catch {
-          addressTo = account.txList.edges[i].transaction.to
+          addressTo = account.txList.edges[i].transaction.to;
         }
 
         edgeNew = {
@@ -233,8 +254,8 @@ export default function Address() {
               timestamp: account.txList.edges[i].transaction.block.timestamp,
             },
           },
-        }
-        transactions.push(edgeNew)
+        };
+        transactions.push(edgeNew);
       }
       newAddressData = {
         address: address,
@@ -251,58 +272,67 @@ export default function Address() {
           totalCount: account.txList.totalCount,
           edges: [...transactions],
         },
-      }
-      setBlock(newAddressData)
+      };
+      setBlock(newAddressData);
     }
-  }, [data])
+  }, [data]);
 
-  const getHasNextPage = (data) => data.txList.pageInfo.hasNext
+  const getHasNextPage = (data) => data.txList.pageInfo.hasNext;
 
   const getAfter = (data) =>
     data.txList.edges && data.txList.edges.length > 0
       ? data.txList.edges[data.txList.edges.length - 1].cursor
-      : null
+      : null;
 
   const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
-      return previousResult
+      return previousResult;
     }
 
-    const account = fetchMoreResult.account
-    let newAddressData
-    let transactions = []
-    const api = services.provider.buildAPI()
+    const account = fetchMoreResult.account;
+    let newAddressData;
+    let transactions = [];
+    const api = services.provider.buildAPI();
 
-    let address
+    let address;
     try {
       const nameHash = await api.contracts.EVMReverseResolverV1.get(
-        account.address,
-      )
-      address = clients.utils.decodeNameHashInputSignals(nameHash)
+        account.address
+      );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        address = await clients.utils.decodeNameHashInputSignals(nameSignal);
     } catch {
-      address = account.address
+      address = account.address;
     }
 
     for (let i = 0; i < account.txList.edges.length; i++) {
-      let edgeNew
+      let edgeNew;
 
-      let addressFrom
+      let addressFrom;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.txList.edges[i].transaction.from,
-        )
-        addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+          account.txList.edges[i].transaction.from
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        addressFrom = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        addressFrom = account.txList.edges[i].transaction.from
+        addressFrom = account.txList.edges[i].transaction.from;
       }
-      let addressTo
+      let addressTo;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.txList.edges[i].transaction.to,
-        )
-        addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+          account.txList.edges[i].transaction.to
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        addressTo = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        addressTo = account.txList.edges[i].transaction.to
+        addressTo = account.txList.edges[i].transaction.to;
       }
 
       edgeNew = {
@@ -318,42 +348,43 @@ export default function Address() {
             timestamp: account.txList.edges[i].transaction.block?.timestamp,
           },
         },
-      }
-      transactions.push(edgeNew)
+      };
+      transactions.push(edgeNew);
     }
 
     fetchMoreResult.account.txList.edges = [
       ...previousResult.account.txList.edges,
       ...transactions,
-    ]
-    setBlock(fetchMoreResult.account)
-    return { ...fetchMoreResult }
-  }
+    ];
+    setBlock(fetchMoreResult.account);
+    return { ...fetchMoreResult };
+  };
 
   const fetchMoreData = () => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.account)
-      const after = getAfter(data.account)
+      const nextPage = getHasNextPage(data.account);
+      const after = getAfter(data.account);
       if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } })
+        fetchMore({ updateQuery, variables: { cursor: after, count: count } });
       }
     }
-  }
+  };
 
   return (
     <div className="w-screen max-w-7xl">
       <div className="flex items-center text-black md:text-xl sm:text-xl text-sm  px-2 font-normal border-b p-3  mt-[30px] bg-gray-200">
-        <QRCode value={params.id} size={20} />{' '}
-        <span className="mx-3"> Address {address} </span>
+        <QRCode value={params.id} size={20} />{" "}
+        <span className="mx-3"> Address </span>
+        <span className="font-bold">{address}</span>
         <Tooltip content="Copy Address to clipboard">
           <button
             onClick={() => {
-              setCopied(true)
-              navigator.clipboard.writeText(params.id)
+              setCopied(true);
+              navigator.clipboard.writeText(params.id);
             }}
           >
             <img
-              src={services.linking.static('images/copied.png')}
+              src={services.linking.static("images/copied.png")}
               className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
               data-tooltip-target="tooltip-default"
               alt="Copy"
@@ -365,7 +396,7 @@ export default function Address() {
             Copied!
           </span>
         ) : (
-          ''
+          ""
         )}
       </div>
 
@@ -466,8 +497,8 @@ export default function Address() {
           <button
             className={`p-2 border-b-4 transition-colors duration-300 ${
               0 === activeTabIndex
-                ? 'border-teal-500'
-                : 'border-transparent hover:border-gray-200'
+                ? "border-teal-500"
+                : "border-transparent hover:border-gray-200"
             }`}
             // Change the active tab on click.
             onClick={() => setActiveTabIndex(0)}
@@ -477,8 +508,8 @@ export default function Address() {
           <button
             className={`p-2 border-b-4 transition-colors duration-300 ${
               1 === activeTabIndex
-                ? 'border-teal-500'
-                : 'border-transparent hover:border-gray-200'
+                ? "border-teal-500"
+                : "border-transparent hover:border-gray-200"
             }`}
             // Change the active tab on click.
             onClick={() => setActiveTabIndex(1)}
@@ -488,8 +519,8 @@ export default function Address() {
           <button
             className={`p-2 border-b-4 transition-colors duration-300 ${
               2 === activeTabIndex
-                ? 'border-teal-500'
-                : 'border-transparent hover:border-gray-200'
+                ? "border-teal-500"
+                : "border-transparent hover:border-gray-200"
             }`}
             // Change the active tab on click.
             onClick={() => setActiveTabIndex(2)}
@@ -499,8 +530,8 @@ export default function Address() {
           <button
             className={`p-2 border-b-4 transition-colors duration-300 ${
               3 === activeTabIndex
-                ? 'border-teal-500'
-                : 'border-transparent hover:border-gray-200'
+                ? "border-teal-500"
+                : "border-transparent hover:border-gray-200"
             }`}
             // Change the active tab on click.
             onClick={() => setActiveTabIndex(3)}
@@ -554,12 +585,12 @@ export default function Address() {
               setTotal={setERC1155Count}
             />
           ) : (
-            ''
+            ""
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const DynamicTableRow = ({ item }) => {
@@ -570,7 +601,7 @@ const DynamicTableRow = ({ item }) => {
           className="text-blue-500 dark:text-gray-300"
           to={`/transactions/${item.transaction.hash}`}
         >
-          {' '}
+          {" "}
           {formatHash(item.transaction.hash)}
         </Link>
       </td>
@@ -592,13 +623,16 @@ const DynamicTableRow = ({ item }) => {
           className="text-blue-500 dark:text-gray-300"
           to={`/address/${item.transaction.from}`}
         >
-          {' '}
+          {" "}
           {formatHash(item.transaction.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.transaction.to}`}>
-          {' '}
+        <Link
+          className="text-blue-500 dark:text-gray-300"
+          to={`/address/${item.transaction.to}`}
+        >
+          {" "}
           {formatHash(item.transaction.to)}
         </Link>
       </td>
@@ -611,5 +645,5 @@ const DynamicTableRow = ({ item }) => {
         </span>
       </td>
     </tr>
-  )
-}
+  );
+};

@@ -361,7 +361,8 @@ export async function addressToDomain(address) {
   const api = services.provider.buildAPI();
   try {
     const nameHash = await api.contracts.EVMReverseResolverV1.get(address);
-    return clients.utils.decodeNameHashInputSignals(nameHash);
+    const nameSignal = await api.contracts.RainbowTableV1.lookup(nameHash.name);
+    return await clients.utils.decodeNameHashInputSignals(nameSignal);
   } catch {
     return address;
   }

@@ -61,7 +61,12 @@ export default function LatestTransactions() {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
             edges[i].transaction.from
           );
-          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash);
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressFrom = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
           addressFrom = edges[i].transaction.from;
         }
@@ -70,7 +75,12 @@ export default function LatestTransactions() {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
             edges[i].transaction.to
           );
-          addressTo = clients.utils.decodeNameHashInputSignals(nameHash);
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressTo = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
           addressTo = edges[i].transaction.to;
         }
@@ -147,7 +157,9 @@ const DynamicTableRow = (props) => {
               to={`/address/${item.transaction.from}`}
             >
               {" "}
-              {getTypeByStr(item.transaction.from) == 'address'? formatHash(item.transaction.from): item.transaction.from}
+              {getTypeByStr(item.transaction.from) == "address"
+                ? formatHash(item.transaction.from)
+                : item.transaction.from}
             </Link>
           </div>
           <div className="flex flex-row  mb-1">
@@ -157,7 +169,9 @@ const DynamicTableRow = (props) => {
               to={`/address/${item.transaction.to}`}
             >
               {" "}
-              {getTypeByStr(item.transaction.to) == 'address'? formatHash(item.transaction.to): item.transaction.to}
+              {getTypeByStr(item.transaction.to) == "address"
+                ? formatHash(item.transaction.to)
+                : item.transaction.to}
             </Link>
           </div>
           <div className="flex flex-row  mb-1">

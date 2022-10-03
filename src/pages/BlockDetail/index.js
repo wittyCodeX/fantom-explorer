@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import components from 'components'
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import components from "components";
 import {
   formatHash,
   formatHexToInt,
@@ -10,10 +10,10 @@ import {
   numToFixed,
   isObjectEmpty,
   formatDate,
-} from 'utils'
-import moment from 'moment'
-import { ethers } from 'ethers'
-import services from 'services'
+} from "utils";
+import moment from "moment";
+import { ethers } from "ethers";
+import services from "services";
 
 const GET_BLOCK = gql`
   query BlockByNumber($number: Long) {
@@ -38,45 +38,63 @@ const GET_BLOCK = gql`
       }
     }
   }
-`
+`;
 export default function BlockDetail() {
-  const params = useParams()
-  const [block, setBlock] = useState([])
+  const params = useParams();
+  const [block, setBlock] = useState([]);
   const { loading, error, data } = useQuery(GET_BLOCK, {
     variables: {
       number: formatIntToHex(params.id),
     },
-  })
+  });
 
-  const columns = ['Tx Hash', 'Block', 'Time', 'From', 'To', 'Value', 'Txn Fee']
+  const columns = [
+    "Tx Hash",
+    "Block",
+    "Time",
+    "From",
+    "To",
+    "Value",
+    "Txn Fee",
+  ];
 
   useEffect(async () => {
     if (data) {
-      const edges = data.block
-      let newBlockData
-      let transactions = []
-      const api = services.provider.buildAPI()
+      const edges = data.block;
+      let newBlockData;
+      let transactions = [];
+      const api = services.provider.buildAPI();
 
       for (let i = 0; i < edges.txList.length; i++) {
-        let edgeNew
+        let edgeNew;
 
-        let addressFrom
+        let addressFrom;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            edges.txList[i].from,
-          )
-          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+            edges.txList[i].from
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressFrom = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
-          addressFrom = edges.txList[i].from
+          addressFrom = edges.txList[i].from;
         }
-        let addressTo
+        let addressTo;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            edges.txList[i].to,
-          )
-          addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+            edges.txList[i].to
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressTo = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
-          addressTo = edges.txList[i].to
+          addressTo = edges.txList[i].to;
         }
 
         edgeNew = {
@@ -91,8 +109,8 @@ export default function BlockDetail() {
             number: edges.txList[i].number,
             timestamp: edges.txList[i].timestamp,
           },
-        }
-        transactions.push(edgeNew)
+        };
+        transactions.push(edgeNew);
       }
       newBlockData = {
         number: edges.number,
@@ -102,10 +120,10 @@ export default function BlockDetail() {
           hash: edges.parent.hash,
         },
         txList: [...transactions],
-      }
-      setBlock(newBlockData)
+      };
+      setBlock(newBlockData);
     }
-  }, [data])
+  }, [data]);
   return (
     <div>
       <components.TableView
@@ -133,13 +151,13 @@ export default function BlockDetail() {
                       className="bg-gray-200 text-blue-500 text-sm px-1 mx-1 font-extrabold"
                       to={`/blocks/${Number(formatHexToInt(block.number) - 1)}`}
                     >
-                      {'<'}
+                      {"<"}
                     </Link>
                     <Link
                       className="bg-gray-200 text-blue-500 text-sm px-1 font-extrabold"
                       to={`/blocks/${Number(formatHexToInt(block.number) + 1)}`}
                     >
-                      {'>'}
+                      {">"}
                     </Link>
                   </div>
                 </td>
@@ -150,7 +168,7 @@ export default function BlockDetail() {
                     Timestamp:
                   </div>
                   <div className="col-span-2">
-                    {moment.unix(block.timestamp).fromNow()}{' '}
+                    {moment.unix(block.timestamp).fromNow()}{" "}
                     {`(${formatDate(timestampToDate(block.timestamp))})`}
                   </div>
                 </td>
@@ -209,14 +227,17 @@ export default function BlockDetail() {
         </components.DynamicTable>
       </components.TableView>
     </div>
-  )
+  );
 }
 const DynamicTableRow = ({ item }) => {
   return (
     <tr>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500 dark:text-gray-300" to={`/transactions/${item.hash}`}>
-          {' '}
+        <Link
+          className="text-blue-500 dark:text-gray-300"
+          to={`/transactions/${item.hash}`}
+        >
+          {" "}
           {formatHash(item.hash)}
         </Link>
       </td>
@@ -234,14 +255,20 @@ const DynamicTableRow = ({ item }) => {
         </div>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.from}`}>
-          {' '}
+        <Link
+          className="text-blue-500 dark:text-gray-300"
+          to={`/address/${item.from}`}
+        >
+          {" "}
           {formatHash(item.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.to}`}>
-          {' '}
+        <Link
+          className="text-blue-500 dark:text-gray-300"
+          to={`/address/${item.to}`}
+        >
+          {" "}
           {formatHash(item.to)}
         </Link>
       </td>
@@ -252,5 +279,5 @@ const DynamicTableRow = ({ item }) => {
         <span className="text-sm">{formatHexToInt(item.gasUsed)}</span>
       </td>
     </tr>
-  )
-}
+  );
+};

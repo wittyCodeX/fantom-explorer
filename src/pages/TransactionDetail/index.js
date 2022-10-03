@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import { Tooltip } from '@material-tailwind/react'
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import { Tooltip } from "@material-tailwind/react";
 
-import services from 'services'
-import components from 'components'
+import services from "services";
+import components from "components";
 import {
   WEIToFTM,
   formatHexToInt,
@@ -12,8 +12,8 @@ import {
   numToFixed,
   isObjectEmpty,
   formatDate,
-} from 'utils'
-import moment from 'moment'
+} from "utils";
+import moment from "moment";
 
 const GET_BLOCK = gql`
   query TransactionByHash($hash: Bytes32!) {
@@ -49,49 +49,57 @@ const GET_BLOCK = gql`
       }
     }
   }
-`
+`;
 export default function TransactionDetail() {
-  const params = useParams()
-  const [copied, setCopied] = useState(false)
-  const [type, setType] = useState('transaction')
-  const [transaction, setTransaction] = useState([])
+  const params = useParams();
+  const [copied, setCopied] = useState(false);
+  const [type, setType] = useState("transaction");
+  const [transaction, setTransaction] = useState([]);
   const { loading, error, data } = useQuery(GET_BLOCK, {
     variables: {
       hash: params.id,
     },
-  })
+  });
 
   useEffect(async () => {
     if (data) {
-      const edges = data
-      setTransaction(edges)
+      const edges = data;
+      setTransaction(edges);
     }
-  }, [data])
+  }, [data]);
   useEffect(async () => {
     if (data) {
-      const edges = data
-      setTransaction(edges)
+      const edges = data;
+      setTransaction(edges);
 
-      const api = services.provider.buildAPI()
-      let edgeNew
+      const api = services.provider.buildAPI();
+      let edgeNew;
 
-      let addressFrom
+      let addressFrom;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          edges.transaction.from,
-        )
-        addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+          edges.transaction.from
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        addressFrom = await clients.utils.decodeNameHashInputSignals(
+          nameSignal
+        );
       } catch {
-        addressFrom = edges.transaction.from
+        addressFrom = edges.transaction.from;
       }
-      let addressTo
+      let addressTo;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          edges.transaction.to,
-        )
-        addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+          edges.transaction.to
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        addressTo = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        addressTo = edges.transaction.to
+        addressTo = edges.transaction.to;
       }
 
       edgeNew = {
@@ -110,20 +118,20 @@ export default function TransactionDetail() {
           number: edges.transaction.block.number,
           timestamp: edges.transaction.block.timestamp,
         },
-      }
-      setTransaction(edgeNew)
+      };
+      setTransaction(edgeNew);
     }
-  }, [data])
-  console.log(isObjectEmpty(transaction))
+  }, [data]);
+  console.log(isObjectEmpty(transaction));
 
   useEffect(() => {
     if (copied) {
       setTimeout(() => {
-        setType('')
-        setCopied(false)
-      }, 1000)
+        setType("");
+        setCopied(false);
+      }, 1000);
     }
-  }, [copied])
+  }, [copied]);
   return (
     <div>
       <components.TableView
@@ -146,29 +154,29 @@ export default function TransactionDetail() {
                     Transaction Hash:
                   </div>
                   <div className="col-span-2  break-words">
-                    {transaction.hash}{' '}
+                    {transaction.hash}{" "}
                     <Tooltip content="Copy Tnx Hash to clipboard">
                       <button
                         onClick={() => {
-                          setCopied(true)
-                          setType('transaction')
-                          navigator.clipboard.writeText(transaction.hash)
+                          setCopied(true);
+                          setType("transaction");
+                          navigator.clipboard.writeText(transaction.hash);
                         }}
                       >
                         <img
-                          src={services.linking.static('images/copied.png')}
+                          src={services.linking.static("images/copied.png")}
                           className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
                           data-tooltip-target="tooltip-default"
                           alt="Copy"
                         />
                       </button>
                     </Tooltip>
-                    {copied && type == 'transaction' ? (
+                    {copied && type == "transaction" ? (
                       <span className="text-black text-sm font-bold bg-gray-100">
                         Copied!
                       </span>
                     ) : (
-                      ''
+                      ""
                     )}
                   </div>
                 </td>
@@ -205,9 +213,9 @@ export default function TransactionDetail() {
                     Timestamp:
                   </div>
                   <div className="col-span-2  break-words">
-                    {moment.unix(transaction.block?.timestamp).fromNow()}{' '}
+                    {moment.unix(transaction.block?.timestamp).fromNow()}{" "}
                     {`(${formatDate(
-                      timestampToDate(transaction.block?.timestamp),
+                      timestampToDate(transaction.block?.timestamp)
                     )})`}
                   </div>
                 </td>
@@ -227,25 +235,25 @@ export default function TransactionDetail() {
                     <Tooltip content="Copy Address to clipboard">
                       <button
                         onClick={() => {
-                          setCopied(true)
-                          setType('from')
-                          navigator.clipboard.writeText(transaction.from)
+                          setCopied(true);
+                          setType("from");
+                          navigator.clipboard.writeText(transaction.from);
                         }}
                       >
                         <img
-                          src={services.linking.static('images/copied.png')}
+                          src={services.linking.static("images/copied.png")}
                           className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
                           data-tooltip-target="tooltip-default"
                           alt="Copy"
                         />
                       </button>
                     </Tooltip>
-                    {copied && type == 'from' ? (
+                    {copied && type == "from" ? (
                       <span className="text-black text-sm font-bold p-1 bg-gray-100">
                         Copied!
                       </span>
                     ) : (
-                      ''
+                      ""
                     )}
                   </div>
                 </td>
@@ -265,25 +273,25 @@ export default function TransactionDetail() {
                     <Tooltip content="Copy Address to clipboard">
                       <button
                         onClick={() => {
-                          setCopied(true)
-                          setType('to')
-                          navigator.clipboard.writeText(transaction.to)
+                          setCopied(true);
+                          setType("to");
+                          navigator.clipboard.writeText(transaction.to);
                         }}
                       >
                         <img
-                          src={services.linking.static('images/copied.png')}
+                          src={services.linking.static("images/copied.png")}
                           className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
                           data-tooltip-target="tooltip-default"
                           alt="Copy"
                         />
                       </button>
                     </Tooltip>
-                    {copied && type == 'to' ? (
+                    {copied && type == "to" ? (
                       <span className="text-black text-sm font-bold p-1 bg-gray-100">
                         Copied!
                       </span>
                     ) : (
-                      ''
+                      ""
                     )}
                   </div>
                 </td>
@@ -298,8 +306,8 @@ export default function TransactionDetail() {
                       //   ethers.utils.formatEther(
                       formatHexToInt(transaction.value),
                       //   ),
-                      2,
-                    )}{' '}
+                      2
+                    )}{" "}
                     FTM
                   </div>
                 </td>
@@ -342,8 +350,8 @@ export default function TransactionDetail() {
                   <div className="col-span-2">
                     {WEIToFTM(
                       formatHexToInt(transaction.gasPrice) *
-                        formatHexToInt(transaction.gasUsed),
-                    )}{' '}
+                        formatHexToInt(transaction.gasUsed)
+                    )}{" "}
                     FTM
                   </div>
                 </td>
@@ -364,5 +372,5 @@ export default function TransactionDetail() {
         </components.DynamicTable>
       </components.TableView>
     </div>
-  )
+  );
 }

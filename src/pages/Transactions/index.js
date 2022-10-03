@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import components from 'components'
-import { formatHexToInt, formatHash, numToFixed } from 'utils'
-import moment from 'moment'
-import { ethers } from 'ethers'
-import services from 'services'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import InfiniteScroll from "react-infinite-scroll-component";
+import components from "components";
+import { formatHexToInt, formatHash, numToFixed } from "utils";
+import moment from "moment";
+import { ethers } from "ethers";
+import services from "services";
 
 const GET_TRANSACTIONS = gql`
   query TransactionList($cursor: Cursor, $count: Int!) {
@@ -47,58 +47,66 @@ const GET_TRANSACTIONS = gql`
       }
     }
   }
-`
+`;
 
 export default function Transactions() {
-  const [rows, setRows] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
-  const count = 15
+  const [rows, setRows] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const count = 15;
   const { loading, error, data, fetchMore } = useQuery(GET_TRANSACTIONS, {
     variables: {
       cursor: null,
       count: count,
     },
-  })
+  });
 
-  const getHasNextPage = (data) => data.pageInfo.hasNext
+  const getHasNextPage = (data) => data.pageInfo.hasNext;
 
   const getAfter = (data) =>
     data.edges && data.edges.length > 0
       ? data.edges[data.edges.length - 1].cursor
-      : null
+      : null;
 
   const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
-      return previousResult
+      return previousResult;
     }
 
     fetchMoreResult.transactions.edges = [
       ...previousResult.transactions.edges,
       ...fetchMoreResult.transactions.edges,
-    ]
-    let transactions = []
-    const api = services.provider.buildAPI()
+    ];
+    let transactions = [];
+    const api = services.provider.buildAPI();
 
     for (let i = 0; i < fetchMoreResult.transactions.edges.length; i++) {
-      let edgeNew
+      let edgeNew;
 
-      let addressFrom
+      let addressFrom;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          fetchMoreResult.transactions.edges[i].transaction.from,
-        )
-        addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+          fetchMoreResult.transactions.edges[i].transaction.from
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        addressFrom = await clients.utils.decodeNameHashInputSignals(
+          nameSignal
+        );
       } catch {
-        addressFrom = fetchMoreResult.transactions.edges[i].transaction.from
+        addressFrom = fetchMoreResult.transactions.edges[i].transaction.from;
       }
-      let addressTo
+      let addressTo;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          fetchMoreResult.transactions.edges[i].transaction.to,
-        )
-        addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+          fetchMoreResult.transactions.edges[i].transaction.to
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        addressTo = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        addressTo = fetchMoreResult.transactions.edges[i].transaction.to
+        addressTo = fetchMoreResult.transactions.edges[i].transaction.to;
       }
 
       edgeNew = {
@@ -116,56 +124,66 @@ export default function Transactions() {
               fetchMoreResult.transactions.edges[i].transaction.block.timestamp,
           },
         },
-      }
+      };
 
-      transactions.push(edgeNew)
+      transactions.push(edgeNew);
     }
-    setRows(rows.concat(transactions))
+    setRows(rows.concat(transactions));
 
-    return { ...fetchMoreResult }
-  }
+    return { ...fetchMoreResult };
+  };
 
   const fetchMoreData = () => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.transactions)
-      const after = getAfter(data.transactions)
+      const nextPage = getHasNextPage(data.transactions);
+      const after = getAfter(data.transactions);
       if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } })
+        fetchMore({ updateQuery, variables: { cursor: after, count: count } });
       }
     }
-  }
+  };
   useEffect(async () => {
     if (data) {
-      const edges = data.transactions.edges
-      setRows(edges)
+      const edges = data.transactions.edges;
+      setRows(edges);
     }
-  }, [data])
+  }, [data]);
   useEffect(async () => {
     if (data) {
-      setTotalCount(formatHexToInt(data.transactions.totalCount))
-      let transactions = []
-      const api = services.provider.buildAPI()
+      setTotalCount(formatHexToInt(data.transactions.totalCount));
+      let transactions = [];
+      const api = services.provider.buildAPI();
 
       for (let i = 0; i < data.transactions.edges.length; i++) {
-        let edgeNew
+        let edgeNew;
 
-        let addressFrom
+        let addressFrom;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            data.transactions.edges[i].transaction.from,
-          )
-          addressFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+            data.transactions.edges[i].transaction.from
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressFrom = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
-          addressFrom = data.transactions.edges[i].transaction.from
+          addressFrom = data.transactions.edges[i].transaction.from;
         }
-        let addressTo
+        let addressTo;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            data.transactions.edges[i].transaction.to,
-          )
-          addressTo = clients.utils.decodeNameHashInputSignals(nameHash)
+            data.transactions.edges[i].transaction.to
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          addressTo = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
-          addressTo = data.transactions.edges[i].transaction.to
+          addressTo = data.transactions.edges[i].transaction.to;
         }
 
         edgeNew = {
@@ -181,20 +199,28 @@ export default function Transactions() {
               timestamp: data.transactions.edges[i].transaction.block.timestamp,
             },
           },
-        }
+        };
 
-        transactions.push(edgeNew)
+        transactions.push(edgeNew);
       }
-      setRows(transactions)
+      setRows(transactions);
     }
-  }, [data])
+  }, [data]);
 
-  const columns = ['Tx Hash', 'Block', 'Time', 'From', 'To', 'Value', 'Txn Fee']
+  const columns = [
+    "Tx Hash",
+    "Block",
+    "Time",
+    "From",
+    "To",
+    "Value",
+    "Txn Fee",
+  ];
   return (
     <components.TableView classes="w-screen max-w-5xl" title="Transactions">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
-          More than {'>'} {formatHexToInt(data?.transactions.totalCount)}{' '}
+          More than {">"} {formatHexToInt(data?.transactions.totalCount)}{" "}
           transactions found
         </div>
         <div className="text-sm text-gray-500">
@@ -223,7 +249,7 @@ export default function Transactions() {
         </components.DynamicTable>
       </InfiniteScroll>
     </components.TableView>
-  )
+  );
 }
 const DynamicTableRow = ({ item }) => {
   return (
@@ -233,7 +259,7 @@ const DynamicTableRow = ({ item }) => {
           className="text-blue-500 dark:text-gray-300"
           to={`/transactions/${item.transaction.hash}`}
         >
-          {' '}
+          {" "}
           {formatHash(item.transaction.hash)}
         </Link>
       </td>
@@ -255,13 +281,16 @@ const DynamicTableRow = ({ item }) => {
           className="text-blue-500 dark:text-gray-300"
           to={`/address/${item.transaction.from}`}
         >
-          {' '}
+          {" "}
           {formatHash(item.transaction.from)}
         </Link>
       </td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500 dark:text-gray-300" to={`/address/${item.transaction.to}`}>
-          {' '}
+        <Link
+          className="text-blue-500 dark:text-gray-300"
+          to={`/address/${item.transaction.to}`}
+        >
+          {" "}
           {formatHash(item.transaction.to)}
         </Link>
       </td>
@@ -274,5 +303,5 @@ const DynamicTableRow = ({ item }) => {
         </span>
       </td>
     </tr>
-  )
-}
+  );
+};

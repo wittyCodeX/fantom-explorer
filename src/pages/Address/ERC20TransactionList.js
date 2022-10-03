@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import DynamicTableRow from './DynamicTableRow'
+import React, { useState, useEffect } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import DynamicTableRow from "./DynamicTableRow";
 
-import { useQuery, gql } from '@apollo/client'
-import { formatHexToInt, isObjectEmpty } from 'utils'
-import components from 'components'
-import services from 'services'
+import { useQuery, gql } from "@apollo/client";
+import { formatHexToInt, isObjectEmpty } from "utils";
+import components from "components";
+import services from "services";
 
 const GET_ERC20TRANSACTIONS = gql`
   query GetERC20Transactions(
@@ -44,11 +44,11 @@ const GET_ERC20TRANSACTIONS = gql`
       }
     }
   }
-`
+`;
 export default function ERC20TransactionList({ address, setTotal }) {
-  const [block, setBlock] = useState([])
-  const count = 20
-  const columns = ['Tx Hash', 'Method', 'Time', 'From', 'To', 'Value', 'Token']
+  const [block, setBlock] = useState([]);
+  const count = 20;
+  const columns = ["Tx Hash", "Method", "Time", "From", "To", "Value", "Token"];
 
   const { loading, error, data, fetchMore } = useQuery(GET_ERC20TRANSACTIONS, {
     variables: {
@@ -56,44 +56,50 @@ export default function ERC20TransactionList({ address, setTotal }) {
       cursor: null,
       count: count,
     },
-  })
+  });
 
-  const getHasNextPage = (data) => data.pageInfo.hasNext
+  const getHasNextPage = (data) => data.pageInfo.hasNext;
 
   const getAfter = (data) =>
     data.edges && data.edges.length > 0
       ? data.edges[data.edges.length - 1].cursor
-      : null
+      : null;
 
   const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
-      return previousResult
+      return previousResult;
     }
-    let transactions = []
-    const api = services.provider.buildAPI()
+    let transactions = [];
+    const api = services.provider.buildAPI();
 
-    const account = fetchMoreResult.account
+    const account = fetchMoreResult.account;
 
     for (let i = 0; i < account.erc20TxList.edges.length; i++) {
-      let edgeNew
+      let edgeNew;
 
-      let senderFrom
+      let senderFrom;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.erc20TxList.edges[i].trx.sender,
-        )
-        senderFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+          account.erc20TxList.edges[i].trx.sender
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        senderFrom = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        senderFrom = account.erc20TxList.edges[i].trx.sender
+        senderFrom = account.erc20TxList.edges[i].trx.sender;
       }
-      let recipient
+      let recipient;
       try {
         const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.erc20TxList.edges[i].trx.recipient,
-        )
-        recipient = clients.utils.decodeNameHashInputSignals(nameHash)
+          account.erc20TxList.edges[i].trx.recipient
+        );
+        const nameSignal = await api.contracts.RainbowTableV1.lookup(
+          nameHash.name
+        );
+        recipient = await clients.utils.decodeNameHashInputSignals(nameSignal);
       } catch {
-        recipient = account.erc20TxList.edges[i].trx.recipient
+        recipient = account.erc20TxList.edges[i].trx.recipient;
       }
 
       edgeNew = {
@@ -113,58 +119,68 @@ export default function ERC20TransactionList({ address, setTotal }) {
             logoURL: account.erc20TxList.edges[i].trx.token.logoURL,
           },
         },
-      }
-      transactions.push(edgeNew)
+      };
+      transactions.push(edgeNew);
     }
     fetchMoreResult.account.erc20TxList.edges = [
       ...previousResult.account.erc20TxList.edges,
       ...transactions,
-    ]
+    ];
 
-    setBlock(fetchMoreResult.account)
-    return { ...fetchMoreResult }
-  }
+    setBlock(fetchMoreResult.account);
+    return { ...fetchMoreResult };
+  };
 
   const fetchMoreData = () => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.account.erc20TxList)
-      const after = getAfter(data.account.erc20TxList)
+      const nextPage = getHasNextPage(data.account.erc20TxList);
+      const after = getAfter(data.account.erc20TxList);
       if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } })
+        fetchMore({ updateQuery, variables: { cursor: after, count: count } });
       }
     }
-  }
+  };
 
   useEffect(async () => {
     if (data) {
-      setTotal(data.account.erc20TxList.totalCount)
-      const account = data.account
-      setBlock(account)
+      setTotal(data.account.erc20TxList.totalCount);
+      const account = data.account;
+      setBlock(account);
 
-      let newTransactionData
-      let transactions = []
-      const api = services.provider.buildAPI()
+      let newTransactionData;
+      let transactions = [];
+      const api = services.provider.buildAPI();
 
       for (let i = 0; i < account.erc20TxList.edges.length; i++) {
-        let edgeNew
+        let edgeNew;
 
-        let senderFrom
+        let senderFrom;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            account.erc20TxList.edges[i].trx.sender,
-          )
-          senderFrom = clients.utils.decodeNameHashInputSignals(nameHash)
+            account.erc20TxList.edges[i].trx.sender
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          senderFrom = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
-          senderFrom = account.erc20TxList.edges[i].trx.sender
+          senderFrom = account.erc20TxList.edges[i].trx.sender;
         }
-        let recipient
+        let recipient;
         try {
           const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            account.erc20TxList.edges[i].trx.recipient,
-          )
-          recipient = clients.utils.decodeNameHashInputSignals(nameHash)
+            account.erc20TxList.edges[i].trx.recipient
+          );
+          const nameSignal = await api.contracts.RainbowTableV1.lookup(
+            nameHash.name
+          );
+          recipient = await clients.utils.decodeNameHashInputSignals(
+            nameSignal
+          );
         } catch {
-          recipient = account.erc20TxList.edges[i].trx.recipient
+          recipient = account.erc20TxList.edges[i].trx.recipient;
         }
 
         edgeNew = {
@@ -184,8 +200,8 @@ export default function ERC20TransactionList({ address, setTotal }) {
               logoURL: account.erc20TxList.edges[i].trx.token.logoURL,
             },
           },
-        }
-        transactions.push(edgeNew)
+        };
+        transactions.push(edgeNew);
       }
       newTransactionData = {
         address: account.address,
@@ -193,10 +209,10 @@ export default function ERC20TransactionList({ address, setTotal }) {
           totalCount: account.erc20TxList.totalCount,
           edges: [...transactions],
         },
-      }
-      setBlock(newTransactionData)
+      };
+      setBlock(newTransactionData);
     }
-  }, [data])
+  }, [data]);
   return (
     <InfiniteScroll
       dataLength={formatHexToInt(data?.account.erc20TxList.totalCount)}
@@ -225,5 +241,5 @@ export default function ERC20TransactionList({ address, setTotal }) {
         )}
       </components.DynamicTable>
     </InfiniteScroll>
-  )
+  );
 }
