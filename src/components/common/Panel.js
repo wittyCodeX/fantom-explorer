@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Panel = props => {
   return (
     <div
-      className={`relative mb-2 bg-white text-black dark:text-gray-300 dark:bg-blue-800 border-solid border-grey-light dark:border-blue-right rounded shadow-sm `}
+      className={`relative mb-2 bg-white text-black dark:text-gray-300 dark:bg-blue-800 border-solid border-grey-light dark:border-blue-right  rounded-xl shadow-xl `}
     >
       <div className="bg-grey-lighter text-xl px-2 py-3 border-solid border-grey-light  dark:border-blue-right  border-b">
         {props.title}
@@ -17,7 +17,7 @@ const Panel = props => {
         {props.children}
       </div>
       {props.btnLabel &&
-        <div className="absolute bottom-0 bg-white dark:text-gray-300 dark:bg-blue-800 text-xl w-full py-1 flex justify-center border-solid border-grey-light  dark:border-blue-right border-t">
+        <div className="bg-white dark:text-gray-300 dark:bg-blue-800 text-xl w-full py-1 flex justify-center border-solid border-grey-light  dark:border-blue-right border-t  rounded-b-xl  shadow-xl">
           <Link
             className="bg-transparent text-center hover:bg-blue-500 w-11/12 text-blue-700 dark:text-gray-300 font-semibold hover:text-white py-2 border border-blue-500 hover:border-transparent rounded-full text-sm"
             to={props.to}
