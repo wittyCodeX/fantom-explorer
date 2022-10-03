@@ -7,10 +7,24 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { ThemeProvider } from '@material-tailwind/react'
 
 import services from 'services'
+
+const defaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'ignore',
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  },
+}
+
 const client = new ApolloClient({
   uri: services.environment.APOLLO_PROVIDER,
   cache: new InMemoryCache(),
+  defaultOptions: defaultOptions,
 })
+
 ReactDOM.render(
   <ApolloProvider client={client}>
     <React.StrictMode>

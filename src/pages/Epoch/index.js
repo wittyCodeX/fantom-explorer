@@ -3,13 +3,18 @@ import { Link } from 'react-router-dom'
 import { useQuery, gql } from '@apollo/client'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import components from 'components'
-import { formatHexToInt, timestampToDate, formatDate } from 'utils'
+import {
+  formatHexToInt,
+  numToFixed,
+  timestampToDate,
+  WEIToFTM,
+  formatDate,
+} from 'utils'
 import moment from 'moment'
-import { ethers } from 'ethers'
 
-const GET_BLOCKS = gql`
-  query BlockList($cursor: Cursor, $count: Int!) {
-    blocks(cursor: $cursor, count: $count) {
+const GET_EPOCHS = gql`
+  query EpochList($cursor: Cursor, $count: Int!) {
+    epochs(cursor: $cursor, count: $count) {
       totalCount
       pageInfo {
         first
@@ -18,12 +23,10 @@ const GET_BLOCKS = gql`
         hasPrevious
       }
       edges {
-        block {
-          hash
-          number
-          timestamp
-          transactionCount
-          gasUsed
+        epoch {
+          id
+          endTime
+          epochFee
         }
         cursor
       }
@@ -31,11 +34,11 @@ const GET_BLOCKS = gql`
   }
 `
 
-export default function Blocks() {
+export default function Epochs() {
   const [rows, setRows] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const count = 40
-  const { loading, error, data, fetchMore } = useQuery(GET_BLOCKS, {
+  const { loading, error, data, fetchMore } = useQuery(GET_EPOCHS, {
     variables: {
       cursor: null,
       count: count,
@@ -54,18 +57,18 @@ export default function Blocks() {
       return previousResult
     }
 
-    fetchMoreResult.blocks.edges = [
-      ...previousResult.blocks.edges,
-      ...fetchMoreResult.blocks.edges,
+    fetchMoreResult.epochs.edges = [
+      ...previousResult.epochs.edges,
+      ...fetchMoreResult.epochs.edges,
     ]
-    setRows(rows.concat(fetchMoreResult.blocks.edges))
+    setRows(rows.concat(fetchMoreResult.epochs.edges))
     return { ...fetchMoreResult }
   }
 
   const fetchMoreData = () => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.blocks)
-      const after = getAfter(data.blocks)
+      const nextPage = getHasNextPage(data.epochs)
+      const after = getAfter(data.epochs)
       if (nextPage && after !== null) {
         fetchMore({ updateQuery, variables: { cursor: after, count: count } })
       }
@@ -73,20 +76,20 @@ export default function Blocks() {
   }
   useEffect(() => {
     if (data) {
-      setTotalCount(formatHexToInt(data.blocks.totalCount))
-      setRows(data.blocks.edges)
+      setTotalCount(formatHexToInt(data.epochs.totalCount))
+      setRows(data.epochs.edges)
     }
   }, [data])
 
-  const columns = ['Block', 'Time', 'Age', 'Txn', 'Gas Used']
+  const columns = ['Epoch', 'End Time', 'Total Fee (FTM)']
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="Blocks">
+    <components.TableView classes="w-screen max-w-5xl" title="epochs">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
-          More than {'>'} {formatHexToInt(data?.blocks.totalCount)} blocks found
+          More than {'>'} {formatHexToInt(data?.epochs.totalCount)} epochs found
         </div>
         <div className="text-sm text-gray-500">
-          Showing last {rows?.length} blocks
+          Showing last {rows?.length} epochs
         </div>
       </div>
       <InfiniteScroll
@@ -119,29 +122,21 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           className="text-blue-500"
-          to={`/blocks/${formatHexToInt(item.block.number)}`}
+          to={`/epochs/${formatHexToInt(item.epoch.id)}`}
         >
           {' '}
-          {formatHexToInt(item.block.number)}
+          {formatHexToInt(item.epoch.id)}
         </Link>
       </td>{' '}
       <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {formatDate(timestampToDate(item.block.timestamp).toString())}
+        <div className="d-sm-epoch small text-secondary ml-1 ml-sm-0 text-nowrap">
+          {formatDate(timestampToDate(item.epoch.endTime).toString())}
         </div>
       </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {moment.unix(item.block.timestamp).fromNow()}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
+      <td className="px-2 text-sm truncate   py-3 flex justify-center">
         <span className="text-sm">
-          {formatHexToInt(item.block.transactionCount)}
+          {numToFixed(WEIToFTM(formatHexToInt(item.epoch.epochFee)), 2)} FTM
         </span>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <span className="text-sm">{formatHexToInt(item.block.gasUsed)}</span>
       </td>
     </tr>
   )

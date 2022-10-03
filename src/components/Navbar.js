@@ -109,6 +109,30 @@ export default function Navbar() {
             <li>
               <Link
                 className="block text-lg px-3 w-full flex items-center justify-between"
+                to="/epochs"
+              >
+                <div>Epochs</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="block text-lg px-3 w-full flex items-center justify-between"
+                to="/staking"
+              >
+                <div>Staking</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="block text-lg px-3 w-full flex items-center justify-between"
+                to="/assets"
+              >
+                <div>Assets</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="block text-lg px-3 w-full flex items-center justify-between"
                 to="/contracts"
               >
                 <div>Contracts</div>

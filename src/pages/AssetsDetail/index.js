@@ -39,7 +39,7 @@ const GET_BLOCK = gql`
     }
   }
 `
-export default function BlockDetail() {
+export default function AssetsDetail() {
   const params = useParams()
   const [block, setBlock] = useState([])
   const { loading, error, data } = useQuery(GET_BLOCK, {

@@ -31,7 +31,7 @@ const GET_BLOCKS = gql`
   }
 `
 
-export default function Blocks() {
+export default function Assets() {
   const [rows, setRows] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const count = 40

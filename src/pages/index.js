@@ -8,6 +8,11 @@ import Contracts from './Contracts'
 import TransactionDetail from './TransactionDetail'
 import Transactions from './Transactions'
 import Domain from './Domain'
+import Epochs from './Epoch'
+import Staking from './Staking'
+import Assets from './Assets'
+import AssetsDetail from './AssetsDetail'
+import EpochDetail from './EpochDetail'
 const views = {
   Landing,
   Wrapper,
@@ -19,6 +24,11 @@ const views = {
   TransactionDetail,
   Transactions,
   Domain,
+  Epochs,
+  Staking,
+  Assets,
+  AssetsDetail,
+  EpochDetail,
 }
 
 export default views

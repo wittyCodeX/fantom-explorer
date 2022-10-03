@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import components from 'components'
-import { timestampToDate, domainToAddress } from 'utils'
+import { timestampToDate, formatDate } from 'utils'
 import moment from 'moment'
 import services from 'services'
 import { async } from 'q'
@@ -85,7 +85,7 @@ export default function Domain() {
                     Expires At:
                   </div>
                   <div className="col-span-2">
-                    {`(${timestampToDate(domain.expiresAt)})`}
+                    {`(${formatDate(timestampToDate(domain.expiresAt))})`}
                   </div>
                 </td>
               </tr>

@@ -11,6 +11,7 @@ import {
   timestampToDate,
   numToFixed,
   isObjectEmpty,
+  formatDate,
 } from 'utils'
 import moment from 'moment'
 
@@ -205,7 +206,9 @@ export default function TransactionDetail() {
                   </div>
                   <div className="col-span-2  break-words">
                     {moment.unix(transaction.block?.timestamp).fromNow()}{' '}
-                    {`(${timestampToDate(transaction.block?.timestamp)})`}
+                    {`(${formatDate(
+                      timestampToDate(transaction.block?.timestamp),
+                    )})`}
                   </div>
                 </td>
               </tr>

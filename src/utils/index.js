@@ -3,6 +3,9 @@ import services from 'services'
 import clients from 'clients'
 const downtimeThreshold = 10
 export const BASE_URL = 'https://example.com/api/'
+
+const WEI_IN_FTM = 1000000000000000000
+
 /**
  * @param {string} _value
  * @return {int}
@@ -336,8 +339,6 @@ export function getTypeByStr(_str) {
 
   return type
 }
-
-const WEI_IN_FTM = 1000000000000000000
 
 /**
  * @return {number}
