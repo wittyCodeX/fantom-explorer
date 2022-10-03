@@ -38,7 +38,7 @@ export default function Footer(props) {
         </div>
         <div className="flex text-sm text-gray-600 mr-4">
           <div
-            className="py-8 px-4 cursor-pointer"
+            className="py-4 px-4 cursor-pointer"
             onClick={() => props.handleDarkMode(!props.isDarkmode)}
           >
             {props.isDarkmode

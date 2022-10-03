@@ -8,7 +8,7 @@ const Card = props => {
         : ""}`}
     >
       {props.title
-        ? <div className={"flex items-center justify-center mb-5"}>
+        ? <div className={"flex items-center justify-center mb-5 p-5"}>
             <h1
               className={
                 "title p-2 sm:p-0 text-black dark:text-gray-300 md:text-2xl sm:text-2xl text-xl"
