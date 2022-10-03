@@ -98,16 +98,14 @@ export default function BlockDetail() {
         }
 
         edgeNew = {
-          from: edges.txList[i].from,
           from: addressFrom,
-          to: edges.txList[i].to,
           to: addressTo,
           hash: edges.txList[i].hash,
           value: edges.txList[i].value,
           gasUsed: edges.txList[i].gasUsed,
           block: {
-            number: edges.txList[i].number,
-            timestamp: edges.txList[i].timestamp,
+            number: edges.txList[i].block.number,
+            timestamp: edges.txList[i].block.timestamp,
           },
         };
         transactions.push(edgeNew);
