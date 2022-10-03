@@ -17,9 +17,9 @@ const Panel = props => {
         {props.children}
       </div>
       {props.btnLabel &&
-        <div className="absolute bottom-0 bg-white dark:text-gray-300 dark:bg-blue-800 text-xl px-2 py-1 w-full flex justify-center border-solid border-grey-light  dark:border-blue-right border-t">
+        <div className="absolute bottom-0 bg-white dark:text-gray-300 dark:bg-blue-800 text-xl w-full py-1 flex justify-center border-solid border-grey-light  dark:border-blue-right border-t">
           <Link
-            className="bg-transparent w-full text-center hover:bg-blue-500 text-blue-700 dark:text-gray-300 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full text-sm"
+            className="bg-transparent text-center hover:bg-blue-500 w-11/12 text-blue-700 dark:text-gray-300 font-semibold hover:text-white py-2 border border-blue-500 hover:border-transparent rounded-full text-sm"
             to={props.to}
           >
             {props.btnLabel}
