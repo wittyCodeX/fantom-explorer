@@ -119,6 +119,7 @@ export default function BlockDetail() {
         parent: {
           hash: edges.parent.hash,
         },
+        timestamp: edges.timestamp,
         txList: [...transactions],
       };
       setBlock(newBlockData);
