@@ -34,7 +34,7 @@ export default function LatestBlocks() {
   const { loading, error, data } = useQuery(GET_BLOCKS, {
     variables: {
       cursor: null,
-      count: 7
+      count: 10
     },
     pollInterval: 3000
   });
@@ -50,7 +50,7 @@ export default function LatestBlocks() {
 
   return (
     <components.Panel
-      classes="max-h-96 h-[500px]"
+      classes="max-h-[600px] h-[600px] sm:h-[400px] sm:max-h-[400px] lg:max-h-[600px] lg:h-[600px]"
       title="Latest Blocks"
       btnLabel="View all"
       to="/blocks"

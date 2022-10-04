@@ -145,16 +145,6 @@ export default function Navbar(props) {
                 <div>Contracts</div>
               </Link>
             </li>
-            <li>
-              <div
-                className="cursor-pointer"
-                onClick={() => props.handleDarkMode(!props.isDarkmode)}
-              >
-                {props.isDarkmode
-                  ? <SunIcon className="w-6" />
-                  : <MoonIcon className="w-6" />}
-              </div>
-            </li>
           </ul>
           <div className="inline-flex md:hidden">
             <button
