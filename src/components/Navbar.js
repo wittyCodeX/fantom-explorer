@@ -214,7 +214,7 @@ export default function Navbar(props) {
             required={false}
           />
           <button
-            className="bg-gray-100 dark:bg-[#2c2e3f] hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r hidden sm:hidden md:hidden lg:block border  border-gray-300"
+            className="bg-[#0713ff] dark:bg-[#2c2e3f] text-gray-100 hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r hidden sm:hidden md:hidden lg:block border  border-gray-300"
             onClick={onClickSearch}
           >
             Search

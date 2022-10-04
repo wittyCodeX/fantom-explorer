@@ -203,7 +203,7 @@ export default function BlockInfo() {
                   legend={false}
                   height="100"
                   width="100"
-                  colors={["#9a65ff", "#ed5083"]}
+                  colors={["blue", "#ed5083"]}
                   strokeColor="#2c2e3f"
                 />}
             </div>
