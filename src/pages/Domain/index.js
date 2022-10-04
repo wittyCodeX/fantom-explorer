@@ -35,7 +35,7 @@ export default function Domain() {
   return (
     <div>
       <components.TableView
-        classes="w-screen max-w-5xl"
+        classes="w-screen max-w-6xl"
         title={`Domain`}
         dontNeedSubtitle={true}
       >

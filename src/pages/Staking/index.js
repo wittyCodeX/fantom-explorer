@@ -165,7 +165,7 @@ export default function Staking() {
       {totals.selfStaked && <StakingInfo {...totals} />}
 
       <components.TableView
-        classes="w-screen max-w-5xl"
+        classes="w-screen max-w-6xl"
         title={`Validators (${validators?.length})`}
         dontNeedSubtitle={true}
       >

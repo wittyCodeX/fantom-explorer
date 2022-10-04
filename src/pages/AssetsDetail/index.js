@@ -43,7 +43,7 @@ export default function AssetsDetail() {
   return (
     <div>
       <components.TableView
-        classes="w-screen max-w-5xl"
+        classes="w-screen max-w-6xl"
         title={`Assets Detail`}
         dontNeedSubtitle={true}
       >

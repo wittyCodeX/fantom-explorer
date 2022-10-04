@@ -217,7 +217,7 @@ export default function Transactions() {
     "Txn Fee",
   ];
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="Transactions">
+    <components.TableView classes="w-screen max-w-6xl" title="Transactions">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
           More than {">"} {formatHexToInt(data?.transactions.totalCount)}{" "}

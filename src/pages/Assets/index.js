@@ -84,7 +84,7 @@ export default function Assets() {
 
   const columns = ["Block", "Time", "Age", "Txn", "Gas Used"];
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="Assets">
+    <components.TableView classes="w-screen max-w-6xl" title="Assets">
       <div className="bg-gray-100 text-gray-600 p-2">
         <div className="flex space-x-3 border-b">
           {/* Loop through tab data and render button for each. */}

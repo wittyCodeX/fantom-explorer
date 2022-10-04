@@ -91,7 +91,7 @@ export default function Contracts() {
     'Time',
   ]
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="Contracts">
+    <components.TableView classes="w-screen max-w-6xl" title="Contracts">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
           More than {'>'} {formatHexToInt(data?.contracts.totalCount)} contracts

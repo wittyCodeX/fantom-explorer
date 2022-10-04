@@ -371,7 +371,7 @@ export default function Address() {
   };
 
   return (
-    <div className="w-screen max-w-7xl">
+    <div className="w-screen max-w-6xl">
       <div className="flex items-center text-black md:text-xl sm:text-xl text-sm  px-2 font-normal border-b p-3  mt-[30px] bg-gray-200">
         <QRCode value={params.id} size={20} />{" "}
         <span className="mx-3"> Address </span>

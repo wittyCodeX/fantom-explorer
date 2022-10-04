@@ -135,7 +135,7 @@ export default function TransactionDetail() {
   return (
     <div>
       <components.TableView
-        classes="w-screen max-w-5xl"
+        classes="w-screen max-w-6xl"
         title={`Transaction Details`}
         dontNeedSubtitle={true}
       >

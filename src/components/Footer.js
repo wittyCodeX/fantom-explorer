@@ -6,7 +6,7 @@ export default function Footer(props) {
   return (
     <footer className=" w-full flex justify-center px-2 py-4 bg-gray-200 text-white sm:px-4 shadow-xl dark:bg-[#2c2e3f] dark:border-gray-700 z-10">
       {/* Bottom area */}
-      <div className="flex flex-row justify-between md:flex md:flex-row md:items-center md:justify-between py-1 border-t border-gray-300 dark:border-gray-500 w-screen max-w-7xl">
+      <div className="flex flex-row justify-between md:flex md:flex-row md:items-center md:justify-between py-1 border-t border-gray-300 dark:border-gray-500 w-screen max-w-6xl">
         {/* Copyrights note */}
         <div className="flex text-sm text-gray-600 mr-4">
           <div className="m-auto">

@@ -80,7 +80,7 @@ export default function Blocks() {
 
   const columns = ['Block', 'Time', 'Age', 'Txn', 'Gas Used']
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="Blocks">
+    <components.TableView classes="w-screen max-w-6xl" title="Blocks">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
           More than {'>'} {formatHexToInt(data?.blocks.totalCount)} blocks found

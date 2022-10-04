@@ -126,7 +126,7 @@ export default function BlockDetail() {
   return (
     <div>
       <components.TableView
-        classes="w-screen max-w-5xl"
+        classes="w-screen max-w-6xl"
         title={`Block #${formatHexToInt(block.number)}`}
         dontNeedSubtitle={true}
       >
@@ -206,7 +206,7 @@ export default function BlockDetail() {
       </components.TableView>
 
       <components.TableView
-        classes="w-screen max-w-5xl"
+        classes="w-screen max-w-6xl"
         title={`Transactions (${block.txList?.length})`}
         dontNeedSubtitle={true}
       >

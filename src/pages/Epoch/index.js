@@ -83,7 +83,7 @@ export default function Epochs() {
 
   const columns = ['Epoch', 'End Time', 'Total Fee (FTM)']
   return (
-    <components.TableView classes="w-screen max-w-5xl" title="Epochs">
+    <components.TableView classes="w-screen max-w-6xl" title="Epochs">
       <div className="flex flex-col justify-between px-2 py-5">
         <div>
           More than {'>'} {formatHexToInt(data?.epochs.totalCount)} epochs found

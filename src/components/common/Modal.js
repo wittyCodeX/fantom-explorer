@@ -7,7 +7,7 @@ const Modal = props => {
         onClick={props.close}
         className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
       />
-      <div className="modal-container bg-gray-100 w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+      <div className="modal-container bg-gray-100 w-11/12 md:max-w-6xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
         <div
           onClick={props.close}
           className="modal-close absolute top-0 right-0 cursor-pointer flex flex-col items-center mt-4 mr-4 text-white text-sm z-50"
