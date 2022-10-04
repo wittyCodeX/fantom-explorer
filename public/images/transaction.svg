@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106.37 109.6">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-8 {
+        fill: none;
+        stroke-linecap: round;
+        stroke-width: 3px;
+      }
+
+      .cls-1 {
+        stroke: #377dff;
+      }
+
+      .cls-1, .cls-2 {
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-8 {
+        stroke: #bdc5d1;
+      }
+
+      .cls-3 {
+        opacity: 0.5;
+      }
+
+      .cls-4 {
+        fill: #e7eaf3;
+      }
+
+      .cls-5 {
+        fill: #bdc5d1;
+      }
+
+      .cls-6 {
+        fill: #fff;
+      }
+
+      .cls-7 {
+        fill: #337afe;
+      }
+    </style>
+  </defs>
+  <g id="icon-2" transform="translate(-0.13 -5.2)">
+    <path id="Path_3" data-name="Path 3" class="cls-1" d="M99.1,113.3"/>
+    <path id="Path_4" data-name="Path 4" class="cls-2" d="M15.1,75.6V11l4.4-4.3L23.8,11l4.3-4.3L32.4,11l4.3-4.3L41,11l4.3-4.3L49.6,11l4.3-4.3L58.2,11l4.3-4.3L66.8,11l4.3-4.3L75.4,11l4.3-4.3L84,11l5-4.3L93.4,11v96.5a5.8,5.8,0,0,0,5.8,5.8h0a5.8,5.8,0,0,0,5.8-5.8V13.2H99.2v93.1"/>
+    <line id="Line_1" data-name="Line 1" class="cls-2" x1="73" transform="translate(26.1 113.3)"/>
+    <g id="Block_row_3" data-name="Block row 3" transform="translate(0 29)">
+      <g id="Group_1" data-name="Group 1" class="cls-3" transform="translate(0 30)">
+        <path id="Path_5" data-name="Path 5" class="cls-4" d="M78.1,44.5H39.2a7.277,7.277,0,0,1-7.3-7.3h0a7.277,7.277,0,0,1,7.3-7.3H78.1a7.277,7.277,0,0,1,7.3,7.3h0A7.214,7.214,0,0,1,78.1,44.5Z"/>
+      </g>
+      <g id="Group_2" data-name="Group 2" transform="translate(0 30)">
+        <path id="Path_6" data-name="Path 6" class="cls-5" d="M73.1,38H34.2a7.277,7.277,0,0,1-7.3-7.3h0a7.277,7.277,0,0,1,7.3-7.3H73.1a7.277,7.277,0,0,1,7.3,7.3h0A7.214,7.214,0,0,1,73.1,38Z"/>
+      </g>
+      <g id="Group_3" data-name="Group 3" transform="translate(0 30)">
+        <path id="Path_7" data-name="Path 7" class="cls-6" d="M65.4,32.3H41.9a1.58,1.58,0,0,1-1.6-1.6h0a1.58,1.58,0,0,1,1.6-1.6H65.4A1.58,1.58,0,0,1,67,30.7h0A1.645,1.645,0,0,1,65.4,32.3Z"/>
+      </g>
+    </g>
+    <g id="Block_row_2" data-name="Block row 2">
+      <g id="Group_1-2" data-name="Group 1" class="cls-3" transform="translate(0 30)">
+        <path id="Path_5-2" data-name="Path 5" class="cls-4" d="M78.1,44.5H39.2a7.277,7.277,0,0,1-7.3-7.3h0a7.277,7.277,0,0,1,7.3-7.3H78.1a7.277,7.277,0,0,1,7.3,7.3h0A7.214,7.214,0,0,1,78.1,44.5Z"/>
+      </g>
+      <g id="Group_2-2" data-name="Group 2" transform="translate(0 30)">
+        <path id="Path_6-2" data-name="Path 6" class="cls-5" d="M73.1,38H34.2a7.277,7.277,0,0,1-7.3-7.3h0a7.277,7.277,0,0,1,7.3-7.3H73.1a7.277,7.277,0,0,1,7.3,7.3h0A7.214,7.214,0,0,1,73.1,38Z"/>
+      </g>
+      <g id="Group_3-2" data-name="Group 3" transform="translate(0 30)">
+        <path id="Path_7-2" data-name="Path 7" class="cls-6" d="M65.4,32.3H41.9a1.58,1.58,0,0,1-1.6-1.6h0a1.58,1.58,0,0,1,1.6-1.6H65.4A1.58,1.58,0,0,1,67,30.7h0A1.645,1.645,0,0,1,65.4,32.3Z"/>
+      </g>
+    </g>
+    <g id="Block_row_1" data-name="Block row 1">
+      <g id="Group_5" data-name="Group 5" class="cls-3">
+        <path id="Path_5-3" data-name="Path 5" class="cls-5" d="M78.1,44.5H39.2a7.277,7.277,0,0,1-7.3-7.3h0a7.277,7.277,0,0,1,7.3-7.3H78.1a7.277,7.277,0,0,1,7.3,7.3h0A7.214,7.214,0,0,1,78.1,44.5Z"/>
+      </g>
+      <g id="Group_7" data-name="Group 7">
+        <path id="Path_6-3" data-name="Path 6" class="cls-7" d="M73.1,38H34.2a7.277,7.277,0,0,1-7.3-7.3h0a7.277,7.277,0,0,1,7.3-7.3H73.1a7.277,7.277,0,0,1,7.3,7.3h0A7.214,7.214,0,0,1,73.1,38Z"/>
+      </g>
+      <g id="Group_6" data-name="Group 6">
+        <path id="Path_7-3" data-name="Path 7" class="cls-6" d="M65.4,32.3H41.9a1.58,1.58,0,0,1-1.6-1.6h0a1.58,1.58,0,0,1,1.6-1.6H65.4A1.58,1.58,0,0,1,67,30.7h0A1.645,1.645,0,0,1,65.4,32.3Z"/>
+      </g>
+    </g>
+    <g id="Group_4" data-name="Group 4" class="cls-3" transform="translate(-2.15)">
+      <path id="Path_15" data-name="Path 15" class="cls-8" d="M0,0H12.433" transform="translate(3.8 86)"/>
+      <line id="Line_3" data-name="Line 3" class="cls-2" x2="18.85" transform="translate(3.8 93.5)"/>
+      <line id="Line_4" data-name="Line 4" class="cls-2" x2="7.4" y2="0.1" transform="translate(3.8 101.1)"/>
+      <path id="Path_16" data-name="Path 16" class="cls-8" d="M1.317,0H5.8" transform="translate(16.85 101.1)"/>
+    </g>
+  </g>
+</svg>

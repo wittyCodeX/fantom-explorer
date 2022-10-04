@@ -62,11 +62,8 @@ export default function BlockInfo() {
     { loading: loading2, data: data2 }
   ] = queryMultiple();
 
-  console.log("data", data1);
   useEffect(
     () => {
-      console.log("staking", data2);
-
       if (data2) {
         const stakers = data2.stakers;
         const totals = { selfStaked: 0, totalDelegated: 0, totalStaked: 0 };
@@ -112,8 +109,8 @@ export default function BlockInfo() {
   );
   return (
     <div className="w-full p-4">
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 sm:p-1  mt-[50px]">
-        <div className="col-span-3 lg:col-span-3 md:col-span-1 bg-white dark:bg-[#2c2e3f] p-2 border-gray-300 shadow-md">
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 sm:p-1 mt-[50px]">
+        <div className="col-span-3 lg:col-span-3 md:col-span-1 bg-white dark:bg-[#2c2e3f] p-2 border-gray-300 shadow-md order-2">
           <div className="grid lg:grid-cols-3 grid-cols-1 gap-4">
             <components.Card
               title="Blocks"
@@ -171,9 +168,9 @@ export default function BlockInfo() {
             </components.Card>
           </div>
         </div>
-        <div className="grid bg-white dark:bg-[#2c2e3f] grid-cols-1  w-full p-2 border-gray-300 shadow-md">
+        <div className="grid bg-white dark:bg-[#2c2e3f] grid-cols-1  w-full p-2 border-gray-300 shadow-md order-1">
           <div
-            className={`bg-white dark:bg-[#2c2e3f] flex items-center justify-center lg:flex-row md:flex-col sm:flex-row flex-col md:w-full m-2 p-2`}
+            className={`bg-white dark:bg-[#2c2e3f] flex items-center justify-center xl:flex-row lg:flex-col md:flex-col sm:flex-row flex-col md:w-full m-2 p-2`}
           >
             <div className="flex dark:text-gray-100">
               {data1 &&
