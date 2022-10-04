@@ -107,10 +107,11 @@ export default function LatestTransactions() {
   }, [data]);
   return (
     <components.Panel
-      classes="max-h-96 h-96"
+      classes="max-h-96 h-[500px]"
       title="Latest Transactions"
       btnLabel="View all"
       to="/transactions"
+      icon={services.linking.static("images/transfer.svg")}
     >
       {transactions.length > 0 ? (
         <components.DynamicTable>
@@ -132,52 +133,50 @@ export default function LatestTransactions() {
 const DynamicTableRow = (props) => {
   const item = props.item;
   return (
-    <tr className="border-b border-gray-lighter dark:border-blue-lighter">
+    <tr className="border-b border-gray-300 dark:border-[#2c3e6f]">
       <td className="md:px-2 truncate py-3 w-screen">
-        <div className="flex flex-col text-lg">
-          <div className="flex flex-row  mb-1">
-            <div className="flex w-2/5">TX Hash </div>
-            <Link
-              to={`/transactions/${item.transaction.hash}`}
-              className="text-blue-500 dark:text-gray-300"
-            >
-              {formatHash(item.transaction.hash)}
-            </Link>
-          </div>
-          <div className="flex flex-row  mb-1">
-            <div className="flex w-2/5">Time </div>
-            <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-              {moment.unix(item.transaction.block.timestamp).fromNow()}
+        <div className="flex flex-row items-center justify-between text-lg">
+          <div className="flex flex-col">
+            <div className="flex flex-row items-center mb-1">
+              <div className="flex mx-2 text-sm">Txn Hash# </div>
+              <Link
+                to={`/transactions/${item.transaction.hash}`}
+                className="text-blue-500 dark:text-gray-300"
+              >
+                {formatHash(item.transaction.hash)}
+              </Link>
+            </div>
+            <div className="flex flex-row  text-sm  mx-2">
+              <div className="flex mr-2">From </div>
+              <Link
+                className="text-blue-500 dark:text-gray-300"
+                to={`/address/${item.transaction.from}`}
+              >
+                {" "}
+                {getTypeByStr(item.transaction.from) == "address"
+                  ? formatHash(item.transaction.from)
+                  : item.transaction.from}
+              </Link>
+              <div className="flex mx-2">To </div>
+              <Link
+                className="text-blue-500 dark:text-gray-300"
+                to={`/address/${item.transaction.to}`}
+              >
+                {" "}
+                {getTypeByStr(item.transaction.to) == "address"
+                  ? formatHash(item.transaction.to)
+                  : item.transaction.to}
+              </Link>
             </div>
           </div>
-          <div className="flex flex-row  mb-1">
-            <div className="flex w-2/5">From </div>
-            <Link
-              className="text-blue-500 dark:text-gray-300"
-              to={`/address/${item.transaction.from}`}
-            >
-              {" "}
-              {getTypeByStr(item.transaction.from) == "address"
-                ? formatHash(item.transaction.from)
-                : item.transaction.from}
-            </Link>
-          </div>
-          <div className="flex flex-row  mb-1">
-            <div className="flex w-2/5">To </div>
-            <Link
-              className="text-blue-500 dark:text-gray-300"
-              to={`/address/${item.transaction.to}`}
-            >
-              {" "}
-              {getTypeByStr(item.transaction.to) == "address"
-                ? formatHash(item.transaction.to)
-                : item.transaction.to}
-            </Link>
-          </div>
-          <div className="flex flex-row  mb-1">
-            <div className="flex w-2/5">Amount {`(FTM)`} </div>
-            <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
+
+          <div className="flex flex-col items-center justify-end  mb-1">
+            <div className="text-sm flex flex-row items-center text-red-500 dark:text-gray-100 font-semibold text-nowrap">
               {numToFixed(WEIToFTM(item.transaction.value), 4)} FTM
+              <img src={services.linking.static("images/check.svg")} alt="status" srcSet="" className="w-5 h-5 mx-2" />
+            </div>
+            <div className="text-sm">
+              {moment.unix(item.transaction.block.timestamp).fromNow()}
             </div>
           </div>
         </div>

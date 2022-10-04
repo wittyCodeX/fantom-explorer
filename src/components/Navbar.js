@@ -197,7 +197,7 @@ export default function Navbar(props) {
         </div>
       </div>
       <div className="flex items-center justify-center mx-auto max-w-6xl mt-2">
-        <div className="flex w-3/5">
+        <div className="flex md:w-3/5 lg:w-5/7 sm:w-7/9 w-11/12">
           <div className="flex-none bg-gray-100 dark:bg-[#2c2e3f] p-0.5 rounded-l border  border-gray-300">
             <select
               id="countries"
@@ -224,7 +224,7 @@ export default function Navbar(props) {
             required={false}
           />
           <button
-            className="bg-gray-100 dark:bg-[#2c2e3f] hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r border  border-gray-300"
+            className="bg-gray-100 dark:bg-[#2c2e3f] hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r hidden sm:hidden md:hidden lg:block border  border-gray-300"
             onClick={onClickSearch}
           >
             Search
