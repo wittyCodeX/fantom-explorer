@@ -51,7 +51,7 @@ export default function LatestBlocks() {
     <components.Panel
       classes="max-h-96 h-96"
       title="Latest Blocks"
-      btnLabel="View all blocks"
+      btnLabel="View all"
       to="/blocks"
     >
       {loading
@@ -70,7 +70,7 @@ const DynamicTableRow = ({ item }) => {
   return (
     <tr className="border-b border-gray-lighter dark:border-blue-lighter">
       <td className="md:px-2 truncate py-3 w-screen">
-        <div className="flex flex-col">
+        <div className="flex flex-col text-lg">
           <div className="flex flex-row  mb-1">
             <div className="flex w-2/5">Block </div>
             <Link

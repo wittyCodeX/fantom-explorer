@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import { MoonIcon, SunIcon } from "@heroicons/react/outline";
-
 import services from "services";
 import components from "components";
 import { numToFixed, getTypeByStr } from "utils";
@@ -10,6 +9,8 @@ import { numToFixed, getTypeByStr } from "utils";
 export default function Navbar(props) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
   const [price, setPrice] = useState(0);
+  const [keywordType, setKeywordType] = useState("all");
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     const getFTMPrice = async () => {
@@ -23,9 +24,28 @@ export default function Navbar(props) {
     getFTMPrice();
   }, []);
 
-  const handleChange = keyword => {
-    const type = getTypeByStr(keyword);
+  const handleChange = _keyword => {
+    const type = getTypeByStr(_keyword);
     console.log(type);
+    switch (type) {
+      case "transaction_hash":
+        location.href = "/transactions/" + _keyword;
+        break;
+      case "address":
+        location.href = "/address/" + _keyword;
+        break;
+      case "block":
+        location.href = "/blocks/" + _keyword;
+        break;
+      case "domain":
+        location.href = "/domain/" + _keyword;
+        break;
+      default:
+        break;
+    }
+  };
+  const onClickSearch = () => {
+    const type = getTypeByStr(keyword);
     switch (type) {
       case "transaction_hash":
         location.href = "/transactions/" + keyword;
@@ -44,54 +64,34 @@ export default function Navbar(props) {
     }
   };
   return (
-    <header className="sticky top-0 z-30 w-full bg-gray-100 dark:bg-blue-900 dark:text-gray-300 text-black px-2 py-4 bg-white sm:px-4 shadow-xl">
-      <div className="flex items-center justify-between mx-auto max-w-7xl">
-        <Link to="/">
-          <img
-            src={
-              props.isDarkmode
-                ? services.linking.static("images/logo-ftmscan-white.svg")
-                : services.linking.static("images/logo-ftmscan.svg")
-            }
-            className="h-6 md:h-7 m-auto dark:md:h-7"
-            alt="FNS Domains"
-          />{" "}
-        </Link>
-        <div className="relative w-96">
-          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-            <svg
-              aria-hidden="true"
-              className="w-5 h-5 text-gray-500 dark:text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clipRule="evenodd"
-              />
-            </svg>
+    <header
+      className="sticky top-0 z-30 w-full bg-gray-100 dark:text-gray-300 text-gray-200 px-2 py-4 bg-white sm:px-4"
+      style={{
+        backgroundImage: `url(${props.isDarkmode
+          ? services.linking.static("images/navbar-bg-dark.png")
+          : services.linking.static("images/navbar-bg.png")})`,
+        backgroundSize: "cover"
+      }}
+    >
+      <div className="flex items-center justify-between mx-auto max-w-6xl">
+        <div className="flex flex-row items-center justify-center">
+          <Link to="/">
+            <img
+              src={services.linking.static("images/logo-ftmscan-white.svg")}
+              className="h-6 md:h-7 m-auto dark:md:h-7"
+              alt="FNS Domains"
+            />{" "}
+          </Link>
+          <div className="text-white py-1 px-4 text-sm">
+            <span className="font-bold">FTM:</span> {numToFixed(price, 4)} $
           </div>
-          <components.Input
-            type="text"
-            id="voice-search"
-            className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 block pl-10 p-2.5"
-            placeholder="Search by Address / Tx Hash / Block / Name"
-            handleChange={handleChange}
-            required={false}
-          />
         </div>
-      </div>
-      <div className="flex items-center justify-between mx-auto max-w-7xl mt-2">
-        <div className="bg-gray-300 dark:bg-blue-800 py-1 px-2 text-sm">
-          FTM: {numToFixed(price, 4)} $
-        </div>
+
         <div className="flex justify-end items-center space-x-1">
-          <ul className="hidden space-x-2 md:inline-flex">
+          <ul className="hidden  space-x-1 md:inline-flex">
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/"
               >
                 <div>Home</div>
@@ -99,7 +99,7 @@ export default function Navbar(props) {
             </li>
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/blocks"
               >
                 <div>Blocks</div>
@@ -107,7 +107,7 @@ export default function Navbar(props) {
             </li>
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/transactions"
               >
                 <div>Transactions</div>
@@ -115,7 +115,7 @@ export default function Navbar(props) {
             </li>
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/epochs"
               >
                 <div>Epochs</div>
@@ -123,7 +123,7 @@ export default function Navbar(props) {
             </li>
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/staking"
               >
                 <div>Staking</div>
@@ -131,7 +131,7 @@ export default function Navbar(props) {
             </li>
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/assets"
               >
                 <div>Assets</div>
@@ -139,7 +139,7 @@ export default function Navbar(props) {
             </li>
             <li>
               <Link
-                className="block text-lg px-3 w-full flex items-center justify-between"
+                className="block px-2 w-full text-lg flex items-center justify-between"
                 to="/contracts"
               >
                 <div>Contracts</div>
@@ -196,10 +196,45 @@ export default function Navbar(props) {
           </div>
         </div>
       </div>
+      <div className="flex items-center justify-center mx-auto max-w-6xl mt-2">
+        <div className="flex w-3/5">
+          <div className="flex-none bg-gray-100 dark:bg-[#2c2e3f] p-0.5 rounded-l border  border-gray-300">
+            <select
+              id="countries"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-[#2c2e3f] dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={e => setKeywordType(e.target.value)}
+              value={keywordType}
+            >
+              <option value="all">All</option>
+              <option value="block">Block</option>
+              <option value="txhash">Tx Hash</option>
+              <option value="address">Address</option>
+              <option value="token">Token</option>
+              <option value="domain">Domain</option>
+            </select>
+          </div>
+          <components.Input
+            type="text"
+            id="voice-search"
+            className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-gray-500 focus:border-gray-500 block pl-2 p-3"
+            placeholder="Search by Address / Tx Hash / Block / Name"
+            handleChange={handleChange}
+            value={keyword}
+            onInputChange={e => setKeyword(e.target.value)}
+            required={false}
+          />
+          <button
+            className="bg-gray-100 dark:bg-[#2c2e3f] hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r border  border-gray-300"
+            onClick={onClickSearch}
+          >
+            Search
+          </button>
+        </div>
+      </div>
       <div
         className={`${isNavOpen
           ? ""
-          : "hidden"} bg-white dark:bg-blue-900 left-0 w-screen z-10 transition-all`}
+          : "hidden"} bg-white dark:bg-[#0713ff] left-0 w-screen z-10 transition-all`}
         style={{
           left: "100%",
           transform: !isNavOpen ? "translateX(-100%)" : "translateX(0)"

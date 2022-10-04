@@ -4,14 +4,7 @@ import services from "services";
 
 export default function Footer(props) {
   return (
-    <footer
-      className=" w-full px-2 py-4 bg-gray-200 text-white sm:px-4 shadow-xl dark:bg-blue-900 dark:border-gray-700 z-10"
-      style={{
-        backgroundImage: `url(${services.linking.static(
-          "images/abstract-shapes-20.svg"
-        )})`
-      }}
-    >
+    <footer className=" w-full px-2 py-4 bg-gray-200 text-white sm:px-4 shadow-xl dark:bg-[#2c2e3f] dark:border-gray-700 z-10">
       {/* Bottom area */}
       <div className="flex flex-row justify-between md:flex md:flex-row md:items-center md:justify-between py-1 border-t border-gray-900 dark:border-gray-200">
         {/* Copyrights note */}

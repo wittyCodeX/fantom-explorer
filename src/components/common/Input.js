@@ -10,13 +10,8 @@ const Input = ({
   required = true,
   className = '',
   disabled = false,
+  onInputChange
 }) => {
-  const [keyword, setKeyword] = useState(value)
-  const onInputChange = (e) => {
-    // handleChange(e)
-    setKeyword(e.target.value)
-  }
-
   const onKeyPress = (e) => {
     if (e.charCode == 13) {
       handleChange(keyword)
@@ -40,7 +35,7 @@ const Input = ({
         autoComplete={title}
         onChange={onInputChange}
         onKeyPress={onKeyPress}
-        className={`${className} text-black dark:text-white bg-blue-800 dark:bg-blue-800`}
+        className={`${className} text-black dark:text-white bg-blue-800 dark:bg-[#2c2e3f]`}
         name={name ? name : title}
         id={title}
         type={nativeType}

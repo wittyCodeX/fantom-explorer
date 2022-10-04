@@ -27,7 +27,7 @@ export default function Landing() {
 
   return (
     <div className=" flex flex-col md:w-8/12 sm:w-8/12 w-10/12">
-      <div className="flex justify-center mt-[50px]">
+      {/* <div className="flex justify-center mt-[50px]">
         <div className="relative w-2/4">
           <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <svg
@@ -53,10 +53,10 @@ export default function Landing() {
             required={false}
           />
         </div>
-      </div>
+      </div> */}
 
       <BlockInfo />
-      <div className="grid md:grid-cols-2 sm:grid-cols-2 gap-4 md:p-4 sm:p-0 p-0  mt-[70px]">
+      <div className="grid md:grid-cols-2 sm:grid-cols-2 gap-4 md:px-4 sm:p-0 p-0]">
         <LatestBlocks />
         <LatestTransactions />
       </div>

@@ -3,22 +3,24 @@ import React from "react";
 const Card = props => {
   return (
     <div
-      className={`flex flex-col bg-white dark:bg-blue-800 w-24 min-w-full rounded-xl py-8  shadow-xl  ${props.classes
+      className={`bg-white dark:bg-[#2c2e3f] rounded-xl shadow-md m-2 p-2 grid grid-rows-3 grid-flow-col gap-1  ${props.classes
         ? props.classes
         : ""}`}
     >
-      {props.title
-        ? <div className={"flex items-center justify-center mb-5 p-5"}>
-            <h1
-              className={
-                "title p-2 sm:p-0 text-black dark:text-gray-300 md:text-2xl sm:text-2xl text-xl"
-              }
-            >
-              {props.title}
-            </h1>
-          </div>
-        : ""}
-      {props.children}
+      <div className="row-span-3 flex items-center justify-center  dark:text-gray-100">
+        <img
+          src={props.icon}
+          alt="chain-info"
+          srcSet=""
+          className="w-10 h-10"
+        />
+      </div>
+      <div className="col-span-2 title sm:p-0 text-black dark:text-gray-300 text-sm  flex items-end">
+        {props.title}
+      </div>
+      <div className="row-span-2 col-span-2  flex items-center">
+        {props.children}
+      </div>
     </div>
   );
 };

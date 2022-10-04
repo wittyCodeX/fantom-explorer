@@ -13,11 +13,12 @@ const Wrapper = (props) => {
     setDOMDarkmode(flag);
     setDarkMode(flag);
   };
-  console.log("darkMode", darkMode);
   useEffect(() => {
     setDOMDarkmode(darkMode);
-    setDarkMode(darkMode);
+    setDarkMode(darkMode); 
   }, []);
+  // dark:bg-[#202020] #222431
+  
   return (
     <>
       <components.Navbar
@@ -25,14 +26,7 @@ const Wrapper = (props) => {
         isDarkmode={isDarkmode}
       />
       <div
-        className="min-h-screen text-white dark:text-gray-300  bg-gray-200 dark:bg-blue-900 w-full flex justify-center"
-        style={{
-          backgroundImage: `url(${
-            isDarkmode
-              ? services.linking.static("images/abstract-shapes-20.svg")
-              : ""
-          })`,
-        }}
+        className="min-h-screen text-white dark:text-gray-300  bg-gray-200  dark:bg-gradient-to-r from-[#222431] via-[#252431] to-[#222431] w-full flex justify-center"
       >
         {props.children}
       </div>

@@ -109,7 +109,7 @@ export default function LatestTransactions() {
     <components.Panel
       classes="max-h-96 h-96"
       title="Latest Transactions"
-      btnLabel="View all transactions"
+      btnLabel="View all"
       to="/transactions"
     >
       {transactions.length > 0 ? (
@@ -134,7 +134,7 @@ const DynamicTableRow = (props) => {
   return (
     <tr className="border-b border-gray-lighter dark:border-blue-lighter">
       <td className="md:px-2 truncate py-3 w-screen">
-        <div className="flex flex-col">
+        <div className="flex flex-col text-lg">
           <div className="flex flex-row  mb-1">
             <div className="flex w-2/5">TX Hash </div>
             <Link
