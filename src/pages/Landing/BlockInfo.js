@@ -109,6 +109,17 @@ export default function BlockInfo() {
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 mt-[50px]">
       <div className="col-span-3 lg:col-span-3 md:col-span-3 bg-gray-100 dark:bg-[#2c2e3f] p-2 border-gray-300 shadow-md order-2  md:order-2 sm:order-2 lg:order-1">
+        <div className="flex flex-row items-center justify-start">
+          <img
+            src={services.linking.static("images/block.svg")}
+            alt=""
+            srcSet=""
+            className="w-5 h-5 m-2"
+          />
+          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Chain Data
+          </span>
+        </div>
         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3  grid-cols-1 gap-2">
           <components.Card
             title="Blocks"
@@ -165,31 +176,44 @@ export default function BlockInfo() {
         </div>
       </div>
       <div className="grid bg-gray-100 dark:bg-[#2c2e3f] col-span-3 md:col-span-1 lg:col-span-1 grid-cols-1 sm:gap-4  w-full p-2 border-gray-300 shadow-md lg:flex md:hidden sm:order-1 lg:order-2  min-w-[200px]">
-        <div
-          className={`bg-gray-100 dark:bg-[#2c2e3f] flex items-center justify-around xl:flex-row lg:flex-col md:flex-col sm:flex-row flex-col md:w-full m-2 p-2`}
-        >
-          <div className="flex dark:text-gray-100">
-            {data1 &&
-              totals &&
-              <DonutChart
-                data={[
-                  { label: "Staked", value: Number(cStaked) },
-                  { label: "Delegated", value: 100 - Number(cDelegated) }
-                ]}
-                className="text-gray-100 innertext-label"
-                legend={false}
-                height="100"
-                width="100"
-                colors={["#9a65ff", "#ed5083"]}
-                strokeColor="#2c2e3f"
-              />}
+        <div className="flex flex-col w-full justify-start">
+          <div className="flex flex-row items-center justify-start">
+            <img
+              src={services.linking.static("images/totalsupply.svg")}
+              alt=""
+              srcSet=""
+              className="w-5 h-5 m-2"
+            />
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              Token Status
+            </span>
           </div>
-          <div className="flex flex-col items-center">
-            <div className="col-span-2 title sm:p-0 text-black dark:text-gray-300 text-sm  flex items-end">
-              Total Stacked
+          <div
+            className={`bg-gray-100 dark:bg-[#2c2e3f] flex items-center justify-around xl:flex-row lg:flex-col md:flex-col sm:flex-row flex-col md:w-full mt-6 m-2 p-2`}
+          >
+            <div className="flex dark:text-gray-100">
+              {data1 &&
+                totals &&
+                <DonutChart
+                  data={[
+                    { label: "Staked", value: Number(cStaked) },
+                    { label: "Delegated", value: 100 - Number(cDelegated) }
+                  ]}
+                  className="text-gray-100 innertext-label"
+                  legend={false}
+                  height="100"
+                  width="100"
+                  colors={["#9a65ff", "#ed5083"]}
+                  strokeColor="#2c2e3f"
+                />}
             </div>
-            <div className="row-span-2 col-span-2  flex items-center">
-              <components.Number value={totals && totals.totalStaked} />
+            <div className="flex flex-col items-center">
+              <div className="col-span-2 title sm:p-0 text-black dark:text-gray-300 text-sm  flex items-end">
+                Total Stacked
+              </div>
+              <div className="row-span-2 col-span-2  flex items-center">
+                <components.Number value={totals && totals.totalStaked} />
+              </div>
             </div>
           </div>
         </div>
