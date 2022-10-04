@@ -3,7 +3,7 @@ import React from "react";
 const Card = props => {
   return (
     <div
-      className={`bg-white dark:bg-[#2c2e3f] rounded-xl shadow-md m-2 p-2 grid grid-rows-3 grid-flow-col gap-1  ${props.classes
+      className={`bg-gray-100 dark:bg-[#2c2e3f] shadow-md m-2 p-2 grid grid-rows-3 grid-flow-col gap-1  ${props.classes
         ? props.classes
         : ""}`}
     >

@@ -85,7 +85,6 @@ export default function BlockInfo() {
             numToFixed(WEIToFTM(_item.totalStake), 0)
           );
         });
-        console.log(totals);
         setStaked(
           numToFixed(
             Number(totals.totalStaked) /
@@ -108,91 +107,87 @@ export default function BlockInfo() {
     [data2]
   );
   return (
-    <div className="w-full p-4">
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 sm:p-1 mt-[50px]">
-        <div className="col-span-3 lg:col-span-3 md:col-span-1 bg-white dark:bg-[#2c2e3f] p-2 border-gray-300 shadow-md order-2">
-          <div className="grid lg:grid-cols-3 grid-cols-1 gap-4">
-            <components.Card
-              title="Blocks"
-              icon={services.linking.static("images/block-9.svg")}
-              classes="p-0 "
-            >
-              <components.Number value={data1 && data1.state.blocks} />
-            </components.Card>
-            <components.Card
-              title="Validators"
-              classes="p-0 "
-              icon={services.linking.static("images/validator.svg")}
-            >
-              <components.Number value={data1 && data1.state.validators} />
-            </components.Card>
-            <components.Card
-              title="Transactions"
-              classes="p-0 "
-              icon={services.linking.static("images/transfer.svg")}
-            >
-              <components.Number value={data1 && data1.state.transactions} />
-            </components.Card>
-          </div>
-          <div className="grid lg:grid-cols-3  grid-cols-1 gap-4">
-            <components.Card
-              title="Accounts"
-              classes="p-0 "
-              icon={services.linking.static("images/user.svg")}
-            >
-              <components.Number value={data1 && data1.state.accounts} />
-            </components.Card>
-            <components.Card
-              title="Last Epoch"
-              classes="p-0 "
-              icon={services.linking.static("images/block.svg")}
-            >
-              <components.Number value={data1 && data1.state.sealedEpoch.id} />
-            </components.Card>
-            <components.Card
-              title="Total Supply"
-              classes="p-0 "
-              icon={services.linking.static("images/totalsupply.svg")}
-            >
-              <components.Number
-                value={
-                  data1 &&
-                  numToFixed(
-                    WEIToFTM(
-                      formatHexToInt(data1.state.sealedEpoch.totalSupply)
-                    ),
-                    2
-                  )
-                }
-              />
-            </components.Card>
-          </div>
-        </div>
-        <div className="grid bg-white dark:bg-[#2c2e3f] grid-cols-1  w-full p-2 border-gray-300 shadow-md order-1">
-          <div
-            className={`bg-white dark:bg-[#2c2e3f] flex items-center justify-center xl:flex-row lg:flex-col md:flex-col sm:flex-row flex-col md:w-full m-2 p-2`}
+    <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 mt-[50px]">
+      <div className="col-span-3 lg:col-span-3 md:col-span-3 bg-gray-100 dark:bg-[#2c2e3f] p-2 border-gray-300 shadow-md order-2  md:order-2 sm:order-2 lg:order-1">
+        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3  grid-cols-1 gap-2">
+          <components.Card
+            title="Blocks"
+            icon={services.linking.static("images/block-9.svg")}
+            classes="p-0 "
           >
-            <div className="flex dark:text-gray-100">
-              {data1 &&
-                totals &&
-                <DonutChart
-                  data={[
-                    { label: "Staked", value: Number(cStaked) },
-                    { label: "Delegated", value: 100 - Number(cDelegated) }
-                  ]}
-                  className="w-[150px] h-[150px]  md:w-[100px] md:h-[100px]"
-                  legend={false}
-                  height="100"
-                  width="100"
-                />}
+            <components.Number value={data1 && data1.state.blocks} />
+          </components.Card>
+          <components.Card
+            title="Validators"
+            classes="p-0 "
+            icon={services.linking.static("images/validator.svg")}
+          >
+            <components.Number value={data1 && data1.state.validators} />
+          </components.Card>
+          <components.Card
+            title="Transactions"
+            classes="p-0 "
+            icon={services.linking.static("images/transfer.svg")}
+          >
+            <components.Number value={data1 && data1.state.transactions} />
+          </components.Card>
+        </div>
+        <div className="grid lg:grid-cols-3  md:grid-cols-3  sm:grid-cols-3  grid-cols-1 gap-2">
+          <components.Card
+            title="Accounts"
+            classes="p-0 "
+            icon={services.linking.static("images/user.svg")}
+          >
+            <components.Number value={data1 && data1.state.accounts} />
+          </components.Card>
+          <components.Card
+            title="Last Epoch"
+            classes="p-0 "
+            icon={services.linking.static("images/block.svg")}
+          >
+            <components.Number value={data1 && data1.state.sealedEpoch.id} />
+          </components.Card>
+          <components.Card
+            title="Total Supply"
+            classes="p-0 "
+            icon={services.linking.static("images/totalsupply.svg")}
+          >
+            <components.Number
+              value={
+                data1 &&
+                numToFixed(
+                  WEIToFTM(formatHexToInt(data1.state.sealedEpoch.totalSupply)),
+                  2
+                )
+              }
+            />
+          </components.Card>
+        </div>
+      </div>
+      <div className="grid bg-gray-100 dark:bg-[#2c2e3f] col-span-3 md:col-span-1 lg:col-span-1 grid-cols-1 sm:gap-4  w-full p-2 border-gray-300 shadow-md lg:flex md:hidden sm:order-1 lg:order-2  min-w-[200px]">
+        <div
+          className={`bg-gray-100 dark:bg-[#2c2e3f] flex items-center justify-around xl:flex-row lg:flex-col md:flex-col sm:flex-row flex-col md:w-full m-2 p-2`}
+        >
+          <div className="flex dark:text-gray-100">
+            {data1 &&
+              totals &&
+              <DonutChart
+                data={[
+                  { label: "Staked", value: Number(cStaked) },
+                  { label: "Delegated", value: 100 - Number(cDelegated) }
+                ]}
+                className="text-gray-100 innertext-label"
+                legend={false}
+                height="100"
+                width="100"
+              />}
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="col-span-2 title sm:p-0 text-black dark:text-gray-300 text-sm  flex items-end">
+              Total Stacked
             </div>
-            <div className="flex flex-col items-center">
-              <div className="col-span-2 title sm:p-0 text-black dark:text-gray-300 text-sm  flex items-end">
-                Total Stacked
-              </div>
-              <div className="row-span-2 col-span-2  flex items-center">
-                <components.Number value={totals && totals.totalStaked} />
-              </div>
+            <div className="row-span-2 col-span-2  flex items-center">
+              <components.Number value={totals && totals.totalStaked} />
             </div>
           </div>
         </div>

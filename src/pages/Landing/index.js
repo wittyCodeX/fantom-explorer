@@ -56,9 +56,9 @@ export default function Landing() {
       </div> */}
 
       <BlockInfo />
-      <div className="grid md:grid-cols-2 sm:grid-cols-2 gap-4 md:px-4 sm:p-0 p-0]">
-        <LatestBlocks />
-        <LatestTransactions />
+      <div className="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 grid-cols-1 gap-4 sm:p-4 p-4]">
+        <LatestBlocks classes="grid" />
+        <LatestTransactions classes="grid" />
       </div>
     </div>
   );

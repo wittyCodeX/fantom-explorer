@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Panel = props => {
   return (
     <div
-      className={`relative mb-2 bg-white text-black dark:text-gray-300 dark:bg-[#2c2e3f] border-solid border-grey-light dark:border-blue-right shadow-xl `}
+      className={`relative mb-2 bg-gray-100 text-black dark:text-gray-300 dark:bg-[#2c2e3f] border-solid border-grey-light dark:border-blue-right shadow-xl `}
     >
       <div className="flex flex-row items-center justify-between bg-grey-lighter text-xl px-2 py-3 border-solid border-grey-light  dark:border-blue-right  border-b">
         <div className="flex">

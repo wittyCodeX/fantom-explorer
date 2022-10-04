@@ -491,7 +491,7 @@ export default function Address() {
         </components.TableView>
       </div>
 
-      <div className="bg-white text-gray-600 p-2">
+      <div className="bg-gray-100 text-gray-600 p-2">
         <div className="flex space-x-3 border-b">
           {/* Loop through tab data and render button for each. */}
           <button

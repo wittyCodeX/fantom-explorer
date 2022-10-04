@@ -65,7 +65,7 @@ export default function Navbar(props) {
   };
   return (
     <header
-      className="sticky top-0 z-30 w-full bg-gray-100 dark:text-gray-300 text-gray-200 px-2 py-4 bg-white sm:px-4"
+      className="sticky top-0 z-30 w-full bg-gray-100 dark:text-gray-300 text-gray-200 px-2 py-4 bg-gray-100 sm:px-4"
       style={{
         backgroundImage: `url(${props.isDarkmode
           ? services.linking.static("images/navbar-bg-dark.png")
@@ -234,7 +234,7 @@ export default function Navbar(props) {
       <div
         className={`${isNavOpen
           ? ""
-          : "hidden"} bg-white dark:bg-[#0713ff] left-0 w-screen z-10 transition-all`}
+          : "hidden"} bg-gray-100 dark:bg-[#0713ff] left-0 w-screen z-10 transition-all`}
         style={{
           left: "100%",
           transform: !isNavOpen ? "translateX(-100%)" : "translateX(0)"
