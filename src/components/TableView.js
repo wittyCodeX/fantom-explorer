@@ -1,7 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import DataTable, { createTheme } from "react-data-table-component";
+import components from "components";
+import { formatIntToHex } from "utils";
+
+createTheme("solarized", {
+  background: {
+    default: "transparent"
+  },
+  divider: {
+    default: "lightgray"
+  },
+  text: {
+    primary: "black",
+    secondary: "#36abd2"
+  }
+});
 
 const TableView = props => {
+  const [perPage, setPerPage] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = page => {
+    let cursor;
+    cursor = props.totalCount - (page - 1) * perPage;
+    props.fetchMoreData(formatIntToHex(cursor));
+    setCurrentPage(page);
+  };
+
+  const handlePerRowsChange = async (newPerPage, page) => {
+    let cursor;
+    cursor = props.totalCount - (page - 1) * perPage;
+    props.fetchMoreData(formatIntToHex(cursor), newPerPage);
+    setPerPage(newPerPage);
+  };
+
   return (
     <div className="py-2">
       {props.title &&
@@ -22,7 +55,24 @@ const TableView = props => {
             ? props.classes
             : ""}`}
         >
-          {props.children}
+          {props.loading
+            ? <components.Loading />
+            : <DataTable
+                columns={props.columns}
+                theme="solarized"
+                data={props.data}
+                responsive={true}
+                highlightOnHover={true}
+                pagination
+                paginationServer
+                progressComponent={<components.Loading />}
+                paginationPerPage={perPage}
+                paginationRowsPerPageOptions={[25, 50, 100]}
+                paginationTotalRows={props.totalCount}
+                paginationDefaultPage={currentPage}
+                onChangeRowsPerPage={handlePerRowsChange}
+                onChangePage={handlePageChange}
+              />}
         </div>
         {props.btnLabel &&
           <div className="absolute bottom-0 bg-gray-100  dark:bg-[#2c2e3f] text-xl px-2 py-1 w-full flex justify-center border-solid border-grey-light  dark:border-blue-light  border-t">

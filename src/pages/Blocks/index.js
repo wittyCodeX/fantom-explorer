@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
-import DataTable, { createTheme } from "react-data-table-component";
-
 import components from "components";
-
-import {
-  formatHexToInt,
-  formatIntToHex,
-  timestampToDate,
-  formatDate,
-  getTypeByStr,
-  formatHash
-} from "utils";
+import { formatHexToInt, timestampToDate, formatDate, formatHash } from "utils";
 import moment from "moment";
 
 const GET_BLOCKS = gql`
@@ -39,18 +29,6 @@ const GET_BLOCKS = gql`
   }
 `;
 
-createTheme("solarized", {
-  background: {
-    default: "transparent"
-  },
-  divider: {
-    default: "lightgray"
-  },
-  text: {
-    primary: "black",
-    secondary: "#36abd2"
-  }
-});
 const columns = [
   {
     name: "Block",
@@ -116,9 +94,7 @@ const columns = [
 export default function Blocks() {
   const [rows, setRows] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [perPage, setPerPage] = useState(25);
-  const [currentPage, setCurrentPage] = useState(1);
-
+  const [perPage] = useState(25);
   const { loading, error, data, fetchMore } = useQuery(GET_BLOCKS, {
     variables: {
       cursor: null,
@@ -149,44 +125,18 @@ export default function Blocks() {
     [loading]
   );
 
-  const handlePageChange = page => {
-    let cursor;
-    cursor = totalCount - (page - 1) * perPage;
-    console.log("page: ", page);
-    console.log("cursor: ", cursor);
-    fetchMoreData(formatIntToHex(cursor));
-    setCurrentPage(page);
-  };
-
-  const handlePerRowsChange = async (newPerPage, page) => {
-    let cursor;
-    cursor = totalCount - (page - 1) * perPage;
-    fetchMoreData(formatIntToHex(cursor), newPerPage);
-    setPerPage(newPerPage);
-  };
-
   return (
     <div className="flex flex-col">
-      <components.TableView classes="w-screen max-w-6xl" title="Blocks">
-        {loading
-          ? <components.Loading />
-          : <DataTable
-              columns={columns}
-              theme="solarized"
-              data={rows}
-              responsive={true}
-              highlightOnHover={true}
-              pagination
-              paginationServer
-              progressComponent={<components.Loading />}
-              paginationPerPage={perPage}
-              paginationRowsPerPageOptions={[25, 50, 100]}
-              paginationTotalRows={totalCount}
-              paginationDefaultPage={currentPage}
-              onChangeRowsPerPage={handlePerRowsChange}
-              onChangePage={handlePageChange}
-            />}
-      </components.TableView>
+      {rows &&
+        <components.TableView
+          classes="w-screen max-w-6xl"
+          title="Blocks"
+          columns={columns}
+          loading={loading}
+          data={rows}
+          totalCount={totalCount}
+          fetchMoreData={fetchMoreData}
+        />}
     </div>
   );
 }

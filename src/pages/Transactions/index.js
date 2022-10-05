@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
-import InfiniteScroll from "react-infinite-scroll-component";
 import components from "components";
-import { formatHexToInt, formatHash, numToFixed } from "utils";
+import { formatHexToInt, formatHash, numToFixed, WEIToFTM } from "utils";
 import moment from "moment";
-import { ethers } from "ethers";
 import services from "services";
 
 const GET_TRANSACTIONS = gql`
@@ -49,6 +47,97 @@ const GET_TRANSACTIONS = gql`
   }
 `;
 
+const columnss = ["Tx Hash", "Block", "Time", "From", "To", "Value", "Txn Fee"];
+
+const columns = [
+  {
+    name: "Txn Hash",
+    selector: (row) => row.transaction.hash,
+    cell: (row) => (
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/transactions/${row.transaction.hash}`}
+      >
+        {" "}
+        {formatHash(row.transaction.hash)}
+      </Link>
+    ),
+    sortable: true,
+    grow: 1,
+  },
+  {
+    name: "Block",
+    selector: (row) => row.transaction.block.number,
+    cell: (row) => (
+      <Link
+        to={`/blocks/${formatHexToInt(row.transaction.block.number)}`}
+        className="text-blue-500 dark:text-gray-300"
+      >
+        #{formatHexToInt(row.transaction.block.number)}
+      </Link>
+    ),
+    maxWidth: "50px",
+  },
+  {
+    name: "Time",
+    selector: (row) => row.transaction.block.timestamp,
+    cell: (row) => (
+      <span className="text-black dark:text-gray-300">
+        {moment.unix(row.transaction.block.timestamp).fromNow()}
+      </span>
+    ),
+  },
+  {
+    name: "From",
+    selector: (row) => row.transaction.from,
+    cell: (row) => (
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/address/${row.transaction.from}`}
+      >
+        {" "}
+        {formatHash(row.transaction.from)}
+      </Link>
+    ),
+    sortable: true,
+  },
+  {
+    name: "T0",
+    selector: (row) => row.transaction.to,
+    cell: (row) => (
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/address/${row.transaction.to}`}
+      >
+        {" "}
+        {formatHash(row.transaction.to)}
+      </Link>
+    ),
+    sortable: true,
+  },
+  {
+    name: "Value",
+    selector: (row) => row.transaction.value,
+    cell: (row) => (
+      <span className="text-black dark:text-gray-300">
+        {numToFixed(WEIToFTM(row.transaction.value), 2)} FTM
+      </span>
+    ),
+    sortable: true,
+    maxWidth: "250px",
+  },
+  {
+    name: "Txn Fee",
+    selector: (row) => row.transaction.gasUsed,
+    cell: (row) => (
+      <span className="text-sm text-black dark:text-gray-300">
+        {formatHexToInt(row.transaction.gasUsed)}
+      </span>
+    ),
+    sortable: true,
+    maxWidth: "130px",
+  },
+];
 export default function Transactions() {
   const [rows, setRows] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -60,22 +149,11 @@ export default function Transactions() {
     },
   });
 
-  const getHasNextPage = (data) => data.pageInfo.hasNext;
-
-  const getAfter = (data) =>
-    data.edges && data.edges.length > 0
-      ? data.edges[data.edges.length - 1].cursor
-      : null;
-
   const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
       return previousResult;
     }
 
-    fetchMoreResult.transactions.edges = [
-      ...previousResult.transactions.edges,
-      ...fetchMoreResult.transactions.edges,
-    ];
     let transactions = [];
     const api = services.provider.buildAPI();
 
@@ -133,21 +211,19 @@ export default function Transactions() {
     return { ...fetchMoreResult };
   };
 
-  const fetchMoreData = () => {
+  const fetchMoreData = (cursor, size = 25) => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.transactions);
-      const after = getAfter(data.transactions);
-      if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } });
-      }
+        fetchMore({ updateQuery, variables: { cursor: cursor, count: size } });
     }
   };
+
   useEffect(async () => {
     if (data) {
       const edges = data.transactions.edges;
       setRows(edges);
     }
-  }, [data]);
+  }, [loading]);
+
   useEffect(async () => {
     if (data) {
       setTotalCount(formatHexToInt(data.transactions.totalCount));
@@ -205,103 +281,21 @@ export default function Transactions() {
       }
       setRows(transactions);
     }
-  }, [data]);
+  }, [loading]);
 
-  const columns = [
-    "Tx Hash",
-    "Block",
-    "Time",
-    "From",
-    "To",
-    "Value",
-    "Txn Fee",
-  ];
   return (
-    <components.TableView classes="w-screen max-w-6xl" title="Transactions">
-      <div className="flex flex-col justify-between px-2 py-5">
-        <div>
-          More than {">"} {formatHexToInt(data?.transactions.totalCount)}{" "}
-          transactions found
-        </div>
-        <div className="text-sm text-gray-500">
-          Showing last {rows?.length} transactions
-        </div>
-      </div>
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={<div className="text-center">Loading Data...</div>}
-      >
-        <components.DynamicTable columns={columns}>
-          {rows.length > 0 ? (
-            rows &&
-            rows.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))
-          ) : (
-            <tr>
-              <td colSpan={columns?.length}>
-                <components.Loading />
-              </td>
-            </tr>
-          )}
-        </components.DynamicTable>
-      </InfiniteScroll>
-    </components.TableView>
+    <div className="flex flex-col">
+      {rows && (
+        <components.TableView
+          classes="w-screen max-w-6xl"
+          title="Transactions"
+          columns={columns}
+          loading={loading}
+          data={rows}
+          totalCount={totalCount}
+          fetchMoreData={fetchMoreData}
+        />
+      )}
+    </div>
   );
 }
-const DynamicTableRow = ({ item }) => {
-  return (
-    <tr>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/transactions/${item.transaction.hash}`}
-        >
-          {" "}
-          {formatHash(item.transaction.hash)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          to={`/blocks/${formatHexToInt(item.transaction.block.number)}`}
-          className="text-blue-500 dark:text-gray-300"
-        >
-          #{formatHexToInt(item.transaction.block.number)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {moment.unix(item.transaction.block.timestamp).fromNow()}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/address/${item.transaction.from}`}
-        >
-          {" "}
-          {formatHash(item.transaction.from)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/address/${item.transaction.to}`}
-        >
-          {" "}
-          {formatHash(item.transaction.to)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        {numToFixed(ethers.utils.formatEther(item.transaction.value), 2)} FTM
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <span className="text-sm">
-          {formatHexToInt(item.transaction.gasUsed)}
-        </span>
-      </td>
-    </tr>
-  );
-};
