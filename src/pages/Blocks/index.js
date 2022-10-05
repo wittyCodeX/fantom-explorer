@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import components from 'components'
-import { formatHexToInt, timestampToDate, formatDate } from 'utils'
-import moment from 'moment'
-import { ethers } from 'ethers'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import DataTable, { createTheme } from "react-data-table-component";
+
+import components from "components";
+
+import {
+  formatHexToInt,
+  formatIntToHex,
+  timestampToDate,
+  formatDate,
+  getTypeByStr,
+  formatHash
+} from "utils";
+import moment from "moment";
 
 const GET_BLOCKS = gql`
   query BlockList($cursor: Cursor, $count: Int!) {
@@ -29,120 +37,156 @@ const GET_BLOCKS = gql`
       }
     }
   }
-`
+`;
+
+createTheme("solarized", {
+  background: {
+    default: "transparent"
+  },
+  divider: {
+    default: "lightgray"
+  },
+  text: {
+    primary: "black",
+    secondary: "#36abd2"
+  }
+});
+const columns = [
+  {
+    name: "Block",
+    selector: row => row.block.number,
+    cell: row =>
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/blocks/${formatHexToInt(row.block.number)}`}
+      >
+        {" "}{formatHexToInt(row.block.number)}
+      </Link>,
+    sortable: true
+  },
+  {
+    name: "Time",
+    selector: row => row.block.timestamp,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatDate(timestampToDate(row.block.timestamp).toString())}
+      </span>,
+    grow: 2
+  },
+  {
+    name: "Age",
+    selector: row => row.block.timestamp,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {moment.unix(row.block.timestamp).fromNow()}
+      </span>,
+    sortable: true
+  },
+  {
+    name: "Txn",
+    selector: row => row.block.transactionCount,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatHexToInt(row.block.transactionCount)}
+      </span>,
+    maxWidth: "50px",
+    sortable: true
+  },
+  {
+    name: "Gas Used",
+    selector: row => row.block.gasUsed,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatHexToInt(row.block.gasUsed)}
+      </span>,
+    maxWidth: "150px",
+    sortable: true
+  },
+  {
+    name: "Block Hash",
+    selector: row => row.block.hash,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatHash(row.block.hash)}
+      </span>,
+    grow: 1
+  }
+];
 
 export default function Blocks() {
-  const [rows, setRows] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
-  const count = 40
+  const [rows, setRows] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [perPage, setPerPage] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { loading, error, data, fetchMore } = useQuery(GET_BLOCKS, {
     variables: {
       cursor: null,
-      count: count,
-    },
-  })
-
-  const getHasNextPage = (data) => data.pageInfo.hasNext
-
-  const getAfter = (data) =>
-    data.edges && data.edges.length > 0
-      ? data.edges[data.edges.length - 1].cursor
-      : null
+      count: perPage
+    }
+  });
 
   const updateQuery = (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
-      return previousResult
+      return previousResult;
     }
+    setRows(fetchMoreResult.blocks.edges);
+    return { ...fetchMoreResult };
+  };
 
-    fetchMoreResult.blocks.edges = [
-      ...previousResult.blocks.edges,
-      ...fetchMoreResult.blocks.edges,
-    ]
-    setRows(rows.concat(fetchMoreResult.blocks.edges))
-    return { ...fetchMoreResult }
-  }
-
-  const fetchMoreData = () => {
+  const fetchMoreData = (page, size = perPage) => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.blocks)
-      const after = getAfter(data.blocks)
-      if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } })
+      fetchMore({ updateQuery, variables: { cursor: page, count: size } });
+    }
+  };
+  useEffect(
+    () => {
+      if (data && data.blocks) {
+        setTotalCount(formatHexToInt(data.blocks.totalCount));
+        setRows(data.blocks.edges);
       }
-    }
-  }
-  useEffect(() => {
-    if (data) {
-      setTotalCount(formatHexToInt(data.blocks.totalCount))
-      setRows(data.blocks.edges)
-    }
-  }, [data])
+    },
+    [loading]
+  );
 
-  const columns = ['Block', 'Time', 'Age', 'Txn', 'Gas Used']
+  const handlePageChange = page => {
+    let cursor;
+    cursor = totalCount - (page - 1) * perPage;
+    console.log("page: ", page);
+    console.log("cursor: ", cursor);
+    fetchMoreData(formatIntToHex(cursor));
+    setCurrentPage(page);
+  };
+
+  const handlePerRowsChange = async (newPerPage, page) => {
+    let cursor;
+    cursor = totalCount - (page - 1) * perPage;
+    fetchMoreData(formatIntToHex(cursor), newPerPage);
+    setPerPage(newPerPage);
+  };
+
   return (
-    <components.TableView classes="w-screen max-w-6xl" title="Blocks">
-      <div className="flex flex-col justify-between px-2 py-5">
-        <div>
-          More than {'>'} {formatHexToInt(data?.blocks.totalCount)} blocks found
-        </div>
-        <div className="text-sm text-gray-500">
-          Showing last {rows?.length} blocks
-        </div>
-      </div>
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={<div className="text-center">Loading More...</div>}
-      >
-        <components.DynamicTable columns={columns}>
-          {loading ? (
-            <tr>
-              <td colSpan={columns?.length}>
-                <components.Loading />
-              </td>
-            </tr>
-          ) : (
-            rows &&
-            rows.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))
-          )}
-        </components.DynamicTable>
-      </InfiniteScroll>
-    </components.TableView>
-  )
-}
-const DynamicTableRow = ({ item }) => {
-  return (
-    <tr>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/blocks/${formatHexToInt(item.block.number)}`}
-        >
-          {' '}
-          {formatHexToInt(item.block.number)}
-        </Link>
-      </td>{' '}
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {formatDate(timestampToDate(item.block.timestamp).toString())}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {moment.unix(item.block.timestamp).fromNow()}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <span className="text-sm">
-          {formatHexToInt(item.block.transactionCount)}
-        </span>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <span className="text-sm">{formatHexToInt(item.block.gasUsed)}</span>
-      </td>
-    </tr>
-  )
+    <div className="flex flex-col">
+      <components.TableView classes="w-screen max-w-6xl" title="Blocks">
+        {loading
+          ? <components.Loading />
+          : <DataTable
+              columns={columns}
+              theme="solarized"
+              data={rows}
+              responsive={true}
+              highlightOnHover={true}
+              pagination
+              paginationServer
+              progressComponent={<components.Loading />}
+              paginationPerPage={perPage}
+              paginationRowsPerPageOptions={[25, 50, 100]}
+              paginationTotalRows={totalCount}
+              paginationDefaultPage={currentPage}
+              onChangeRowsPerPage={handlePerRowsChange}
+              onChangePage={handlePageChange}
+            />}
+      </components.TableView>
+    </div>
+  );
 }

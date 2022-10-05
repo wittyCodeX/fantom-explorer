@@ -11,7 +11,17 @@ export default function Navbar(props) {
   const [price, setPrice] = useState(0);
   const [keywordType, setKeywordType] = useState("all");
   const [keyword, setKeyword] = useState("");
+  const [width, setWidth] = useState(window.innerWidth);
 
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
   useEffect(() => {
     const getFTMPrice = async () => {
       const api = services.provider.buildAPI();
@@ -23,7 +33,6 @@ export default function Navbar(props) {
     };
     getFTMPrice();
   }, []);
-
   const handleChange = _keyword => {
     const type = getTypeByStr(_keyword);
     console.log(type);
@@ -186,41 +195,44 @@ export default function Navbar(props) {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-center mx-auto max-w-6xl mt-2">
-        <div className="flex md:w-3/5 lg:w-5/7 sm:w-7/9 w-11/12">
-          <div className="flex-none bg-gray-100 dark:bg-[#2c2e3f] p-0.5 rounded-l border  border-gray-300">
-            <select
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-[#2c2e3f] dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onChange={e => setKeywordType(e.target.value)}
-              value={keywordType}
-            >
-              <option value="all">All</option>
-              <option value="block">Block</option>
-              <option value="txhash">Tx Hash</option>
-              <option value="address">Address</option>
-              <option value="token">Token</option>
-              <option value="domain">Domain</option>
-            </select>
-          </div>
-          <components.Input
-            type="text"
-            id="voice-search"
-            className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-gray-500 focus:border-gray-500 block pl-2 p-3"
-            placeholder="Search by Address / Tx Hash / Block / Name"
-            handleChange={handleChange}
-            value={keyword}
-            onInputChange={e => setKeyword(e.target.value)}
-            required={false}
-          />
-          <button
-            className="bg-[#0713ff] dark:bg-[#2c2e3f] text-gray-100 hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r hidden sm:hidden md:hidden lg:block border  border-gray-300"
-            onClick={onClickSearch}
-          >
-            Search
-          </button>
-        </div>
-      </div>
+      {width > 768 && window.location.pathname !== "/"
+        ? ""
+        : <div className="flex items-center justify-center mx-auto max-w-6xl mt-2">
+            <div className="flex md:w-3/5 lg:w-5/7 sm:w-7/9 w-11/12">
+              <div className="flex-none bg-gray-100 dark:bg-[#2c2e3f] p-0.5 rounded-l border  border-gray-300">
+                <select
+                  id="countries"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-[#2c2e3f] dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={e => setKeywordType(e.target.value)}
+                  value={keywordType}
+                >
+                  <option value="all">All</option>
+                  <option value="block">Block</option>
+                  <option value="txhash">Tx Hash</option>
+                  <option value="address">Address</option>
+                  <option value="token">Token</option>
+                  <option value="domain">Domain</option>
+                </select>
+              </div>
+              <components.Input
+                type="text"
+                id="voice-search"
+                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-gray-500 focus:border-gray-500 block pl-2 p-3"
+                placeholder="Search by Address / Tx Hash / Block / Name"
+                handleChange={handleChange}
+                value={keyword}
+                onInputChange={e => setKeyword(e.target.value)}
+                required={false}
+              />
+              <button
+                className="bg-[#0713ff] dark:bg-[#2c2e3f] text-gray-100 hover:bg-gray-800 px-5 md:text-lg sm:text-md text-black dark:text-gray-100 rounded-r hidden sm:hidden md:hidden lg:block border  border-gray-300"
+                onClick={onClickSearch}
+              >
+                Search
+              </button>
+            </div>
+          </div>}
+
       <div
         className={`${isNavOpen
           ? ""

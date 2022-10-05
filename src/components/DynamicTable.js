@@ -9,7 +9,7 @@ const DynamicTable = props => {
     >
       {props.columns &&
         <thead>
-          <tr className="bg-gray-200 dark:bg-blue-600">
+          <tr className="bg-gray-200 dark:bg-[#222431]">
             {props.columns.map((column, index) =>
               <td className="p-3" key={index}>
                 {column}

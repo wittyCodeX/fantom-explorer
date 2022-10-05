@@ -85,26 +85,29 @@ export default function BlockInfo() {
             numToFixed(WEIToFTM(_item.totalStake), 0)
           );
         });
-        setStaked(
-          numToFixed(
-            Number(totals.totalStaked) /
-              WEIToFTM(formatHexToInt(data1.state.sealedEpoch.totalSupply)) *
-              100,
-            0
-          )
-        );
-        setDelegated(
-          numToFixed(
-            Number(totals.totalDelegated) /
-              WEIToFTM(formatHexToInt(data1.state.sealedEpoch.totalSupply)) *
-              100,
-            0
-          )
-        );
+        if (data1) {
+          setStaked(
+            numToFixed(
+              Number(totals.totalStaked) /
+                WEIToFTM(formatHexToInt(data1.state.sealedEpoch.totalSupply)) *
+                100,
+              0
+            )
+          );
+          setDelegated(
+            numToFixed(
+              Number(totals.totalDelegated) /
+                WEIToFTM(formatHexToInt(data1.state.sealedEpoch.totalSupply)) *
+                100,
+              0
+            )
+          );
+        }
+
         setTotals(totals);
       }
     },
-    [data2]
+    [data2, data1]
   );
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 mt-[50px]">

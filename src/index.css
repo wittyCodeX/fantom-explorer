@@ -12,3 +12,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.rdt_TableCol {
+  /* color:black; */
+  font-weight: bolder;
+  font-size: 14px;
+  }
+  
+  .rdt_Pagination{
+    color: gray;
+  }
+/* 
+  .rdt_TableHead {
+    background-color:lightgray;
+    color:black
+  } */
