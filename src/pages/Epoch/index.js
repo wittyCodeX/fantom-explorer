@@ -59,7 +59,7 @@ const columns = [
     name: "Total Fee (FTM)",
     selector: row => row.epoch.epochFee,
     cell: row =>
-      <span className="text-sm">
+      <span className="text-sm text-black dark:text-gray-300">
         {numToFixed(WEIToFTM(formatHexToInt(row.epoch.epochFee)), 2)} FTM
       </span>,
     right: true
@@ -102,6 +102,14 @@ export default function Epochs() {
 
   return (
     <div className="flex flex-col">
+      <div className="flex flex-row justify-between items-baseline bg-gray-200 dark:bg-[#2c2e3f] dark:text-gray-300 text-xl p-2 border-solid border-grey-light dark:border-blue-light border-b mt-5">
+        <div className="text-black  dark:text-gray-300 md:text-2xl sm:text-xl text-sm  px-2 font-medium">
+          Epochs
+        </div>
+        <div className="text-black  dark:text-gray-300 text-sm">
+          Home {">"} Epochs
+        </div>
+      </div>
       {rows &&
         <components.TableView
           classes="w-screen max-w-6xl"

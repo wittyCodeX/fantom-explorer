@@ -103,7 +103,7 @@ const Wrapper = (props) => {
             </div>
           </div>
         )}
-        <div className="flex justify-center ">
+        <div className="flex justify-center p-2">
         {props.children}
         </div>
       </div>

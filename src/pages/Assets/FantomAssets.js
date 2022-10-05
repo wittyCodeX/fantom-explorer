@@ -32,6 +32,15 @@ const GET_ASSETS = gql`
     }
   }
 `;
+const columns = [
+  "Asset",
+  "Name",
+  "Hash",
+  "Price",
+  "Total Supply",
+  "Market Cap",
+];
+
 export default function FantomAssets() {
   const [tokenList, setTokenList] = useState([]);
   const { loading, error, data } = useQuery(GET_ASSETS);
@@ -43,18 +52,10 @@ export default function FantomAssets() {
       setTokenList(tokens);
     }
   });
-  const columns = [
-    "Asset",
-    "Name",
-    "Hash",
-    "Price",
-    "Total Supply",
-    "Market Cap",
-  ];
 
   return (
     <components.DynamicTable columns={columns}>
-      {isObjectEmpty(tokenList) ? (
+      {isObjectEmpty(tokenList) || loading ? (
         <tr>
           <td colSpan={columns?.length}>
             <components.Loading />
@@ -72,14 +73,17 @@ export default function FantomAssets() {
 const DynamicTableRow = ({ item }) => {
   return (
     <tr>
-      <td className="px-2 text-sm flex flex-row items-center  py-3">
+      <td className="px-2 text-sm flex flex-row items-center gap-2  py-3">
         <img src={item.logoUrl} alt="logo" srcSet="" className="w-10 h-10" />
         <span> </span>
         <span> {item.symbol}</span>
       </td>
       <td className="px-2 text-sm truncate   py-3">{item.name}</td>
       <td className="px-2 text-sm truncate   py-3">
-        <Link className="text-blue-500 dark:text-gray-300" to={`/assets/${item.address}`}>
+        <Link
+          className="text-blue-500 dark:text-gray-300"
+          to={`/assets/${item.address}`}
+        >
           {" "}
           {formatHash(item.address)}
         </Link>
@@ -97,8 +101,14 @@ const DynamicTableRow = ({ item }) => {
           0
         )}
       </td>
-      <td className="px-2 text-sm truncate   py-3">
-        {`$ ${formatNumberByLocale((fromTokenValue(item.totalSupply, item) * fromTokenValue(item.price, item)).toFixed(0), 0)}`}
+      <td className="px-2 text-sm truncate text-red-500 font-semibold   py-3">
+        {`$ ${formatNumberByLocale(
+          (
+            fromTokenValue(item.totalSupply, item) *
+            fromTokenValue(item.price, item)
+          ).toFixed(0),
+          0
+        )}`}
       </td>
     </tr>
   );

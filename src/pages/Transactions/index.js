@@ -211,7 +211,7 @@ export default function Transactions() {
 
   const fetchMoreData = (cursor, size = 25) => {
     if (data && fetchMore) {
-        fetchMore({ updateQuery, variables: { cursor: cursor, count: size } });
+      fetchMore({ updateQuery, variables: { cursor: cursor, count: size } });
     }
   };
 
@@ -283,6 +283,14 @@ export default function Transactions() {
 
   return (
     <div className="flex flex-col">
+      <div className="flex flex-row justify-between items-baseline bg-gray-200 dark:bg-[#2c2e3f] dark:text-gray-300 text-xl p-2 border-solid border-grey-light dark:border-blue-light border-b mt-5">
+        <div className="text-black  dark:text-gray-300 md:text-2xl sm:text-xl text-sm  px-2 font-medium">
+          Transactions
+        </div>
+        <div className="text-black  dark:text-gray-300 text-sm">
+          Home {">"} Transactions
+        </div>
+      </div>
       {rows && (
         <components.TableView
           classes="w-screen max-w-6xl"

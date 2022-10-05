@@ -4,7 +4,7 @@ const DynamicTable = props => {
   return (
     <table
       className={
-        "relative transition w-full mx-auto text-gray-800 dark:text-gray-300"
+        "relative transition w-full mx-auto text-gray-800 dark:text-gray-300 bg-gray-100 dark:bg-[#2c2e3f]"
       }
     >
       {props.columns &&

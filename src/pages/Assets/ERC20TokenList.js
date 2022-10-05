@@ -51,13 +51,13 @@ export default function ERC20TokenList() {
 }
 const DynamicTableRow = ({ item }) => {
   return (
-    <tr>
-      <td className="px-2 text-sm flex flex-row items-center  py-3">
+    <tr className="border-b border-gray-300">
+      <td className="px-2 text-sm flex flex-row items-center gap-2 py-3">
         <img src={item.logoURL} alt="logo" srcSet="" className="w-10 h-10" />
         <span>{" "}</span>
         <span> {item.symbol}</span>
       </td>
-      <td className="px-2 text-sm truncate   py-3">{item.name}</td>
+      <td className="px-2 text-sm truncate font-semibold py-3">{item.name}</td>
       <td className="px-2 text-sm truncate   py-3">
         <Link className="text-blue-500 dark:text-gray-300" to={`/assets/${item.address}`}>
           {" "}
