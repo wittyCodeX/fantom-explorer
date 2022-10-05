@@ -224,23 +224,13 @@ export default function Navbar(props) {
       <div
         className={`${isNavOpen
           ? ""
-          : "hidden"} bg-gray-100 dark:bg-[#0713ff] left-0 w-screen z-10 transition-all`}
+          : "hidden"}  bg-gray-100  dark:bg-[#2c2e3f] dark:text-gray-300 text-black left-0 mt-5 w-full z-10 transition-all`}
         style={{
           left: "100%",
           transform: !isNavOpen ? "translateX(-100%)" : "translateX(0)"
         }}
       >
-        <ul className="flex flex-col items-center justify-between">
-          <li>
-            <div
-              className="cursor-pointer p-2"
-              onClick={() => props.handleDarkMode(!props.isDarkmode)}
-            >
-              {props.isDarkmode
-                ? <SunIcon className="w-6" />
-                : <MoonIcon className="w-6" />}
-            </div>
-          </li>
+        <ul className="flex flex-col items-center justify-between p-2">
           <li className="w-full px-2">
             <Link
               className="block text-lg p-2 w-full flex items-center justify-between"
@@ -253,7 +243,7 @@ export default function Navbar(props) {
           <li className="w-full px-2">
             <Link
               className="block text-lg p-2 w-full flex items-center justify-between"
-              to="/"
+              to="/blocks"
             >
               <div>Blocks</div>
               <ArrowRightIcon className="w-6" />
@@ -262,7 +252,7 @@ export default function Navbar(props) {
           <li className="w-full px-2">
             <Link
               className="block text-lg p-2 w-full flex items-center justify-between"
-              to="/"
+              to="/transactions"
             >
               <div>Transactions</div>
               <ArrowRightIcon className="w-6" />
@@ -271,9 +261,36 @@ export default function Navbar(props) {
           <li className="w-full px-2">
             <Link
               className="block text-lg p-2 w-full flex items-center justify-between"
-              to="/"
+              to="/epochs"
             >
-              <div>Tokens</div>
+              <div>Epochs</div>
+              <ArrowRightIcon className="w-6" />
+            </Link>{" "}
+          </li>
+          <li className="w-full px-2">
+            <Link
+              className="block text-lg p-2 w-full flex items-center justify-between"
+              to="/staking"
+            >
+              <div>Staking</div>
+              <ArrowRightIcon className="w-6" />
+            </Link>{" "}
+          </li>
+          <li className="w-full px-2">
+            <Link
+              className="block text-lg p-2 w-full flex items-center justify-between"
+              to="/assets"
+            >
+              <div>Assets</div>
+              <ArrowRightIcon className="w-6" />
+            </Link>{" "}
+          </li>
+          <li className="w-full px-2">
+            <Link
+              className="block text-lg p-2 w-full flex items-center justify-between"
+              to="/contracts"
+            >
+              <div>Contracts</div>
               <ArrowRightIcon className="w-6" />
             </Link>{" "}
           </li>
