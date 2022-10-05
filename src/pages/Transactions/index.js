@@ -47,8 +47,6 @@ const GET_TRANSACTIONS = gql`
   }
 `;
 
-const columnss = ["Tx Hash", "Block", "Time", "From", "To", "Value", "Txn Fee"];
-
 const columns = [
   {
     name: "Txn Hash",
@@ -206,7 +204,7 @@ export default function Transactions() {
 
       transactions.push(edgeNew);
     }
-    setRows(rows.concat(transactions));
+    setRows(transactions);
 
     return { ...fetchMoreResult };
   };

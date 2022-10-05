@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import components from 'components'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import InfiniteScroll from "react-infinite-scroll-component";
+import components from "components";
 import {
   formatHexToInt,
   numToFixed,
   timestampToDate,
   WEIToFTM,
-  formatDate,
-} from 'utils'
-import moment from 'moment'
+  formatDate
+} from "utils";
+import moment from "moment";
 
 const GET_EPOCHS = gql`
   query EpochList($cursor: Cursor, $count: Int!) {
@@ -32,112 +32,86 @@ const GET_EPOCHS = gql`
       }
     }
   }
-`
+`;
+const columns = [
+  {
+    name: "Epoch",
+    selector: row => row.epoch.id,
+    cell: row =>
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/epochs/${formatHexToInt(row.epoch.id)}`}
+      >
+        {" "}{formatHexToInt(row.epoch.id)}
+      </Link>,
+    sortable: true
+  },
+  {
+    name: "End Time",
+    selector: row => row.epoch.endTime,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatDate(timestampToDate(row.epoch.endTime).toString())}
+      </span>,
+    grow: 1
+  },
+  {
+    name: "Total Fee (FTM)",
+    selector: row => row.epoch.epochFee,
+    cell: row =>
+      <span className="text-sm">
+        {numToFixed(WEIToFTM(formatHexToInt(row.epoch.epochFee)), 2)} FTM
+      </span>,
+    right: true
+  }
+];
 
 export default function Epochs() {
-  const [rows, setRows] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
-  const count = 40
+  const [rows, setRows] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const count = 40;
   const { loading, error, data, fetchMore } = useQuery(GET_EPOCHS, {
     variables: {
       cursor: null,
-      count: count,
-    },
-  })
-
-  const getHasNextPage = (data) => data.pageInfo.hasNext
-
-  const getAfter = (data) =>
-    data.edges && data.edges.length > 0
-      ? data.edges[data.edges.length - 1].cursor
-      : null
+      count: count
+    }
+  });
 
   const updateQuery = (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
-      return previousResult
+      return previousResult;
     }
+    setRows(fetchMoreResult.epochs.edges);
+    return { ...fetchMoreResult };
+  };
 
-    fetchMoreResult.epochs.edges = [
-      ...previousResult.epochs.edges,
-      ...fetchMoreResult.epochs.edges,
-    ]
-    setRows(rows.concat(fetchMoreResult.epochs.edges))
-    return { ...fetchMoreResult }
-  }
-
-  const fetchMoreData = () => {
+  const fetchMoreData = (cursor, size = 25) => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.epochs)
-      const after = getAfter(data.epochs)
-      if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } })
+      fetchMore({ updateQuery, variables: { cursor: cursor, count: size } });
+    }
+  };
+  useEffect(
+    () => {
+      if (data) {
+        setTotalCount(formatHexToInt(data.epochs.totalCount));
+        setRows(data.epochs.edges);
       }
-    }
-  }
-  useEffect(() => {
-    if (data) {
-      setTotalCount(formatHexToInt(data.epochs.totalCount))
-      setRows(data.epochs.edges)
-    }
-  }, [data])
+    },
+    [loading]
+  );
 
-  const columns = ['Epoch', 'End Time', 'Total Fee (FTM)']
   return (
-    <components.TableView classes="w-screen max-w-6xl" title="Epochs">
-      <div className="flex flex-col justify-between px-2 py-5">
-        <div>
-          More than {'>'} {formatHexToInt(data?.epochs.totalCount)} epochs found
-        </div>
-        <div className="text-sm text-gray-500 dark:text-gray-300">
-          Showing last {rows?.length} epochs
-        </div>
-      </div>
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={<div className="text-center">Loading More...</div>}
-      >
-        <components.DynamicTable columns={columns}>
-          {loading ? (
-            <tr>
-              <td colSpan={columns?.length}>
-                <components.Loading />
-              </td>
-            </tr>
-          ) : (
-            rows &&
-            rows.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))
-          )}
-        </components.DynamicTable>
-      </InfiniteScroll>
-    </components.TableView>
-  )
-}
-const DynamicTableRow = ({ item }) => {
-  return (
-    <tr>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/epochs/${formatHexToInt(item.epoch.id)}`}
-        >
-          {' '}
-          {formatHexToInt(item.epoch.id)}
-        </Link>
-      </td>{' '}
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-epoch small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {formatDate(timestampToDate(item.epoch.endTime).toString())}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3 flex justify-center">
-        <span className="text-sm">
-          {numToFixed(WEIToFTM(formatHexToInt(item.epoch.epochFee)), 2)} FTM
-        </span>
-      </td>
-    </tr>
-  )
+    <div className="flex flex-col">
+      {rows &&
+        <components.TableView
+          classes="w-screen max-w-6xl"
+          title="Epochs"
+          columns={columns}
+          loading={loading}
+          data={rows}
+          totalCount={totalCount}
+          fetchMoreData={fetchMoreData}
+        />}
+    </div>
+  );
 }
