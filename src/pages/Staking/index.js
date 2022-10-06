@@ -8,7 +8,8 @@ import {
   numToFixed,
   WEIToFTM,
   cloneObject,
-  formatNumberByLocale
+  formatNumberByLocale,
+  addressToDomain
 } from "utils";
 
 import services from "services";
@@ -252,21 +253,8 @@ export default function Staking() {
         if (inactive.length > 0) {
           removeItemsByIndices(newData, remove);
         }
-
-        // let convertedData = []
-        // newData.forEach(async (_item, idx) => {
-        //   let address;
-        //   try {
-        //     const nameHash = await api.contracts.EVMReverseResolverV1.get(
-        //       _item.stakerAddress
-        //     );
-        //     address = clients.utils.decodeNameHashInputSignals(nameHash);
-        //   } catch {
-        //     address = _item.stakerAddress;
-        //   }
-        // convertedData.push({...item, stakerAddress: address})
-        // });
         setValidators(newData);
+        await formatDomain(newData);
       }
     },
     [data]
@@ -280,6 +268,23 @@ export default function Staking() {
   };
   const sortDesc = (a, b) => {
     return b - a;
+  };
+
+  const formatDomain = async data => {
+    let formatedData = [];
+
+    for (let i = 0; i < data.length; i++) {
+      let edgeNew;
+
+      const stakerAddress = await addressToDomain(data[i].stakerAddress);
+      edgeNew = {
+        ...data[i],
+        stakerAddress: stakerAddress
+      };
+
+      formatedData.push(edgeNew);
+    }
+    setValidators(formatedData);
   };
   return (
     <div>

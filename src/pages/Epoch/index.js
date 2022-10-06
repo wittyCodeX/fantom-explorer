@@ -10,7 +10,6 @@ import {
   WEIToFTM,
   formatDate
 } from "utils";
-import moment from "moment";
 
 const GET_EPOCHS = gql`
   query EpochList($cursor: Cursor, $count: Int!) {
@@ -69,11 +68,11 @@ const columns = [
 export default function Epochs() {
   const [rows, setRows] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
-  const count = 40;
+  const [perPage, setPerPage] = useState(25);
   const { loading, error, data, fetchMore } = useQuery(GET_EPOCHS, {
     variables: {
       cursor: null,
-      count: count
+      count: perPage
     }
   });
 
@@ -85,7 +84,7 @@ export default function Epochs() {
     return { ...fetchMoreResult };
   };
 
-  const fetchMoreData = (cursor, size = 25) => {
+  const fetchMoreData = (cursor, size = perPage) => {
     if (data && fetchMore) {
       fetchMore({ updateQuery, variables: { cursor: cursor, count: size } });
     }
@@ -94,6 +93,9 @@ export default function Epochs() {
     () => {
       if (data) {
         setTotalCount(formatHexToInt(data.epochs.totalCount));
+        console.log("data: ", data.epochs.edges);
+        console.log("cursor: ", formatHexToInt(data.epochs.edges[0].cursor));
+        setPerPage(25);
         setRows(data.epochs.edges);
       }
     },

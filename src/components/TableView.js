@@ -23,16 +23,37 @@ const TableView = props => {
 
   const handlePageChange = page => {
     let cursor;
-    cursor = props.totalCount - (page - 1) * perPage;
-    props.fetchMoreData(formatIntToHex(cursor));
+    let count;
+    if (props.isCustomPagination) {
+      if (page > currentPage) {
+        cursor = props.pageInfo.last;
+        count = perPage;
+      } else {
+        cursor = props.pageInfo.first;
+        count = perPage - 2 * perPage;
+      }
+    } else {
+      count = perPage;
+      cursor = formatIntToHex(props.totalCount - (page - 1) * count);
+    }
+    props.fetchMoreData(cursor);
     setCurrentPage(page);
   };
 
   const handlePerRowsChange = async (newPerPage, page) => {
     let cursor;
-    cursor = props.totalCount - (page - 1) * perPage;
-    props.fetchMoreData(formatIntToHex(cursor), newPerPage);
+    if (props.isCustomPagination) {
+      if (page > currentPage) {
+        cursor = props.pageInfo.last;
+      } else {
+        cursor = props.pageInfo.first;
+      }
+    } else {
+      cursor = formatIntToHex(props.totalCount - (page - 1) * newPerPage);
+    }
+    props.fetchMoreData(cursor, newPerPage);
     setPerPage(newPerPage);
+    setCurrentPage(page);
   };
 
   return (
@@ -60,22 +81,53 @@ const TableView = props => {
                 paginationTotalRows={props.totalCount}
                 paginationDefaultPage={currentPage}
               />
-            : <DataTable
-                columns={props.columns}
-                theme="solarized"
-                data={props.data}
-                responsive={true}
-                highlightOnHover={true}
-                pagination
-                paginationServer
-                progressComponent={<components.Loading />}
-                paginationPerPage={perPage}
-                paginationRowsPerPageOptions={[25, 50, 100]}
-                paginationTotalRows={props.totalCount}
-                paginationDefaultPage={currentPage}
-                onChangeRowsPerPage={handlePerRowsChange}
-                onChangePage={handlePageChange}
-              />}
+            : props.isCustomPagination
+              ? <div>
+                  <components.Pagination
+                    direction="rtl"
+                    paginationPerPage={perPage}
+                    paginationTotalRows={props.totalCount}
+                    paginationCurrentPage={currentPage}
+                    paginationRowsPerPageOptions={[25, 50, 100]}
+                    paginationDefaultPage={currentPage}
+                    onChangeRowsPerPage={handlePerRowsChange}
+                    onChangePage={handlePageChange}
+                  />
+                  <DataTable
+                    columns={props.columns}
+                    theme="solarized"
+                    data={props.data}
+                    responsive={true}
+                    highlightOnHover={true}
+                    progressComponent={<components.Loading />}
+                  />
+                  <components.Pagination
+                    direction="rtl"
+                    paginationPerPage={perPage}
+                    paginationCurrentPage={currentPage}
+                    paginationTotalRows={props.totalCount}
+                    paginationRowsPerPageOptions={[25, 50, 100]}
+                    paginationDefaultPage={currentPage}
+                    onChangeRowsPerPage={handlePerRowsChange}
+                    onChangePage={handlePageChange}
+                  />
+                </div>
+              : <DataTable
+                  columns={props.columns}
+                  theme="solarized"
+                  data={props.data}
+                  responsive={true}
+                  highlightOnHover={true}
+                  pagination
+                  paginationServer
+                  progressComponent={<components.Loading />}
+                  paginationPerPage={perPage}
+                  paginationRowsPerPageOptions={[25, 50, 100]}
+                  paginationTotalRows={props.totalCount}
+                  paginationDefaultPage={currentPage}
+                  onChangeRowsPerPage={handlePerRowsChange}
+                  onChangePage={handlePageChange}
+                />}
       </div>
       {props.btnLabel &&
         <div className="absolute bottom-0 bg-gray-100  dark:bg-[#2c2e3f] text-xl px-2 py-1 w-full flex justify-center border-solid border-grey-light  dark:border-blue-light  border-t">

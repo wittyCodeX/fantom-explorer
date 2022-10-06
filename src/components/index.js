@@ -10,6 +10,7 @@ import Panel from "./Panel";
 import TableView from "./TableView";
 import Loading from "./common/Loading";
 import Button from "./common/Button";
+import Pagination from "./Pagination";
 const components = {
   Card,
   DynamicTable,
@@ -22,7 +23,8 @@ const components = {
   Panel,
   TableView,
   Loading,
-  Button
+  Button,
+  Pagination
 };
 
 export default components;

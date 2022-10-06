@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, gql } from '@apollo/client'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import components from 'components'
-import { formatHexToInt, formatHash } from 'utils'
-import moment from 'moment'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+import components from "components";
+import { formatHexToInt, formatHash, timestampToDate, formatDate } from "utils";
 
 const GET_CONTRACTS = gql`
   query ContractList($cursor: Cursor, $count: Int!) {
@@ -33,132 +31,130 @@ const GET_CONTRACTS = gql`
       }
     }
   }
-`
+`;
 
+const columns = [
+  {
+    name: "Address",
+    selector: row => row.contract.address,
+    cell: row =>
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/address/${row.contract.address}`}
+      >
+        {formatHash(row.contract.address)}
+      </Link>
+  },
+  {
+    name: "Name",
+    selector: row => row.contract.name,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {row.contract.name}{" "}
+      </span>
+  },
+  {
+    name: "Compiler",
+    selector: row => row.contract.compiler,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {row.contract.compiler}
+      </span>,
+    sortable: true
+  },
+  {
+    name: "Version",
+    selector: row => row.contract.transactionCount,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatHexToInt(row.contract.transactionCount)}
+      </span>,
+    sortable: true
+  },
+  {
+    name: "Validated",
+    selector: row => row.contract.version,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {formatHexToInt(row.contract.version)}
+      </span>,
+    sortable: true
+  },
+  {
+    name: "Time",
+    selector: row => row.contract.timestamp,
+    cell: row =>
+      <span className="text-black dark:text-gray-300">
+        {`(${formatDate(timestampToDate(row.contract.timestamp))})`}
+      </span>,
+    right: true,
+    grow: 2
+  }
+];
 export default function Contracts() {
-  const [rows, setRows] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
-  const count = 40
+  const [rows, setRows] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [perPage, setPerPage] = useState(25);
+  const [pageInfo, setPageInfo] = useState({});
   const { loading, error, data, fetchMore } = useQuery(GET_CONTRACTS, {
     variables: {
+      validatedOnly: true,
       cursor: null,
-      count: count,
-    },
-  })
-
-  const getHasNextPage = (data) => data.pageInfo.hasNext
-
-  const getAfter = (data) =>
-    data.edges && data.edges.length > 0
-      ? data.edges[data.edges.length - 1].cursor
-      : null
+      count: perPage
+    }
+  });
 
   const updateQuery = (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
-      return previousResult
+      return previousResult;
     }
+    setPageInfo(fetchMoreResult.contracts.pageInfo);
+    setRows(fetchMoreResult.contracts.edges);
+    return { ...fetchMoreResult };
+  };
 
-    fetchMoreResult.contracts.edges = [
-      ...previousResult.contracts.edges,
-      ...fetchMoreResult.contracts.edges,
-    ]
-    setRows(rows.concat(fetchMoreResult.contracts.edges))
-    return { ...fetchMoreResult }
-  }
-
-  const fetchMoreData = () => {
+  const fetchMoreData = (page, size = perPage) => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.contracts)
-      const after = getAfter(data.contracts)
-      if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } })
+      fetchMore({
+        updateQuery,
+        variables: { cursor: page, count: size, validatedOnly: true }
+      });
+    }
+  };
+  useEffect(
+    () => {
+      if (data) {
+        setTotalCount(formatHexToInt(data.contracts.totalCount));
+        setRows(data.contracts.edges);
+        setPageInfo(data.contracts.pageInfo);
+        setPerPage(25);
       }
-    }
-  }
-  useEffect(() => {
-    if (data) {
-      setTotalCount(formatHexToInt(data.contracts.totalCount))
-      setRows(data.contracts.edges)
-    }
-  }, [data])
+    },
+    [loading]
+  );
 
-  const columns = [
-    'Address',
-    'Name',
-    'Compiler',
-    'Version',
-    'Validated',
-    'Time',
-  ]
   return (
-    <components.TableView classes="w-screen max-w-6xl" title="Contracts">
-      <div className="flex flex-col justify-between px-2 py-5">
-        <div>
-          More than {'>'} {formatHexToInt(data?.contracts.totalCount)} contracts
-          found
+    <div className="flex flex-col">
+      <div className="flex flex-row justify-between items-baseline bg-gray-200 dark:bg-[#2c2e3f] dark:text-gray-300 text-xl p-2 border-solid border-grey-light dark:border-blue-light border-b mt-5">
+        <div className="text-black  dark:text-gray-300 md:text-2xl sm:text-xl text-sm  px-2 font-medium">
+          Contracts
         </div>
-        <div className="text-sm text-gray-500">
-          Showing last {rows?.length} contracts
+        <div className="text-black  dark:text-gray-300 text-sm">
+          Home {">"} Contracts
         </div>
       </div>
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={<div className="text-center">Loading More...</div>}
-      >
-        <components.DynamicTable columns={columns}>
-          {loading ? (
-            <tr>
-              <td colSpan={columns?.length}>
-                <components.Loading />
-              </td>
-            </tr>
-          ) : (
-            rows &&
-            rows.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))
-          )}
-        </components.DynamicTable>
-      </InfiniteScroll>
-    </components.TableView>
-  )
-}
-const DynamicTableRow = ({ item }) => {
-  return (
-    <tr>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/address/${item.contract.address}`}
-        >
-          {formatHash(item.contract.address)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {item.contract.name}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {item.contract.compiler}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {formatHexToInt(item.contract.version)}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <span className="text-sm">{item.contract.validated}</span>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {moment.unix(item.contract.timestamp).format('MM/DD/yyyy')}
-        </div>
-      </td>
-    </tr>
-  )
+      {rows &&
+        <components.TableView
+          classes="w-screen max-w-6xl"
+          title="Contracts"
+          columns={columns}
+          loading={loading}
+          isCustomPagination={true}
+          data={rows}
+          totalCount={totalCount}
+          pageInfo={pageInfo}
+          fetchMoreData={fetchMoreData}
+        />}
+    </div>
+  );
 }

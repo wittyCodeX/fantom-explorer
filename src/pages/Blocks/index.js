@@ -94,6 +94,7 @@ const columns = [
 export default function Blocks() {
   const [rows, setRows] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+
   const [perPage] = useState(25);
   const { loading, error, data, fetchMore } = useQuery(GET_BLOCKS, {
     variables: {
@@ -118,6 +119,8 @@ export default function Blocks() {
   useEffect(
     () => {
       if (data && data.blocks) {
+        console.log("first cursor", formatHexToInt(data.blocks.pageInfo.first));
+        console.log("last cursor", formatHexToInt(data.blocks.pageInfo.last));
         setTotalCount(formatHexToInt(data.blocks.totalCount));
         setRows(data.blocks.edges);
       }

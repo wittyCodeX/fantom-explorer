@@ -358,14 +358,21 @@ export function FTMToWEI(_value) {
  * @return {string}
  */
 export async function addressToDomain(address) {
-  const api = services.provider.buildAPI();
+  let domain;
   try {
-    const nameHash = await api.contracts.EVMReverseResolverV1.get(address);
-    const nameSignal = await api.contracts.RainbowTableV1.lookup(nameHash.name);
-    return await clients.utils.decodeNameHashInputSignals(nameSignal);
+    const nameHash = await api.contracts.EVMReverseResolverV1.get(
+      address
+    );
+    const nameSignal = await api.contracts.RainbowTableV1.lookup(
+      nameHash.name
+    );
+    domain = await clients.utils.decodeNameHashInputSignals(
+      nameSignal
+    );
   } catch {
-    return address;
+    domain = address;
   }
+  return domain;
 }
 /**
  * @return {string}
