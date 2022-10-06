@@ -15,7 +15,7 @@ export default function Pagination({
         <ul className="inline-flex items-center gap-1">
           <li>
             <button
-              className="block py-2 px-3 ml-0 leading-tight text-gray-500 bg-gray-300 rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-500 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              className="block py-1 px-3 ml-0 leading-tight text-gray-500 bg-gray-300 rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-500 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
               onClick={() => onChangePage(paginationCurrentPage - 1)}
               disabled={paginationCurrentPage !== 1 ? "" : "disabled"}
             >
@@ -36,14 +36,14 @@ export default function Pagination({
             </button>
           </li>
           <li>
-            <div className="text-sm p-2 bg-gray-300 dark:bg-gray-500 dark:text-gray-100 rounded-lg">
+            <div className="px-3 py-1 text-sm bg-gray-300 dark:bg-gray-500 dark:text-gray-100 text-gray-700 rounded-lg">
               Page {paginationCurrentPage} {" of "}{" "}
               {numToFixed(paginationTotalRows / paginationPerPage, 0)}
             </div>
           </li>
           <li>
             <button
-              className="block py-2 px-3 leading-tight text-gray-500 bg-gray-300 rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-500 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              className="block py-1 px-3 leading-tight text-gray-500 bg-gray-300 rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-500 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
               onClick={() => onChangePage(paginationCurrentPage + 1)}
               disabled={
                 paginationCurrentPage !==

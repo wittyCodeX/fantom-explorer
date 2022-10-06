@@ -73,7 +73,7 @@ export default function StakingInfo(props) {
   }, [data]);
   return (
     <div className="grid md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 sm:p-0 ">
-      <components.DynamicTable title={`Overview`} dontNeedSubtitle={true}>
+      <components.DynamicTable title={`Overview`} dontNeedSubtitle={true} classes="mt-5">
         {loading ? (
           <tr>
             <td>
@@ -153,7 +153,7 @@ export default function StakingInfo(props) {
         )}
       </components.DynamicTable>
       <div className=" mt-7">
-      <div className="flex flex-row justify-start items-center bg-gray-100 dark:bg-[#2c2e3f] dark:text-gray-300 text-xl p-2 border-solid border-grey-light dark:border-blue-light border-b">
+        <div className="flex flex-row justify-start items-center bg-gray-100 dark:bg-[#2c2e3f] dark:text-gray-300 text-xl p-2 border-solid border-grey-light dark:border-blue-light border-b">
           <img
             src={services.linking.static("images/totalsupply.svg")}
             alt=""

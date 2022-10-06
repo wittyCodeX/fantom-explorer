@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import DynamicTableRow from "./DynamicTableRow";
-
+import { Link } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
-import { formatHexToInt, isObjectEmpty } from "utils";
 import components from "components";
 import services from "services";
+import { formatHash, isObjectEmpty, addressToDomain, numToFixed, WEIToFTM } from "utils";
+import moment from "moment";
+import { ethers } from "ethers";
 
 const GET_ERC20TRANSACTIONS = gql`
   query GetERC20Transactions(
@@ -45,201 +45,191 @@ const GET_ERC20TRANSACTIONS = gql`
     }
   }
 `;
+const columns = [
+  {
+    name: "Txn Hash",
+    selector: (row) => row.trx.trxHash,
+    cell: (row) => (
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/transactions/${row.trx.trxHash}`}
+      >
+        {" "}
+        {formatHash(row.trx.trxHash)}
+      </Link>
+    ),
+    grow: 2,
+  },
+  {
+    name: "Method",
+    selector: (row) => row.trx.trxType,
+    cell: (row) => (
+      <span className="text-black dark:text-gray-300 bg-gray-200 dark:bg-[#2c2e3f] p-2">{row.trx.trxType}</span>
+    ),
+    sortable: true,
+
+  },
+  {
+    name: "Time",
+    selector: (row) => row.trx.timeStamp,
+    cell: (row) => (
+      <span className="text-black dark:text-gray-300">
+        {moment.unix(row.trx.timeStamp).fromNow()}
+      </span>
+    ),
+    sortable: true,
+  },
+  {
+    name: "From",
+    selector: (row) => row.trx.sender,
+    cell: (row) => (
+      <Link
+        className="flex flex-row items-center justify-between gap-4 text-blue-500 dark:text-gray-300"
+        to={`/address/${row.trx.sender}`}
+      >
+        {" "}
+        {formatHash(row.trx.sender)}
+        <img
+          src={services.linking.static("images/arrow-right.svg")}
+          alt="from"
+          srcSet=""
+          className="w-4"
+        />
+      </Link>
+    ),
+    grow: 2,
+  },
+  {
+    name: "T0",
+    selector: (row) => row.trx.recipient,
+    cell: (row) => (
+      <Link
+        className="text-blue-500 dark:text-gray-300"
+        to={`/address/${row.trx.recipient}`}
+      >
+        {" "}
+        {formatHash(row.trx.recipient)}
+      </Link>
+    ),
+    grow: 2,
+    sortable: true,
+  },
+  {
+    name: "Value",
+    selector: (row) => row.trx.amount,
+    cell: (row) => (
+      <span className="text-black dark:text-gray-300">
+        {numToFixed(ethers.utils.formatEther(row.trx.amount), 2)} FTM
+      </span>
+    ),
+    sortable: true,
+    maxWidth: "250px",
+  },
+  {
+    name: "Token",
+    selector: (row) => row.trx.token.name,
+    cell: (row) => (
+      <span className="text-sm text-black dark:text-gray-300 gap-2">
+        {row.trx.token.name} {`(${row.trx.token.symbol})`}
+      </span>
+    ),
+    sortable: true,
+  },
+];
 export default function ERC20TransactionList({ address, setTotal }) {
   const [block, setBlock] = useState([]);
-  const count = 20;
-  const columns = ["Tx Hash", "Method", "Time", "From", "To", "Value", "Token"];
+  const [totalCount, setTotalCount] = useState(0);
+  const [perPage, setPerPage] = useState(25);
+  const [pageInfo, setPageInfo] = useState([]);
 
   const { loading, error, data, fetchMore } = useQuery(GET_ERC20TRANSACTIONS, {
     variables: {
       address: address,
       cursor: null,
-      count: count,
+      count: perPage,
     },
   });
-
-  const getHasNextPage = (data) => data.pageInfo.hasNext;
-
-  const getAfter = (data) =>
-    data.edges && data.edges.length > 0
-      ? data.edges[data.edges.length - 1].cursor
-      : null;
 
   const updateQuery = async (previousResult, { fetchMoreResult }) => {
     if (!fetchMoreResult) {
       return previousResult;
     }
-    let transactions = [];
-    const api = services.provider.buildAPI();
-
     const account = fetchMoreResult.account;
-
-    for (let i = 0; i < account.erc20TxList.edges.length; i++) {
-      let edgeNew;
-
-      let senderFrom;
-      try {
-        const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.erc20TxList.edges[i].trx.sender
-        );
-        const nameSignal = await api.contracts.RainbowTableV1.lookup(
-          nameHash.name
-        );
-        senderFrom = await clients.utils.decodeNameHashInputSignals(nameSignal);
-      } catch {
-        senderFrom = account.erc20TxList.edges[i].trx.sender;
-      }
-      let recipient;
-      try {
-        const nameHash = await api.contracts.EVMReverseResolverV1.get(
-          account.erc20TxList.edges[i].trx.recipient
-        );
-        const nameSignal = await api.contracts.RainbowTableV1.lookup(
-          nameHash.name
-        );
-        recipient = await clients.utils.decodeNameHashInputSignals(nameSignal);
-      } catch {
-        recipient = account.erc20TxList.edges[i].trx.recipient;
-      }
-
-      edgeNew = {
-        cursor: account.erc20TxList.edges[i].cursor,
-        trx: {
-          sender: senderFrom,
-          recipient: recipient,
-          trxHash: account.erc20TxList.edges[i].trx.trxHash,
-          amount: account.erc20TxList.edges[i].trx.amount,
-          timeStamp: account.erc20TxList.edges[i].trx.timeStamp,
-          trxType: account.erc20TxList.edges[i].trx.trxType,
-          token: {
-            address: account.erc20TxList.edges[i].trx.token.address,
-            name: account.erc20TxList.edges[i].trx.token.name,
-            symbol: account.erc20TxList.edges[i].trx.token.symbol,
-            decimals: account.erc20TxList.edges[i].trx.token.decimals,
-            logoURL: account.erc20TxList.edges[i].trx.token.logoURL,
-          },
-        },
-      };
-      transactions.push(edgeNew);
-    }
-    fetchMoreResult.account.erc20TxList.edges = [
-      ...previousResult.account.erc20TxList.edges,
-      ...transactions,
-    ];
-
-    setBlock(fetchMoreResult.account);
+    setBlock(account);
+    await formatDomain(account);
     return { ...fetchMoreResult };
   };
 
-  const fetchMoreData = () => {
+  const fetchMoreData = (cursor, size = perPage) => {
     if (data && fetchMore) {
-      const nextPage = getHasNextPage(data.account.erc20TxList);
-      const after = getAfter(data.account.erc20TxList);
-      if (nextPage && after !== null) {
-        fetchMore({ updateQuery, variables: { cursor: after, count: count } });
-      }
+      fetchMore({ updateQuery, variables: { cursor: cursor, count: size } });
     }
   };
 
   useEffect(async () => {
     if (data) {
-      setTotal(data.account.erc20TxList.totalCount);
       const account = data.account;
+      setTotal(account.erc20TxList.totalCount);
+      setTotalCount(account.erc20TxList.totalCount);
+      setPerPage(25);
+      setPageInfo(account.erc20TxList.pageInfo);
       setBlock(account);
+      await formatDomain(account);
+    }
+  }, [loading]);
 
-      let newTransactionData;
-      let transactions = [];
-      const api = services.provider.buildAPI();
+  const formatDomain = async (data) => {
+    let newAddressData = [];
+    let formatedData = [];
 
-      for (let i = 0; i < account.erc20TxList.edges.length; i++) {
-        let edgeNew;
+    for (let i = 0; i < data.erc20TxList.edges.length; i++) {
+      let edgeNew;
 
-        let senderFrom;
-        try {
-          const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            account.erc20TxList.edges[i].trx.sender
-          );
-          const nameSignal = await api.contracts.RainbowTableV1.lookup(
-            nameHash.name
-          );
-          senderFrom = await clients.utils.decodeNameHashInputSignals(
-            nameSignal
-          );
-        } catch {
-          senderFrom = account.erc20TxList.edges[i].trx.sender;
-        }
-        let recipient;
-        try {
-          const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            account.erc20TxList.edges[i].trx.recipient
-          );
-          const nameSignal = await api.contracts.RainbowTableV1.lookup(
-            nameHash.name
-          );
-          recipient = await clients.utils.decodeNameHashInputSignals(
-            nameSignal
-          );
-        } catch {
-          recipient = account.erc20TxList.edges[i].trx.recipient;
-        }
-
-        edgeNew = {
-          cursor: account.erc20TxList.edges[i].cursor,
-          trx: {
-            sender: senderFrom,
-            recipient: recipient,
-            trxHash: account.erc20TxList.edges[i].trx.trxHash,
-            amount: account.erc20TxList.edges[i].trx.amount,
-            timeStamp: account.erc20TxList.edges[i].trx.timeStamp,
-            trxType: account.erc20TxList.edges[i].trx.trxType,
-            token: {
-              address: account.erc20TxList.edges[i].trx.token.address,
-              name: account.erc20TxList.edges[i].trx.token.name,
-              symbol: account.erc20TxList.edges[i].trx.token.symbol,
-              decimals: account.erc20TxList.edges[i].trx.token.decimals,
-              logoURL: account.erc20TxList.edges[i].trx.token.logoURL,
-            },
+      const addressFrom = await addressToDomain(
+        data.erc20TxList.edges[i].trx.sender
+      );
+      const addressTo = await addressToDomain(
+        data.erc20TxList.edges[i].trx.recipient
+      );
+      edgeNew = {
+        ...data.erc20TxList.edges[i],
+        trx: {
+          ...data.erc20TxList.edges[i].trx,
+          sender: addressFrom,
+          recipient: addressTo,
+          token: {
+            ...data.erc20TxList.edges[i].trx.token,
           },
-        };
-        transactions.push(edgeNew);
-      }
-      newTransactionData = {
-        address: account.address,
-        erc20TxList: {
-          totalCount: account.erc20TxList.totalCount,
-          edges: [...transactions],
         },
       };
-      setBlock(newTransactionData);
+      formatedData.push(edgeNew);
     }
-  }, [data]);
-  return (
-    <InfiniteScroll
-      dataLength={formatHexToInt(data?.account.erc20TxList.totalCount)}
-      next={fetchMoreData}
-      hasMore={true}
-      loader={<div className="text-center">Loading More...</div>}
-    >
-      <div className="flex flex-col justify-between px-2 py-5">
-        <div></div>
-        <div className="text-sm text-gray-500">
-          Showing last {block.erc20TxList?.edges.length} transactions
-        </div>
-      </div>
-      <components.DynamicTable columns={columns}>
-        {isObjectEmpty(block) ? (
-          <tr>
-            <td colSpan={columns?.length}>
-              <components.Loading />
-            </td>
-          </tr>
-        ) : (
-          block &&
-          block.erc20TxList?.edges.map((item, index) => (
-            <DynamicTableRow item={item} key={index} />
-          ))
-        )}
-      </components.DynamicTable>
-    </InfiniteScroll>
+    newAddressData = {
+      ...data,
+      erc20TxList: {
+        pageInfo: {
+          ...data.erc20TxList.pageInfo,
+        },
+        ...data.erc20TxList,
+        edges: [...formatedData],
+      },
+    };
+    setBlock(newAddressData);
+  };
+
+  return !isObjectEmpty(block) ? (
+    <components.TableView
+      classes="w-screen max-w-6xl"
+      title="Transactions"
+      columns={columns}
+      loading={loading}
+      data={block.erc20TxList?.edges}
+      isCustomPagination={true}
+      pageInfo={pageInfo}
+      totalCount={totalCount}
+      fetchMoreData={fetchMoreData}
+    />
+  ) : (
+    <components.Loading />
   );
 }

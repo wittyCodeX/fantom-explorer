@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import components from "components";
-import services from "services";
-import { setDOMDarkmode } from "utils";
+import { setDOMDarkmode, getTypeByStr } from "utils";
 import { writeStorage, useLocalStorage } from "@rehooks/local-storage";
 
 const Wrapper = (props) => {

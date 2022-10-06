@@ -119,8 +119,6 @@ export default function Blocks() {
   useEffect(
     () => {
       if (data && data.blocks) {
-        console.log("first cursor", formatHexToInt(data.blocks.pageInfo.first));
-        console.log("last cursor", formatHexToInt(data.blocks.pageInfo.last));
         setTotalCount(formatHexToInt(data.blocks.totalCount));
         setRows(data.blocks.edges);
       }

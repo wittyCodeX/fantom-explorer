@@ -92,11 +92,20 @@ const columns = [
     selector: row => row.transaction.from,
     cell: row =>
       <Link
-        className="text-blue-500 dark:text-gray-300"
+        className="flex flex-row items-center justify-between lg:gap-3 md:gap-3 sm:gap-2 gap-2 text-blue-500 dark:text-gray-300"
         to={`/address/${row.transaction.from}`}
       >
-        {" "}{formatHash(row.transaction.from)}
+        <span>
+          {formatHash(row.transaction.from)}
+        </span>
+        <img
+          src={services.linking.static("images/arrow-right.svg")}
+          alt="from"
+          srcSet=""
+          className="w-4"
+        />
       </Link>,
+    grow: 1,
     sortable: true
   },
   {
@@ -109,6 +118,7 @@ const columns = [
       >
         {" "}{formatHash(row.transaction.to)}
       </Link>,
+    grow: 1,
     sortable: true
   },
   {

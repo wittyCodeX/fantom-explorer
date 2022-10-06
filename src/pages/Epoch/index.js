@@ -93,8 +93,6 @@ export default function Epochs() {
     () => {
       if (data) {
         setTotalCount(formatHexToInt(data.epochs.totalCount));
-        console.log("data: ", data.epochs.edges);
-        console.log("cursor: ", formatHexToInt(data.epochs.edges[0].cursor));
         setPerPage(25);
         setRows(data.epochs.edges);
       }

@@ -14,7 +14,7 @@ const Input = ({
 }) => {
   const onKeyPress = (e) => {
     if (e.charCode == 13) {
-      handleChange(keyword)
+      handleChange(e.target.value)
     }
   }
   return (

@@ -358,6 +358,7 @@ export function FTMToWEI(_value) {
  * @return {string}
  */
 export async function addressToDomain(address) {
+  const api = services.provider.buildAPI();
   let domain;
   try {
     const nameHash = await api.contracts.EVMReverseResolverV1.get(
@@ -383,7 +384,7 @@ export async function domainToAddress(domain) {
     const address = await api.getReverseRecords(domain);
     return address;
   } catch {
-    return null;
+    return '0x0';
   }
 }
 

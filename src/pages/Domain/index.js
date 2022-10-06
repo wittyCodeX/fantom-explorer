@@ -1,36 +1,32 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import components from 'components'
-import { timestampToDate, formatDate } from 'utils'
-import moment from 'moment'
-import services from 'services'
-import { async } from 'q'
+import React, { useState, useEffect } from "react";
+import { Link, useParams, Navigate } from "react-router-dom";
+import components from "components";
+import { timestampToDate, formatDate, domainToAddress } from "utils";
+import services from "services";
 
 export default function Domain() {
-  const params = useParams()
-  const [domain, setDomain] = useState([])
+  const params = useParams();
+  const [domain, setDomain] = useState([]);
+  const [isRedirecting, setRedirecting] = useState(false);
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
     async function isRegisterdDomain(name) {
-      let address
-      try {
-        const api = services.provider.buildAPI()
-        address = await api.getReverseRecords(domain)
-      } catch {
-        address = '0x0'
-      }
-      if (address != '0x0') {
-        location.href = '/address/' + address
+      let address = await domainToAddress(name);
+      if (address != "0x0") {
+        console.log("redirecting...");
+        setAddress(Object.values(address)[0])
+        setRedirecting(true);
+      } else {
+        const api = services.provider.buildAPI();
+        const data = await api.loadDomain(name);
+        setDomain(data);
       }
     }
-    async function loadDomainData(name) {
-      const api = services.provider.buildAPI()
-      const data = await api.loadDomain(name)
-      setDomain(data)
-    }
-    isRegisterdDomain(params.id)
-    loadDomainData(params.id)
-  }, [params.id])
+    isRegisterdDomain(params.id);
+  }, [params.id]);
+
+  if (isRedirecting) return <Navigate to={`/address/${address}`} />;
 
   return (
     <div>
@@ -94,5 +90,5 @@ export default function Domain() {
         </components.DynamicTable>
       </components.TableView>
     </div>
-  )
+  );
 }

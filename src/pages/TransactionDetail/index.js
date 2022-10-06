@@ -164,7 +164,7 @@ export default function TransactionDetail() {
                         }}
                       >
                         <img
-                          src={services.linking.static("images/copied.png")}
+                          src={services.linking.static("images/copy.svg")}
                           className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
                           data-tooltip-target="tooltip-default"
                           alt="Copy"
@@ -241,7 +241,7 @@ export default function TransactionDetail() {
                         }}
                       >
                         <img
-                          src={services.linking.static("images/copied.png")}
+                          src={services.linking.static("images/copy.svg")}
                           className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
                           data-tooltip-target="tooltip-default"
                           alt="Copy"
@@ -279,7 +279,7 @@ export default function TransactionDetail() {
                         }}
                       >
                         <img
-                          src={services.linking.static("images/copied.png")}
+                          src={services.linking.static("images/copy.svg")}
                           className="mx-2 inline h-3 md:h-4 m-auto dark:w-8 dark:md:h-6"
                           data-tooltip-target="tooltip-default"
                           alt="Copy"
