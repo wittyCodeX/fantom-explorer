@@ -51,7 +51,7 @@ export default function FantomAssets() {
       );
       setTokenList(tokens);
     }
-  });
+  }, [loading]);
 
   return (
     <components.DynamicTable columns={columns}>

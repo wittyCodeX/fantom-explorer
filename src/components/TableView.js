@@ -46,22 +46,36 @@ const TableView = props => {
       >
         {props.loading
           ? <components.Loading />
-          : <DataTable
-              columns={props.columns}
-              theme="solarized"
-              data={props.data}
-              responsive={true}
-              highlightOnHover={true}
-              pagination
-              paginationServer
-              progressComponent={<components.Loading />}
-              paginationPerPage={perPage}
-              paginationRowsPerPageOptions={[25, 50, 100]}
-              paginationTotalRows={props.totalCount}
-              paginationDefaultPage={currentPage}
-              onChangeRowsPerPage={handlePerRowsChange}
-              onChangePage={handlePageChange}
-            />}
+          : props.isLocalPagination == true
+            ? <DataTable
+                columns={props.columns}
+                theme="solarized"
+                data={props.data}
+                responsive={true}
+                highlightOnHover={true}
+                pagination
+                progressComponent={<components.Loading />}
+                paginationPerPage={perPage}
+                paginationRowsPerPageOptions={[25, 50, 100]}
+                paginationTotalRows={props.totalCount}
+                paginationDefaultPage={currentPage}
+              />
+            : <DataTable
+                columns={props.columns}
+                theme="solarized"
+                data={props.data}
+                responsive={true}
+                highlightOnHover={true}
+                pagination
+                paginationServer
+                progressComponent={<components.Loading />}
+                paginationPerPage={perPage}
+                paginationRowsPerPageOptions={[25, 50, 100]}
+                paginationTotalRows={props.totalCount}
+                paginationDefaultPage={currentPage}
+                onChangeRowsPerPage={handlePerRowsChange}
+                onChangePage={handlePageChange}
+              />}
       </div>
       {props.btnLabel &&
         <div className="absolute bottom-0 bg-gray-100  dark:bg-[#2c2e3f] text-xl px-2 py-1 w-full flex justify-center border-solid border-grey-light  dark:border-blue-light  border-t">

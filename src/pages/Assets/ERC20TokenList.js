@@ -29,7 +29,7 @@ export default function ERC20TokenList() {
     if (data) {
       setTokenList(data.erc20TokenList);
     }
-  });
+  }, [loading]);
   const columns = ["Asset", "Name", "Hash", "Total Supply"];
 
   return (
