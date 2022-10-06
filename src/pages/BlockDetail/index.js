@@ -10,10 +10,10 @@ import {
   numToFixed,
   isObjectEmpty,
   formatDate,
+  addressToDomain,
 } from "utils";
 import moment from "moment";
 import { ethers } from "ethers";
-import services from "services";
 
 const GET_BLOCK = gql`
   query BlockByNumber($number: Long) {
@@ -61,170 +61,156 @@ export default function BlockDetail() {
   useEffect(async () => {
     if (data) {
       const edges = data.block;
-      let newBlockData;
-      let transactions = [];
-      const api = services.provider.buildAPI();
-
-      for (let i = 0; i < edges.txList.length; i++) {
-        let edgeNew;
-
-        let addressFrom;
-        try {
-          const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            edges.txList[i].from
-          );
-          const nameSignal = await api.contracts.RainbowTableV1.lookup(
-            nameHash.name
-          );
-          addressFrom = await clients.utils.decodeNameHashInputSignals(
-            nameSignal
-          );
-        } catch {
-          addressFrom = edges.txList[i].from;
-        }
-        let addressTo;
-        try {
-          const nameHash = await api.contracts.EVMReverseResolverV1.get(
-            edges.txList[i].to
-          );
-          const nameSignal = await api.contracts.RainbowTableV1.lookup(
-            nameHash.name
-          );
-          addressTo = await clients.utils.decodeNameHashInputSignals(
-            nameSignal
-          );
-        } catch {
-          addressTo = edges.txList[i].to;
-        }
-
-        edgeNew = {
-          from: addressFrom,
-          to: addressTo,
-          hash: edges.txList[i].hash,
-          value: edges.txList[i].value,
-          gasUsed: edges.txList[i].gasUsed,
-          block: {
-            number: edges.txList[i].block.number,
-            timestamp: edges.txList[i].block.timestamp,
-          },
-        };
-        transactions.push(edgeNew);
-      }
-      newBlockData = {
-        number: edges.number,
-        transactionCount: edges.transactionCount,
-        hash: edges.hash,
-        parent: {
-          hash: edges.parent.hash,
-        },
-        timestamp: edges.timestamp,
-        txList: [...transactions],
-      };
-      setBlock(newBlockData);
+      setBlock(edges);
+      await formatDomain(edges);
     }
-  }, [data]);
-  return (
-    <div>
-      <components.TableView
-        classes="w-screen max-w-6xl"
-        title={`Block #${formatHexToInt(block.number)}`}
-        dontNeedSubtitle={true}
-      >
-        <components.DynamicTable>
-          {isObjectEmpty(block) ? (
-            <tr>
-              <td>
-                <components.Loading />
-              </td>
-            </tr>
-          ) : (
-            <>
-              <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
-                  <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                    Block Height:
-                  </div>
-                  <div className="col-span-2">
-                    {formatHexToInt(block.number)}
-                    <Link
-                      className="bg-gray-200 text-blue-500 text-sm px-1 mx-1 font-extrabold"
-                      to={`/blocks/${Number(formatHexToInt(block.number) - 1)}`}
-                    >
-                      {"<"}
-                    </Link>
-                    <Link
-                      className="bg-gray-200 text-blue-500 text-sm px-1 font-extrabold"
-                      to={`/blocks/${Number(formatHexToInt(block.number) + 1)}`}
-                    >
-                      {">"}
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
-                  <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                    Timestamp:
-                  </div>
-                  <div className="col-span-2">
-                    {moment.unix(block.timestamp).fromNow()}{" "}
-                    {`(${formatDate(timestampToDate(block.timestamp))})`}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
-                  <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                    Transactions:
-                  </div>
-                  <div className="col-span-2">
-                    {formatHexToInt(block.transactionCount)} transactions
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
-                  <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                    Block Hash:
-                  </div>
-                  <div className="col-span-2  break-words">{block.hash}</div>
-                </td>
-              </tr>
-              <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
-                  <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                    Parent Hash:
-                  </div>
-                  <div className="col-span-2  break-words">
-                    {block.parent?.hash}
-                  </div>
-                </td>
-              </tr>
-            </>
-          )}
-        </components.DynamicTable>
-      </components.TableView>
+  }, [loading]);
 
-      <components.TableView
-        classes="w-screen max-w-6xl"
-        title={`Transactions (${block.txList?.length})`}
-        dontNeedSubtitle={true}
-      >
-        <components.DynamicTable columns={columns}>
-          {loading ? (
+  const formatDomain = async (edges) => {
+    let formatedData = [];
+    let transactions = [];
+
+    for (let i = 0; i < edges.txList.length; i++) {
+      let edgeNew;
+
+      const addressFrom = await addressToDomain(edges.txList[i].from);
+      const addressTo = await addressToDomain(edges.txList[i].to);
+      edgeNew = {
+        ...edges.txList[i],
+        from: addressFrom,
+        to: addressTo,
+        block: {
+          ...edges.txList[i].block,
+        },
+      };
+      formatedData.push(edgeNew);
+    }
+    transactions = {
+      ...edges,
+      txList: [...formatedData],
+    };
+    setBlock(transactions);
+  };
+  return (
+    <div className="flex flex-col w-screen max-w-6xl">
+      <div className="flex flex-row justify-between items-baseline bg-gray-200 dark:bg-[#2c2e3f] dark:text-gray-300 text-xl p-2 border-solid border-grey-light dark:border-blue-light border-b mt-5">
+        <div className="text-black flex flex-row gap-2 dark:text-gray-300 md:text-2xl sm:text-xl text-sm  px-2 font-medium">
+          <Link
+            className="flex-none bg-transparent hover:bg-blue-100 dark:hover:bg-gray-700 text-center text-blue-700 dark:text-gray-300 font-semibold px-3 py-1 border border-blue-500 dark:border-gray-500 rounded text-sm"
+            to={`/blocks/${Number(formatHexToInt(block.number) - 1)}`}
+          >
+            <svg
+              aria-hidden="true"
+              className="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </Link>
+          Block #{formatHexToInt(block.number)}
+          <Link
+            className="flex-none bg-transparent hover:bg-blue-100 dark:hover:bg-gray-700 text-center text-blue-700 dark:text-gray-300 font-semibold px-3 py-1 border border-blue-500 dark:border-gray-500 rounded text-sm"
+            to={`/blocks/${Number(formatHexToInt(block.number) + 1)}`}
+          >
+            <svg
+              aria-hidden="true"
+              className="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </Link>
+        </div>
+        <div className="text-black  dark:text-gray-300 text-sm">
+          Home {">"} Blocks {">"} Block Detail
+        </div>
+      </div>
+      <components.DynamicTable>
+        {isObjectEmpty(block) ? (
+          <tr>
+            <td>
+              <components.Loading />
+            </td>
+          </tr>
+        ) : (
+          <>
             <tr>
-              <td colSpan={columns?.length}>
-                <components.Loading />
+              <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
+                <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
+                  Block Height:
+                </div>
+                <div className="col-span-2">{formatHexToInt(block.number)}</div>
               </td>
             </tr>
-          ) : (
-            block.txList &&
-            block.txList.map((item, index) => (
-              <DynamicTableRow item={item} key={index} />
-            ))
-          )}
-        </components.DynamicTable>
-      </components.TableView>
+            <tr>
+              <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
+                <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
+                  Timestamp:
+                </div>
+                <div className="col-span-2">
+                  {moment.unix(block.timestamp).fromNow()}{" "}
+                  {`(${formatDate(timestampToDate(block.timestamp))})`}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
+                <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
+                  Transactions:
+                </div>
+                <div className="col-span-2">
+                  {formatHexToInt(block.transactionCount)} transactions
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
+                <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
+                  Block Hash:
+                </div>
+                <div className="col-span-2  break-words">{block.hash}</div>
+              </td>
+            </tr>
+            <tr>
+              <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
+                <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
+                  Parent Hash:
+                </div>
+                <div className="col-span-2  break-words">
+                  {block.parent?.hash}
+                </div>
+              </td>
+            </tr>
+          </>
+        )}
+      </components.DynamicTable>
+
+      <components.DynamicTable columns={columns}>
+        {loading ? (
+          <tr>
+            <td colSpan={columns?.length}>
+              <components.Loading />
+            </td>
+          </tr>
+        ) : (
+          block.txList &&
+          block.txList.map((item, index) => (
+            <DynamicTableRow item={item} key={index} />
+          ))
+        )}
+      </components.DynamicTable>
     </div>
   );
 }

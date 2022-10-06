@@ -297,7 +297,6 @@ export default function Staking() {
       {validators &&
         <components.TableView
           classes="w-screen max-w-6xl"
-          title="Epochs"
           columns={columns}
           loading={loading}
           data={validators}

@@ -45,7 +45,7 @@ export default function Domain() {
           ) : (
             <>
               <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
+                <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Domain:
                   </div>
@@ -53,7 +53,7 @@ export default function Domain() {
                 </td>
               </tr>
               <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
+                <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Status:
                   </div>
@@ -61,7 +61,7 @@ export default function Domain() {
                 </td>
               </tr>
               <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
+                <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Owner:
                   </div>
@@ -76,7 +76,7 @@ export default function Domain() {
                 </td>
               </tr>
               <tr>
-                <td className="grid grid-flow-row-dense grid-cols-3 border-b p-3">
+                <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
                   <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
                     Expires At:
                   </div>

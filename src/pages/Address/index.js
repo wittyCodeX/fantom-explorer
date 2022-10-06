@@ -365,7 +365,7 @@ export default function Address() {
           ) : (
             <>
               <tr>
-                <td className="flex justify-between  border-b p-3">
+                <td className="flex justify-between border-b  dark:border-gray-700  p-3">
                   <div className="text-sm ml-1 ml-sm-0 text-nowrap">
                     Address:
                   </div>
@@ -373,7 +373,7 @@ export default function Address() {
                 </td>
               </tr>
               <tr>
-                <td className="flex justify-between  border-b p-3">
+                <td className="flex justify-between border-b  dark:border-gray-700  p-3">
                   <div className="text-sm ml-1 ml-sm-0 text-nowrap">
                     Domain Name:
                   </div>
@@ -385,7 +385,7 @@ export default function Address() {
                 </td>
               </tr>
               <tr>
-                <td className="flex justify-between  border-b p-3">
+                <td className="flex justify-between border-b  dark:border-gray-700  p-3">
                   <div className="text-sm ml-1 ml-sm-0 text-nowrap">
                     Balance:
                   </div>
@@ -416,7 +416,7 @@ export default function Address() {
         <div className="flex space-x-3 border-b">
           {/* Loop through tab data and render button for each. */}
           <button
-            className={`p-2 border-b-4 transition-colors duration-300 ${
+            className={`p-2 border-b-4 transition-colors duration-300 dark:text-gray-100 ${
               0 === activeTabIndex
                 ? "border-teal-500"
                 : "border-transparent hover:border-gray-200"
@@ -427,7 +427,7 @@ export default function Address() {
             Transactions {`(${formatHexToInt(data?.account?.txCount)})`}
           </button>
           <button
-            className={`p-2 border-b-4 transition-colors duration-300 ${
+            className={`p-2 border-b-4 transition-colors duration-300 dark:text-gray-100 ${
               1 === activeTabIndex
                 ? "border-teal-500"
                 : "border-transparent hover:border-gray-200"
@@ -438,7 +438,7 @@ export default function Address() {
             ERC-20 Token Txns {`( ${formatHexToInt(erc20Count)} )`}
           </button>
           <button
-            className={`p-2 border-b-4 transition-colors duration-300 ${
+            className={`p-2 border-b-4 transition-colors duration-300 dark:text-gray-100 ${
               2 === activeTabIndex
                 ? "border-teal-500"
                 : "border-transparent hover:border-gray-200"
@@ -449,7 +449,7 @@ export default function Address() {
             ERC-721 Token Txns {`( ${formatHexToInt(erc721Count)} )`}
           </button>
           <button
-            className={`p-2 border-b-4 transition-colors duration-300 ${
+            className={`p-2 border-b-4 transition-colors duration-300 dark:text-gray-100 ${
               3 === activeTabIndex
                 ? "border-teal-500"
                 : "border-transparent hover:border-gray-200"

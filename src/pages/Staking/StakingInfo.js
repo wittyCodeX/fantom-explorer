@@ -83,7 +83,7 @@ export default function StakingInfo(props) {
         ) : (
           <>
             <tr>
-              <td className="flex justify-between border-b md:p-3 p-3">
+              <td className="flex justify-between border-b  dark:border-gray-700 md:p-3 p-3">
                 <div className="sm:block small text-sm ml-1 ml-sm-0 text-nowrap">
                   Total Self-Staked:
                 </div>
@@ -96,7 +96,7 @@ export default function StakingInfo(props) {
               </td>
             </tr>
             <tr>
-              <td className="flex justify-between border-b md:p-3 p-3">
+              <td className="flex justify-between border-b  dark:border-gray-700 md:p-3 p-3">
                 <div className="sm:block small text-sm ml-1 ml-sm-0 text-nowrap">
                   Total Delegated:
                 </div>
@@ -109,7 +109,7 @@ export default function StakingInfo(props) {
               </td>
             </tr>
             <tr>
-              <td className="flex justify-between border-b md:p-3 p-3">
+              <td className="flex justify-between border-b  dark:border-gray-700 md:p-3 p-3">
                 <div className="sm:block small text-sm ml-1 ml-sm-0 text-nowrap">
                   Total Staked:
                 </div>
@@ -122,7 +122,7 @@ export default function StakingInfo(props) {
               </td>
             </tr>
             <tr>
-              <td className="flex justify-between border-b md:p-3 p-3">
+              <td className="flex justify-between border-b  dark:border-gray-700 md:p-3 p-3">
                 <div className="sm:block small text-sm ml-1 ml-sm-0 text-nowrap">
                   Daily Rewards:
                 </div>
@@ -136,7 +136,7 @@ export default function StakingInfo(props) {
               </td>
             </tr>
             <tr>
-              <td className="flex justify-between border-b md:p-3 p-3">
+              <td className="flex justify-between border-b  dark:border-gray-700 md:p-3 p-3">
                 <div className="sm:block small text-sm ml-1 ml-sm-0 text-nowrap">
                   Daily Rewards Rate:
                 </div>

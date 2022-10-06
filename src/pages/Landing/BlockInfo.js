@@ -109,8 +109,9 @@ export default function BlockInfo() {
     },
     [data2, data1]
   );
+
   return (
-    <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 mt-[50px]">
+    <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-4 p-4 mt-3">
       <div className="col-span-3 lg:col-span-3 md:col-span-3 bg-gray-100 dark:bg-[#2c2e3f] p-2 border-gray-300 shadow-md order-2  md:order-2 sm:order-2 lg:order-1">
         <div className="flex flex-row items-center justify-start">
           <img
@@ -127,20 +128,17 @@ export default function BlockInfo() {
           <components.Card
             title="Blocks"
             icon={services.linking.static("images/block-9.svg")}
-            classes="p-0 "
           >
             <components.Number value={data1 && data1.state.blocks} />
           </components.Card>
           <components.Card
             title="Validators"
-            classes="p-0 "
             icon={services.linking.static("images/validator.svg")}
           >
             <components.Number value={data1 && data1.state.validators} />
           </components.Card>
           <components.Card
             title="Transactions"
-            classes="p-0 "
             icon={services.linking.static("images/transfer.svg")}
           >
             <components.Number value={data1 && data1.state.transactions} />
@@ -149,21 +147,18 @@ export default function BlockInfo() {
         <div className="grid lg:grid-cols-3  md:grid-cols-3  sm:grid-cols-3  grid-cols-1 gap-2">
           <components.Card
             title="Accounts"
-            classes="p-0 "
             icon={services.linking.static("images/user.svg")}
           >
             <components.Number value={data1 && data1.state.accounts} />
           </components.Card>
           <components.Card
             title="Last Epoch"
-            classes="p-0 "
             icon={services.linking.static("images/block.svg")}
           >
             <components.Number value={data1 && data1.state.sealedEpoch.id} />
           </components.Card>
           <components.Card
             title="Total Supply"
-            classes="p-0 "
             icon={services.linking.static("images/totalsupply.svg")}
           >
             <components.Number
@@ -204,8 +199,8 @@ export default function BlockInfo() {
                   ]}
                   className="text-gray-100 innertext-label"
                   legend={false}
-                  height="100"
-                  width="100"
+                  height="150"
+                  width="150"
                   colors={["blue", "#ed5083"]}
                   strokeColor="#2c2e3f"
                 />}

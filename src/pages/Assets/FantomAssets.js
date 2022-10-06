@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import {
   formatHash,
   isObjectEmpty,
-  numToFixed,
-  WEIToFTM,
   formatNumberByLocale,
   fromTokenValue,
   getTokenDecimals,

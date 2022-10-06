@@ -141,7 +141,7 @@ const DynamicTableRow = (props) => {
               <div className="flex mx-2 text-sm">Txn Hash# </div>
               <Link
                 to={`/transactions/${item.transaction.hash}`}
-                className="text-blue-500 dark:text-gray-300"
+                className="text-blue-500"
               >
                 {formatHash(item.transaction.hash)}
               </Link>
@@ -149,7 +149,7 @@ const DynamicTableRow = (props) => {
             <div className="flex flex-row  text-sm  mx-2">
               <div className="flex mr-2">From </div>
               <Link
-                className="text-blue-500 dark:text-gray-300"
+                className="text-blue-500"
                 to={`/address/${item.transaction.from}`}
               >
                 {" "}

@@ -97,7 +97,7 @@ export default function Assets() {
         <div className="flex space-x-3">
           {/* Loop through tab data and render button for each. */}
           <button
-            className={`p-2 border-b-4 transition-colors duration-300 ${1 ===
+            className={`p-2 border-b-4 transition-colors duration-300  dark:text-gray-100 ${1 ===
             activeTabIndex
               ? "border-teal-500"
               : "border-transparent hover:border-gray-200"}`}
@@ -107,7 +107,7 @@ export default function Assets() {
             Fantom Finance Assets
           </button>
           <button
-            className={`p-2 border-b-4 transition-colors duration-300 ${2 ===
+            className={`p-2 border-b-4 transition-colors duration-300  dark:text-gray-100 ${2 ===
             activeTabIndex
               ? "border-teal-500"
               : "border-transparent hover:border-gray-200"}`}
