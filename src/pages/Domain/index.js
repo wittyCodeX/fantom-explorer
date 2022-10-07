@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import components from "components";
-import { timestampToDate, formatDate, domainToAddress } from "utils";
+import {
+  timestampToDate,
+  formatDate,
+  domainToAddress,
+  WEIToFTM,
+  numToFixed,
+} from "utils";
 import services from "services";
 
 export default function Domain() {
@@ -39,7 +45,7 @@ export default function Domain() {
         </div>
       </div>
       <components.DynamicTable>
-        {!domain ? (
+        {!domain.domain ? (
           <tr>
             <td>
               <components.Loading />
@@ -63,29 +69,62 @@ export default function Domain() {
                 <div className="col-span-2">{domain.status}</div>
               </td>
             </tr>
+            {domain.status === "AVAILABLE" ? (
+              ""
+            ) : (
+              <tr>
+                <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
+                  <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
+                    Owner:
+                  </div>
+                  <div className="col-span-2">
+                    <Link
+                      to={`/address/${domain.owner}`}
+                      className="text-blue-500 dark:text-gray-300"
+                    >
+                      {domain.owner}
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            )}
             <tr>
               <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
                 <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                  Owner:
+                  Price in FTM:
                 </div>
-                <div className="col-span-2">
-                  <Link
-                    to={`/address/${domain.owner}`}
-                    className="text-blue-500 dark:text-gray-300"
-                  >
-                    {domain.owner}
-                  </Link>
+                <div className="col-span-2 gap-2">
+                  <span className="font-bold">
+                    {numToFixed(WEIToFTM(domain.priceFTMEstimate), 4)}
+                  </span>
+                  <span>FTM</span>
+                  <span className="text-red-500">
+                    {`(${domain.priceUSDCents / 100}$)`}
+                  </span>
                 </div>
               </td>
             </tr>
             <tr>
               <td className="grid grid-flow-row-dense grid-cols-3 border-b dark:border-gray-700 p-3">
                 <div className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap">
-                  Expires At:
+                  Price in PUMPKIN:
                 </div>
                 <div className="col-span-2">
-                  {`(${formatDate(timestampToDate(domain.expiresAt))})`}
+                  <span className="font-bold">
+                    {domain.pricePumpkinEstimate}
+                  </span>
                 </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="flex justify-center bg-gray-300 dark:bg-[#2c2e3f] text-blue-500 dark:text-blue-100 border border-blue-300 dark:border-blue-200 p-3">
+                <a
+                  className="sm:block small text-secondary ml-1 ml-sm-0 text-nowrap"
+                  href="https://scr-fns-6pa8.vercel.app/"
+                  target="_bank"
+                >
+                  Make your own this domain now:
+                </a>
               </td>
             </tr>
           </>
