@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import components from "components";
-import { setDOMDarkmode, getTypeByStr } from "utils";
+import { setDOMDarkmode, getTypeByStr, formatDomainName } from "utils";
 import { writeStorage, useLocalStorage } from "@rehooks/local-storage";
 
 const Wrapper = (props) => {
@@ -33,7 +33,7 @@ const Wrapper = (props) => {
         location.href = "/blocks/" + _keyword;
         break;
       case "domain":
-        location.href = "/domain/" + _keyword;
+        location.href = "/domain/" + formatDomainName(_keyword);
         break;
       default:
         break;
@@ -52,7 +52,7 @@ const Wrapper = (props) => {
         location.href = "/blocks/" + keyword;
         break;
       case "domain":
-        location.href = "/domain/" + keyword;
+        location.href = "/domain/" + formatDomainName(keyword);
         break;
       default:
         break;

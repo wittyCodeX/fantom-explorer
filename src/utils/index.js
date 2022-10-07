@@ -340,6 +340,18 @@ export function getTypeByStr(_str) {
   return type;
 }
 
+export function formatDomainName(domain) {
+  let formated = domain;
+  
+  const split = domain.split(".");
+  if (split.length < 2) {
+    formated = formated + ".ftm";
+  }
+  if (split[1] === "ftm") {
+    formated = domain;
+  }
+  return formated;
+}
 /**
  * @return {number}
  */
@@ -361,15 +373,9 @@ export async function addressToDomain(address) {
   const api = services.provider.buildAPI();
   let domain;
   try {
-    const nameHash = await api.contracts.EVMReverseResolverV1.get(
-      address
-    );
-    const nameSignal = await api.contracts.RainbowTableV1.lookup(
-      nameHash.name
-    );
-    domain = await clients.utils.decodeNameHashInputSignals(
-      nameSignal
-    );
+    const nameHash = await api.contracts.EVMReverseResolverV1.get(address);
+    const nameSignal = await api.contracts.RainbowTableV1.lookup(nameHash.name);
+    domain = await clients.utils.decodeNameHashInputSignals(nameSignal);
   } catch {
     domain = address;
   }
@@ -384,7 +390,7 @@ export async function domainToAddress(domain) {
     const address = await api.getReverseRecords(domain);
     return address;
   } catch {
-    return '0x0';
+    return "0x0";
   }
 }
 

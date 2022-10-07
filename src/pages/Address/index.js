@@ -347,8 +347,8 @@ export default function Address() {
         )}
       </div>
 
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 p-4 sm:p-2">
-        <div className="flex flex-col py-2 m-2 justify-center items-center  bg-gray-100 dark:bg-[#2c2e3f]">
+      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+        <div className="flex flex-col py-2 my-2 justify-center items-center  bg-gray-100 dark:bg-[#2c2e3f]">
           <QRCode value={params.id} size={200} />{" "}
         </div>
         <components.DynamicTable

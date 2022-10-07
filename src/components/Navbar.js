@@ -4,7 +4,7 @@ import { ArrowRightIcon } from "@heroicons/react/solid";
 import { isBrowser } from "react-device-detect";
 import services from "services";
 import components from "components";
-import { numToFixed, getTypeByStr } from "utils";
+import { numToFixed, getTypeByStr, formatDomainName } from "utils";
 
 export default function Navbar(props) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
@@ -39,7 +39,7 @@ export default function Navbar(props) {
         location.href = "/blocks/" + _keyword;
         break;
       case "domain":
-        location.href = "/domain/" + _keyword;
+        location.href = "/domain/" + formatDomainName(_keyword);
         break;
       default:
         break;
@@ -58,7 +58,7 @@ export default function Navbar(props) {
         location.href = "/blocks/" + keyword;
         break;
       case "domain":
-        location.href = "/domain/" + keyword;
+        location.href = "/domain/" + formatDomainName(keyword);
         break;
       default:
         break;
