@@ -14,13 +14,13 @@ export default function Navbar(props) {
 
   useEffect(() => {
     const getFTMPrice = async () => {
-      const api = services.provider.buildAPI();
-      const rate = await api.getFTMConversionRateFromChainlink(
-        "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc"
-      );
-      console.log("###", rate);
-      const ftmPrice = rate / Math.pow(10, 8);
-      setPrice(ftmPrice);
+      fetch(
+        "https://api.ftmscan.com/api?module=stats&action=ftmprice&apikey=B7S69ATJVVHDE6NIQC74D9VD3R16NKZSMP"
+      )
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "1") setPrice(data.result.ethusd);
+        });
     };
     getFTMPrice();
   }, []);
