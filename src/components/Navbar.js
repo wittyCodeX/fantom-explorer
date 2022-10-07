@@ -18,11 +18,13 @@ export default function Navbar(props) {
       const rate = await api.getFTMConversionRateFromChainlink(
         "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc"
       );
+      console.log("###", rate);
       const ftmPrice = rate / Math.pow(10, 8);
       setPrice(ftmPrice);
     };
     getFTMPrice();
   }, []);
+
   const handleChange = _keyword => {
     const type = getTypeByStr(_keyword);
     console.log(type);
@@ -73,15 +75,19 @@ export default function Navbar(props) {
       }}
     >
       <div className="flex items-center justify-between mx-auto max-w-6xl">
-        <div className="flex flex-row items-center justify-center">
-          <Link to="/">
+        <div className="flex flex-row items-center justify-center gap-2">
+          <Link
+            to="/"
+            className="flex flex-row items-center justify-center gap-2"
+          >
             <img
-              src={services.linking.static("images/logo-ftmscan-white.svg")}
-              className="h-6 md:h-7 m-auto dark:md:h-7"
+              src={services.linking.static("images/fantom-ftm-logo.png")}
+              className="h-10 md:h-10 m-auto dark:md:h-10"
               alt="FNS Domains"
             />{" "}
+            <span className="font-bold text-lg">Fantom Explorer</span>
           </Link>
-          <div className="text-white py-1 px-4 text-sm">
+          <div className="text-white text-sm">
             <span className="font-bold">FTM:</span> {numToFixed(price, 4)} $
           </div>
         </div>
