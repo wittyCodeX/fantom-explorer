@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/solid";
-import { MoonIcon, SunIcon } from "@heroicons/react/outline";
+import { isBrowser } from "react-device-detect";
 import services from "services";
 import components from "components";
 import { numToFixed, getTypeByStr } from "utils";
@@ -11,17 +11,7 @@ export default function Navbar(props) {
   const [price, setPrice] = useState(0);
   const [keywordType, setKeywordType] = useState("all");
   const [keyword, setKeyword] = useState("");
-  const [width, setWidth] = useState(window.innerWidth);
 
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
   useEffect(() => {
     const getFTMPrice = async () => {
       const api = services.provider.buildAPI();
@@ -195,7 +185,7 @@ export default function Navbar(props) {
           </div>
         </div>
       </div>
-      {width > 768 && window.location.pathname !== "/"
+      {isBrowser && window.location.pathname !== "/"
         ? ""
         : <div className="flex items-center justify-center mx-auto max-w-6xl mt-2">
             <div className="flex md:w-3/5 lg:w-5/7 sm:w-7/9 w-11/12">
