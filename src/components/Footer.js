@@ -1,77 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRightIcon } from "@heroicons/react/solid";
-import { isBrowser } from "react-device-detect";
 import services from "services";
-import components from "components";
-import { numToFixed, getTypeByStr, formatDomainName } from "utils";
 import { SocialIcon } from "react-social-icons";
 
 export default function Footer(props) {
-  const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
-  const [price, setPrice] = useState(0);
-  const [keywordType, setKeywordType] = useState("all");
-  const [keyword, setKeyword] = useState("");
-
-  useEffect(() => {
-    const getFTMPrice = async () => {
-      fetch(
-        "https://api.ftmscan.com/api?module=stats&action=ftmprice&apikey=B7S69ATJVVHDE6NIQC74D9VD3R16NKZSMP"
-      )
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "1") setPrice(data.result.ethusd);
-        });
-    };
-    getFTMPrice();
-  }, []);
-
-  const handleChange = _keyword => {
-    const type = getTypeByStr(_keyword);
-    console.log(type);
-    switch (type) {
-      case "transaction_hash":
-        location.href = "/transactions/" + _keyword;
-        break;
-      case "address":
-        location.href = "/address/" + _keyword;
-        break;
-      case "block":
-        location.href = "/blocks/" + _keyword;
-        break;
-      case "domain":
-        location.href = "/domain/" + formatDomainName(_keyword);
-        break;
-      default:
-        break;
-    }
-  };
-  const onClickSearch = () => {
-    const type = getTypeByStr(keyword);
-    switch (type) {
-      case "transaction_hash":
-        location.href = "/transactions/" + keyword;
-        break;
-      case "address":
-        location.href = "/address/" + keyword;
-        break;
-      case "block":
-        location.href = "/blocks/" + keyword;
-        break;
-      case "domain":
-        location.href = "/domain/" + formatDomainName(keyword);
-        break;
-      default:
-        break;
-    }
-  };
   return (
     <header
       className="sticky top-0 z-30 w-full bg-gray-100 dark:text-gray-300 text-gray-200 px-2 py-4 bg-gray-100 sm:px-4"
       style={{
         backgroundImage: `url(${props.isDarkmode
           ? services.linking.static("images/navbar-bg-dark.png")
-          : services.linking.static("images/navbar-bg.png")})`,
+          : services.linking.static("images/footer-bg.png")})`,
         backgroundSize: "cover"
       }}
     >
