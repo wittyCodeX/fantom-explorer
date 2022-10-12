@@ -206,15 +206,15 @@ export default function Address() {
   const [transaction, setTransaction] = useState([]);
   const [address, setAddress] = useState("");
 
-  const [erc20Count, setERC20Count] = useState("");
-  const [erc721Count, setERC721Count] = useState("");
-  const [erc1155Count, setERC1155Count] = useState("");
+  const [erc20Count, setERC20Count] = useState("0x0");
+  const [erc721Count, setERC721Count] = useState("0x0");
+  const [erc1155Count, setERC1155Count] = useState("0x0");
 
   const [ftmPrice, setFtmPrice] = useState("");
 
   const [copied, setCopied] = useState(false);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState("0x0");
   const [perPage, setPerPage] = useState(25);
   const [pageInfo, setPageInfo] = useState(25);
 
@@ -462,7 +462,9 @@ export default function Address() {
         </div>
         {/* Show active tab content. */}
         <div className="py-4">
-          {transaction && activeTabIndex === 0 ? (
+          <div
+            className={transaction && activeTabIndex === 0 ? "block" : "hidden"}
+          >
             <components.TableView
               classes="w-screen max-w-6xl"
               title="Transactions"
@@ -474,24 +476,31 @@ export default function Address() {
               totalCount={totalCount}
               fetchMoreData={fetchMoreData}
             />
-          ) : activeTabIndex === 1 ? (
+          </div>
+          <div
+            className={transaction && activeTabIndex === 1 ? "block" : "hidden"}
+          >
             <ERC20TransactionList
               address={params.id}
               setTotal={setERC20Count}
             />
-          ) : activeTabIndex === 2 ? (
+          </div>
+          <div
+            className={transaction && activeTabIndex === 2 ? "block" : "hidden"}
+          >
             <ERC721TransactionList
               address={params.id}
               setTotal={setERC721Count}
             />
-          ) : activeTabIndex === 3 ? (
+          </div>
+          <div
+            className={transaction && activeTabIndex === 3 ? "block" : "hidden"}
+          >
             <ERC1155TransactionList
               address={params.id}
               setTotal={setERC1155Count}
             />
-          ) : (
-            ""
-          )}
+          </div>
         </div>
       </div>
     </div>
