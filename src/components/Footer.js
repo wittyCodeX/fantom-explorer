@@ -25,7 +25,7 @@ export default function Footer(props) {
               className="h-10 md:h-10 m-auto dark:md:h-10"
               alt="FNS Domains"
             />{" "}
-            <span className="font-bold text-md"> Fantom Explorer</span>
+            <span className="font-bold text-md"> FTMBlocks</span>
           </Link>
         </div>
 
