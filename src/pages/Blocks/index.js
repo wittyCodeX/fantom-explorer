@@ -36,7 +36,7 @@ const columns = [
     cell: row =>
       <Link
         className="text-blue-500 dark:text-gray-300"
-        to={`/blocks/${formatHexToInt(row.block.number)}`}
+        to={`/block/${formatHexToInt(row.block.number)}`}
       >
         {" "}{formatHexToInt(row.block.number)}
       </Link>,

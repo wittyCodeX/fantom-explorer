@@ -112,7 +112,7 @@ const columns = [
     cell: (row) => (
       <Link
         className="text-blue-500 dark:text-gray-300"
-        to={`/transactions/${row.transaction.hash}`}
+        to={`/tx/${row.transaction.hash}`}
       >
         {" "}
         {formatHash(row.transaction.hash)}
@@ -126,7 +126,7 @@ const columns = [
     selector: (row) => row.transaction.block.number,
     cell: (row) => (
       <Link
-        to={`/blocks/${formatHexToInt(row.transaction.block.number)}`}
+        to={`/block/${formatHexToInt(row.transaction.block.number)}`}
         className="text-blue-500 dark:text-gray-300"
       >
         #{formatHexToInt(row.transaction.block.number)}
@@ -513,7 +513,7 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           className="text-blue-500 dark:text-gray-300"
-          to={`/transactions/${item.transaction.hash}`}
+          to={`/tx/${item.transaction.hash}`}
         >
           {" "}
           {formatHash(item.transaction.hash)}
@@ -521,7 +521,7 @@ const DynamicTableRow = ({ item }) => {
       </td>
       <td className="px-2 text-sm truncate   py-3">
         <Link
-          to={`/blocks/${formatHexToInt(item.transaction.block.number)}`}
+          to={`/block/${formatHexToInt(item.transaction.block.number)}`}
           className="text-blue-500 dark:text-gray-300"
         >
           #{formatHexToInt(item.transaction.block.number)}

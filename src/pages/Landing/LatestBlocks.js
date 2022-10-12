@@ -77,7 +77,7 @@ const DynamicTableRow = ({ item }) => {
             <div className="flex flex-row items-center mb-1">
               <div className="flex mx-2 text-sm">Block# </div>
               <Link
-                to={`/blocks/${formatHexToInt(item.block.number)}`}
+                to={`/block/${formatHexToInt(item.block.number)}`}
                 className="text-blue-500"
               >
                 {formatHexToInt(item.block.number)}

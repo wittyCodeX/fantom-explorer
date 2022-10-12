@@ -97,7 +97,7 @@ export default function BlockDetail() {
         <div className="text-black flex flex-row gap-2 dark:text-gray-300 md:text-2xl sm:text-xl text-sm  px-2 font-medium">
           <Link
             className="flex-none bg-transparent hover:bg-blue-100 dark:hover:bg-gray-700 text-center text-blue-700 dark:text-gray-300 font-semibold px-3 py-1 border border-blue-500 dark:border-gray-500 rounded text-sm"
-            to={`/blocks/${Number(formatHexToInt(block.number) - 1)}`}
+            to={`/block/${Number(formatHexToInt(block.number) - 1)}`}
           >
             <svg
               aria-hidden="true"
@@ -116,7 +116,7 @@ export default function BlockDetail() {
           Block #{formatHexToInt(block.number)}
           <Link
             className="flex-none bg-transparent hover:bg-blue-100 dark:hover:bg-gray-700 text-center text-blue-700 dark:text-gray-300 font-semibold px-3 py-1 border border-blue-500 dark:border-gray-500 rounded text-sm"
-            to={`/blocks/${Number(formatHexToInt(block.number) + 1)}`}
+            to={`/block/${Number(formatHexToInt(block.number) + 1)}`}
           >
             <svg
               aria-hidden="true"
@@ -220,7 +220,7 @@ const DynamicTableRow = ({ item }) => {
       <td className="px-2 text-sm truncate   py-3">
         <Link
           className="text-blue-500 dark:text-gray-300"
-          to={`/transactions/${item.hash}`}
+          to={`/tx/${item.hash}`}
         >
           {" "}
           {formatHash(item.hash)}
@@ -228,7 +228,7 @@ const DynamicTableRow = ({ item }) => {
       </td>
       <td className="px-2 text-sm truncate   py-3">
         <Link
-          to={`/blocks/${formatHexToInt(item.block.number)}`}
+          to={`/block/${formatHexToInt(item.block.number)}`}
           className="text-blue-500 dark:text-gray-300"
         >
           #{formatHexToInt(item.block.number)}

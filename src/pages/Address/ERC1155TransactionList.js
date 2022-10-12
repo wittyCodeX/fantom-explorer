@@ -49,7 +49,7 @@ const columns = [
     cell: (row) => (
       <Link
         className="text-blue-500 dark:text-gray-300"
-        to={`/transactions/${row.trx.trxHash}`}
+        to={`/tx/${row.trx.trxHash}`}
       >
         {" "}
         {formatHash(row.trx.trxHash)}

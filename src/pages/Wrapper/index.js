@@ -24,13 +24,13 @@ const Wrapper = (props) => {
     console.log(type);
     switch (type) {
       case "transaction_hash":
-        location.href = "/transactions/" + _keyword;
+        location.href = "/tx/" + _keyword;
         break;
       case "address":
         location.href = "/address/" + _keyword;
         break;
       case "block":
-        location.href = "/blocks/" + _keyword;
+        location.href = "/block/" + _keyword;
         break;
       case "domain":
         location.href = "/domain/" + formatDomainName(_keyword);
@@ -43,13 +43,13 @@ const Wrapper = (props) => {
     const type = getTypeByStr(keyword);
     switch (type) {
       case "transaction_hash":
-        location.href = "/transactions/" + keyword;
+        location.href = "/tx/" + keyword;
         break;
       case "address":
         location.href = "/address/" + keyword;
         break;
       case "block":
-        location.href = "/blocks/" + keyword;
+        location.href = "/block/" + keyword;
         break;
       case "domain":
         location.href = "/domain/" + formatDomainName(keyword);

@@ -60,7 +60,7 @@ const columns = [
     cell: row =>
       <Link
         className="text-blue-500 dark:text-gray-300"
-        to={`/transactions/${row.transaction.hash}`}
+        to={`/tx/${row.transaction.hash}`}
       >
         {" "}{formatHash(row.transaction.hash)}
       </Link>,
@@ -72,7 +72,7 @@ const columns = [
     selector: row => row.transaction.block.number,
     cell: row =>
       <Link
-        to={`/blocks/${formatHexToInt(row.transaction.block.number)}`}
+        to={`/block/${formatHexToInt(row.transaction.block.number)}`}
         className="text-blue-500 dark:text-gray-300"
       >
         #{formatHexToInt(row.transaction.block.number)}
