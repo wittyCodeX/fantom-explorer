@@ -27,6 +27,7 @@
     "react-qr-code": "^2.0.8",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.0",
+    "react-social-icons": "^5.15.0",
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.0",
     "web3-utils": "^1.8.0"
