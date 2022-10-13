@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
-import { ethers } from "ethers";
+import { isBrowser } from "react-device-detect";
 import QRCode from "react-qr-code";
 import { Tooltip } from "@material-tailwind/react";
 
@@ -322,7 +322,7 @@ export default function Address() {
       <div className="flex items-center text-black dark:text-gray-100 md:text-xl sm:text-xl text-sm  px-2 font-normal py-3 bg-gray-100 dark:bg-[#2c2e3f]">
         <QRCode value={params.id} size={20} />{" "}
         <span className="mx-3"> Address </span>
-        <span className="font-bold">{address}</span>
+        <span className="font-bold">{isBrowser? address: formatHash(address)}</span>
         <Tooltip content="Copy Address to clipboard">
           <button
             onClick={() => {
@@ -369,7 +369,7 @@ export default function Address() {
                   <div className="text-sm ml-1 ml-sm-0 text-nowrap">
                     Address:
                   </div>
-                  <div className="col-span-2 font-semibold">{params.id}</div>
+                  <div className="col-span-2 font-semibold">{isBrowser? params.id: formatHash(params.id)}</div>
                 </td>
               </tr>
               <tr>
@@ -506,58 +506,3 @@ export default function Address() {
     </div>
   );
 }
-
-const DynamicTableRow = ({ item }) => {
-  return (
-    <tr>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/tx/${item.transaction.hash}`}
-        >
-          {" "}
-          {formatHash(item.transaction.hash)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          to={`/block/${formatHexToInt(item.transaction.block.number)}`}
-          className="text-blue-500 dark:text-gray-300"
-        >
-          #{formatHexToInt(item.transaction.block.number)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <div className="d-sm-block small text-secondary ml-1 ml-sm-0 text-nowrap">
-          {moment.unix(item.transaction.block.timestamp).fromNow()}
-        </div>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/address/${item.transaction.from}`}
-        >
-          {" "}
-          {formatHash(item.transaction.from)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <Link
-          className="text-blue-500 dark:text-gray-300"
-          to={`/address/${item.transaction.to}`}
-        >
-          {" "}
-          {formatHash(item.transaction.to)}
-        </Link>
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        {numToFixed(ethers.utils.formatEther(item.transaction.value), 2)} FTM
-      </td>
-      <td className="px-2 text-sm truncate   py-3">
-        <span className="text-sm">
-          {formatHexToInt(item.transaction.gasUsed)}
-        </span>
-      </td>
-    </tr>
-  );
-};
