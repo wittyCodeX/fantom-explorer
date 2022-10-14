@@ -42,7 +42,7 @@ export default function LatestTransactions() {
       cursor: null,
       count: 10,
     },
-    pollInterval: 3000,
+    pollInterval: 2000,
   });
 
   useEffect(async () => {

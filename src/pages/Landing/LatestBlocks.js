@@ -36,7 +36,7 @@ export default function LatestBlocks() {
       cursor: null,
       count: 10
     },
-    pollInterval: 3000
+    pollInterval: 2000
   });
   useEffect(
     () => {
