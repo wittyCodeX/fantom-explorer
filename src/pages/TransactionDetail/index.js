@@ -13,6 +13,7 @@ import {
   isObjectEmpty,
   formatDate,
   addressToDomain,
+  getTypeByStr,
 } from "utils";
 import moment from "moment";
 
@@ -156,7 +157,7 @@ export default function TransactionDetail() {
                       Success
                     </span>
                   ) : (
-                    <span className="rounded-full bg-red-500">Fail</span>
+                    <span className="rounded-full px-2 py-1 bg-red-500">Fail</span>
                   )}
                 </div>
               </td>
@@ -190,12 +191,21 @@ export default function TransactionDetail() {
                   From:
                 </div>
                 <div className="col-span-2  break-words">
-                  <Link
-                    className="text-blue-500 dark:text-gray-300"
-                    to={`/address/${transaction.from}`}
-                  >
-                    {transaction.from}
-                  </Link>
+                  {getTypeByStr(transaction.from) === "address" ? (
+                    <Link
+                      className="text-blue-500 dark:text-gray-300"
+                      to={`/address/${transaction.from}`}
+                    >
+                      {transaction.from}
+                    </Link>
+                  ) : (
+                    <Link
+                      className="text-blue-500 dark:text-gray-300"
+                      to={`/domain/${transaction.from}`}
+                    >
+                      {transaction.from}
+                    </Link>
+                  )}
                   <Tooltip content="Copy Address to clipboard">
                     <button
                       onClick={() => {
@@ -228,12 +238,21 @@ export default function TransactionDetail() {
                   To:
                 </div>
                 <div className="col-span-2  break-words">
-                  <Link
-                    className="text-blue-500 dark:text-gray-300"
-                    to={`/address/${transaction.to}`}
-                  >
-                    {transaction.to}
-                  </Link>
+                  {getTypeByStr(transaction.from) === "address" ? (
+                    <Link
+                      className="text-blue-500 dark:text-gray-300"
+                      to={`/address/${transaction.to}`}
+                    >
+                      {transaction.to}
+                    </Link>
+                  ) : (
+                    <Link
+                      className="text-blue-500 dark:text-gray-300"
+                      to={`/domain/${transaction.to}`}
+                    >
+                      {transaction.to}
+                    </Link>
+                  )}
                   <Tooltip content="Copy Address to clipboard">
                     <button
                       onClick={() => {
