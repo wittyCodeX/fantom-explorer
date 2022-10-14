@@ -157,7 +157,7 @@ export default function TransactionDetail() {
                       Success
                     </span>
                   ) : (
-                    <span className="rounded-full px-2 py-1 bg-red-500">Fail</span>
+                    <span className="rounded-full px-2 py-1 bg-red-500  text-white font-bold">Fail</span>
                   )}
                 </div>
               </td>
